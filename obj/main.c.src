@@ -3,7 +3,7 @@
 	section	.text,"ax",@progbits
 	public	_main
 _main:
-	ld	hl, -5
+	ld	hl, -12
 	call	__frameset
 	call	_gfx_Begin
 	or	a, a
@@ -74,12 +74,11 @@ _main:
 	ld	hl, L_.str.1
 	push	hl
 	call	_gfx_PrintString
-	ld	de, 17
 	pop	hl
-	ld	bc, 69
-BB0_1:
 	ld	hl, (_rotate_sprite)
-	push	bc
+	ld	de, 69
+	push	de
+	ld	de, 17
 	push	de
 	push	hl
 	call	_gfx_TransparentSprite_NoClip
@@ -96,25 +95,418 @@ BB0_1:
 	pop	hl
 	pop	hl
 	pop	hl
+	ld	hl, -25
+	push	hl
+	call	_gfx_SetColor
+	pop	hl
+	ld	de, 224
+	ld	iy, 14
+BB0_1:
+	lea	hl, iy + 0
+	or	a, a
+	sbc	hl, de
+	jq	z, BB0_2
+	push	iy
+	ld	hl, 310
+	push	hl
+	push	iy
+	ld	hl, 215
+	push	hl
+	ld	(ix + -3), iy
+	call	_gfx_Line
+	ld	iy, (ix + -3)
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	de, 14
+	add	iy, de
+	ld	de, 224
+	jq	BB0_1
+BB0_2:
+	ld	de, 328
+	ld	bc, 220
+	ld	iy, 0
+BB0_4:
+	push	bc
+	pop	hl
+	or	a, a
+	sbc	hl, de
+	jq	z, BB0_8
+	ld	(ix + -3), iy
+	lea	hl, iy + 0
+	ld	de, 2
+	or	a, a
+	sbc	hl, de
+	ld	hl, 210
+	push	hl
+	push	bc
+	ld	hl, 14
+	push	hl
+	push	bc
+	ld	(ix + -6), bc
+	call	nc, _gfx_Line
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	iy, (ix + -3)
+	inc	iy
+	ld	de, 18
+	ld	hl, (ix + -6)
+	add	hl, de
+	ld	de, 328
+	push	hl
+	pop	bc
+	jq	BB0_4
+BB0_8:
+	ld	hl, 1
+	push	hl
+	push	hl
+	call	_gfx_SetTextScale
+	pop	hl
+	pop	hl
+	ld	hl, -25
+	push	hl
+	call	_gfx_SetTextFGColor
+	pop	hl
+	ld	hl, 17
+	push	hl
+	ld	hl, 280
+	push	hl
+	call	_gfx_SetTextXY
+	pop	hl
+	pop	hl
+	ld	hl, L_.str.2
+	push	hl
+	call	_gfx_PrintString
+	pop	hl
+	ld	hl, 199
+	push	hl
+	ld	hl, 262
+	push	hl
+	call	_gfx_SetTextXY
+	pop	hl
+	pop	hl
+	ld	hl, L_.str.3
+	push	hl
+	call	_gfx_PrintString
+	pop	hl
+	ld	hl, 199
+	push	hl
+	ld	hl, 280
+	push	hl
+	call	_gfx_SetTextXY
+	pop	hl
+	pop	hl
+	ld	hl, L_.str.3
+	push	hl
+	call	_gfx_PrintString
+	pop	hl
+	ld	hl, 199
+	push	hl
+	ld	hl, 298
+	push	hl
+	call	_gfx_SetTextXY
+	pop	hl
+	pop	hl
+	ld	hl, L_.str.3
+	push	hl
+	call	_gfx_PrintString
+	pop	hl
+	ld	hl, 7
+	push	hl
+	call	_gfx_SetColor
+	pop	hl
+	ld	de, 14
+	push	de
+	ld	hl, 41
+	push	hl
+	push	de
+	ld	hl, 215
+	push	hl
+	call	_gfx_FillRectangle_NoClip
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, 15
+	push	hl
+	ld	hl, 41
+	push	hl
+	ld	hl, 84
+	push	hl
+	ld	hl, 215
+	push	hl
+	call	_gfx_FillRectangle_NoClip
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, 15
+	push	hl
+	ld	hl, 41
+	push	hl
+	ld	hl, 126
+	push	hl
+	ld	hl, 215
+	push	hl
+	call	_gfx_FillRectangle_NoClip
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, 8
+	push	hl
+	call	_gfx_SetColor
+	pop	hl
+	ld	hl, 90
+	ex	de, hl
+	push	de
+	ld	hl, 245
+	push	hl
+	push	de
+	ld	hl, 225
+	push	hl
+	ld	hl, 75
+	push	hl
+	ld	hl, 235
+	push	hl
+	call	_gfx_FillTriangle
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	de, 90
+	push	de
+	ld	hl, 245
+	push	hl
+	push	de
+	ld	hl, 225
+	push	hl
+	ld	hl, 105
+	push	hl
+	ld	hl, 235
+	push	hl
+	call	_gfx_FillTriangle
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, -25
+	push	hl
+	call	_gfx_SetColor
+	pop	hl
+	ld	hl, 132
+	ex	de, hl
+	push	de
+	ld	hl, 245
+	push	hl
+	push	de
+	ld	hl, 225
+	push	hl
+	ld	hl, 117
+	push	hl
+	ld	hl, 235
+	push	hl
+	call	_gfx_FillTriangle
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	de, 132
+	push	de
+	ld	hl, 245
+	push	hl
+	push	de
+	ld	hl, 225
+	push	hl
+	ld	hl, 147
+	push	hl
+	ld	hl, 235
+	push	hl
+	call	_gfx_FillTriangle
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, 210
+	push	hl
+	ld	de, 215
+	push	de
+	ld	hl, 29
+	push	hl
+	push	de
+	call	_gfx_Line
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, 31
+	push	hl
+	ld	hl, 222
+	push	hl
+	call	_gfx_SetTextXY
+	pop	hl
+	pop	hl
+	ld	hl, L_.str.4
+	push	hl
+	call	_gfx_PrintString
+	pop	hl
+	ld	hl, 45
+	push	hl
+	ld	hl, 217
+	push	hl
+	call	_gfx_SetTextXY
+	pop	hl
+	pop	hl
+	ld	hl, L_.str.5
+	push	hl
+	call	_gfx_PrintString
+	pop	hl
+	ld	hl, 59
+	push	hl
+	ld	hl, 217
+	push	hl
+	call	_gfx_SetTextXY
+	pop	hl
+	pop	hl
+	ld	hl, L_.str.6
+	push	hl
+	call	_gfx_PrintString
+	pop	hl
+	ld	hl, 157
+	push	hl
+	ld	hl, 222
+	push	hl
+	call	_gfx_SetTextXY
+	pop	hl
+	pop	hl
+	ld	hl, L_.str.7
+	push	hl
+	call	_gfx_PrintString
+	pop	hl
+	ld	hl, 171
+	push	hl
+	ld	hl, 217
+	push	hl
+	call	_gfx_SetTextXY
+	pop	hl
+	pop	hl
+	ld	hl, L_.str.8
+	push	hl
+	call	_gfx_PrintString
+	pop	hl
+	ld	hl, 185
+	push	hl
+	ld	hl, 225
+	push	hl
+	call	_gfx_SetTextXY
+	pop	hl
+	pop	hl
+	ld	hl, L_.str.9
+	push	hl
+	call	_gfx_PrintString
+	pop	hl
+	ld	hl, 199
+	push	hl
+	ld	hl, 222
+	push	hl
+	call	_gfx_SetTextXY
+	pop	hl
+	pop	hl
+	ld	hl, L_.str.10
+	push	hl
+	call	_gfx_PrintString
+	pop	hl
+	ld	de, 12
+	ld	bc, 0
+	ld.sis	hl, 1
+	ld	(ix + -3), l
+	ld	(ix + -2), h
+BB0_9:
+	push	bc
+	pop	hl
+	or	a, a
+	sbc	hl, de
+	jq	z, BB0_10
+	ld	(ix + -6), bc
+	push	bc
+	pop	hl
+	ld	bc, 14
+	call	__imulu
+	ld	de, 31
+	add	hl, de
+	ld	(ix + -9), hl
+	ld	iy, 258
+BB0_12:
+	lea	hl, iy + 0
+	ld	de, 312
+	or	a, a
+	sbc	hl, de
+	jq	z, BB0_14
+	ld	hl, (ix + -9)
+	push	hl
+	push	iy
+	ld	(ix + -12), iy
+	call	_gfx_SetTextXY
+	pop	hl
+	pop	hl
+	or	a, a
+	sbc	hl, hl
+	ld	e, (ix + -3)
+	ld	d, (ix + -2)
+	ld	l, e
+	ld	h, d
+	ld	de, 2
+	push	de
+	push	hl
+	call	_gfx_PrintInt
+	ld	iy, (ix + -12)
+	pop	hl
+	pop	hl
+	ld	l, (ix + -3)
+	ld	h, (ix + -2)
+	inc.sis	hl
+	ld	(ix + -3), l
+	ld	(ix + -2), h
+	ld	de, 18
+	add	iy, de
+	jq	BB0_12
+BB0_14:
+	ld	bc, (ix + -6)
+	inc	bc
+	ld	de, 12
+	jq	BB0_9
+BB0_10:
+BB0_15:
 	call	_gfx_SwapDraw
 	ld	iy, -720878
-BB0_2:
+BB0_16:
 	ld	l, (iy)
 	ld	h, (iy + 1)
 	ld	a, l
 	cp	a, 64
-	jq	z, BB0_4
+	jq	z, BB0_18
 	ld	l, (iy)
 	ld	h, (iy + 1)
 	ld	a, l
 	cp	a, 32
-	jq	nz, BB0_2
-BB0_4:
+	jq	nz, BB0_16
+BB0_18:
 	ld	l, (iy)
 	ld	h, (iy + 1)
 	ld	a, l
 	cp	a, 64
-	jq	z, BB0_11
+	jq	z, BB0_37
 	ld	hl, -851900
 	push	hl
 	pop	iy
@@ -131,13 +523,13 @@ BB0_4:
 	push	hl
 	pop	de
 	ld.sis	bc, -1
-BB0_6:
+BB0_20:
 	ld	l, c
 	ld	h, b
 	add.sis	hl, bc
 	or	a, a
 	sbc.sis	hl, bc
-	jq	z, BB0_10
+	jq	z, BB0_24
 	ld	hl, -720878
 	push	de
 	ld	e, (hl)
@@ -148,10 +540,10 @@ BB0_6:
 	pop	de
 	ld	a, l
 	cp	a, 64
-	jq	z, BB0_11
+	jq	z, BB0_37
 	ld	(ix + -3), de
-	ld	(ix + -5), c
-	ld	(ix + -4), b
+	ld	(ix + -6), c
+	ld	(ix + -5), b
 	call	_rand
 	ld	bc, 1000
 	call	__irems
@@ -179,7 +571,7 @@ BB0_6:
 	or	a, a
 	sbc.sis	hl, de
 	ld	hl, (ix + -3)
-	jq	c, BB0_10
+	jq	c, BB0_24
 	add	a, l
 	ld	(_n), a
 	ld	hl, 1
@@ -252,12 +644,12 @@ BB0_6:
 	pop	hl
 	pop	hl
 	call	_gfx_SwapDraw
-	ld	c, (ix + -5)
-	ld	b, (ix + -4)
+	ld	c, (ix + -6)
+	ld	b, (ix + -5)
 	ld	de, (ix + -3)
 	dec.sis	bc
-	jq	BB0_6
-BB0_10:
+	jq	BB0_20
+BB0_24:
 	ld	a, (_n)
 	ld	b, a
 	ld	c, 7
@@ -363,10 +755,420 @@ BB0_10:
 	pop	hl
 	pop	hl
 	pop	hl
+	ld	hl, (_rotate_sprite)
+	ld	de, 69
+	push	de
 	ld	de, 17
-	ld	bc, 69
-	jq	BB0_1
-BB0_11:
+	push	de
+	push	hl
+	call	_gfx_TransparentSprite_NoClip
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, 36
+	push	hl
+	ld	hl, 59
+	push	hl
+	ld	hl, _pfeil_data
+	push	hl
+	call	_gfx_TransparentSprite_NoClip
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, -25
+	push	hl
+	call	_gfx_SetColor
+	pop	hl
+	ld	iy, 14
+	ld	de, 224
+BB0_25:
+	lea	hl, iy + 0
+	or	a, a
+	sbc	hl, de
+	jq	z, BB0_38
+	push	iy
+	ld	hl, 310
+	push	hl
+	push	iy
+	ld	hl, 215
+	push	hl
+	ld	(ix + -3), iy
+	call	_gfx_Line
+	ld	iy, (ix + -3)
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	de, 14
+	add	iy, de
+	ld	de, 224
+	jq	BB0_25
+BB0_38:
+	ld	bc, 220
+	ld	iy, 0
+	ld	de, 328
+BB0_27:
+	push	bc
+	pop	hl
+	or	a, a
+	sbc	hl, de
+	jq	z, BB0_31
+	ld	(ix + -3), iy
+	lea	hl, iy + 0
+	ld	de, 2
+	or	a, a
+	sbc	hl, de
+	ld	hl, 210
+	push	hl
+	push	bc
+	ld	hl, 14
+	push	hl
+	push	bc
+	ld	(ix + -6), bc
+	call	nc, _gfx_Line
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	iy, (ix + -3)
+	inc	iy
+	ld	de, 18
+	ld	hl, (ix + -6)
+	add	hl, de
+	ld	de, 328
+	push	hl
+	pop	bc
+	jq	BB0_27
+BB0_31:
+	ld	hl, 1
+	push	hl
+	push	hl
+	call	_gfx_SetTextScale
+	pop	hl
+	pop	hl
+	ld	hl, -25
+	push	hl
+	call	_gfx_SetTextFGColor
+	pop	hl
+	ld	hl, 17
+	push	hl
+	ld	hl, 280
+	push	hl
+	call	_gfx_SetTextXY
+	pop	hl
+	pop	hl
+	ld	hl, L_.str.2
+	push	hl
+	call	_gfx_PrintString
+	pop	hl
+	ld	hl, 199
+	push	hl
+	ld	hl, 262
+	push	hl
+	call	_gfx_SetTextXY
+	pop	hl
+	pop	hl
+	ld	hl, L_.str.3
+	push	hl
+	call	_gfx_PrintString
+	pop	hl
+	ld	hl, 199
+	push	hl
+	ld	hl, 280
+	push	hl
+	call	_gfx_SetTextXY
+	pop	hl
+	pop	hl
+	ld	hl, L_.str.3
+	push	hl
+	call	_gfx_PrintString
+	pop	hl
+	ld	hl, 199
+	push	hl
+	ld	hl, 298
+	push	hl
+	call	_gfx_SetTextXY
+	pop	hl
+	pop	hl
+	ld	hl, L_.str.3
+	push	hl
+	call	_gfx_PrintString
+	pop	hl
+	ld	hl, 7
+	push	hl
+	call	_gfx_SetColor
+	pop	hl
+	ld	hl, 14
+	ex	de, hl
+	push	de
+	ld	hl, 41
+	push	hl
+	push	de
+	ld	hl, 215
+	push	hl
+	call	_gfx_FillRectangle_NoClip
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, 15
+	push	hl
+	ld	hl, 41
+	push	hl
+	ld	hl, 84
+	push	hl
+	ld	hl, 215
+	push	hl
+	call	_gfx_FillRectangle_NoClip
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, 15
+	push	hl
+	ld	hl, 41
+	push	hl
+	ld	hl, 126
+	push	hl
+	ld	hl, 215
+	push	hl
+	call	_gfx_FillRectangle_NoClip
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, 8
+	push	hl
+	call	_gfx_SetColor
+	pop	hl
+	ld	hl, 90
+	ex	de, hl
+	push	de
+	ld	hl, 245
+	push	hl
+	push	de
+	ld	hl, 225
+	push	hl
+	ld	hl, 75
+	push	hl
+	ld	hl, 235
+	push	hl
+	call	_gfx_FillTriangle
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	de, 90
+	push	de
+	ld	hl, 245
+	push	hl
+	push	de
+	ld	hl, 225
+	push	hl
+	ld	hl, 105
+	push	hl
+	ld	hl, 235
+	push	hl
+	call	_gfx_FillTriangle
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, -25
+	push	hl
+	call	_gfx_SetColor
+	pop	hl
+	ld	hl, 132
+	ex	de, hl
+	push	de
+	ld	hl, 245
+	push	hl
+	push	de
+	ld	hl, 225
+	push	hl
+	ld	hl, 117
+	push	hl
+	ld	hl, 235
+	push	hl
+	call	_gfx_FillTriangle
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	de, 132
+	push	de
+	ld	hl, 245
+	push	hl
+	push	de
+	ld	hl, 225
+	push	hl
+	ld	hl, 147
+	push	hl
+	ld	hl, 235
+	push	hl
+	call	_gfx_FillTriangle
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, 210
+	push	hl
+	ld	de, 215
+	push	de
+	ld	hl, 29
+	push	hl
+	push	de
+	call	_gfx_Line
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, 31
+	push	hl
+	ld	hl, 222
+	push	hl
+	call	_gfx_SetTextXY
+	pop	hl
+	pop	hl
+	ld	hl, L_.str.4
+	push	hl
+	call	_gfx_PrintString
+	pop	hl
+	ld	hl, 45
+	push	hl
+	ld	hl, 217
+	push	hl
+	call	_gfx_SetTextXY
+	pop	hl
+	pop	hl
+	ld	hl, L_.str.5
+	push	hl
+	call	_gfx_PrintString
+	pop	hl
+	ld	hl, 59
+	push	hl
+	ld	hl, 217
+	push	hl
+	call	_gfx_SetTextXY
+	pop	hl
+	pop	hl
+	ld	hl, L_.str.6
+	push	hl
+	call	_gfx_PrintString
+	pop	hl
+	ld	hl, 157
+	push	hl
+	ld	hl, 222
+	push	hl
+	call	_gfx_SetTextXY
+	pop	hl
+	pop	hl
+	ld	hl, L_.str.7
+	push	hl
+	call	_gfx_PrintString
+	pop	hl
+	ld	hl, 171
+	push	hl
+	ld	hl, 217
+	push	hl
+	call	_gfx_SetTextXY
+	pop	hl
+	pop	hl
+	ld	hl, L_.str.8
+	push	hl
+	call	_gfx_PrintString
+	pop	hl
+	ld	hl, 185
+	push	hl
+	ld	hl, 225
+	push	hl
+	call	_gfx_SetTextXY
+	pop	hl
+	pop	hl
+	ld	hl, L_.str.9
+	push	hl
+	call	_gfx_PrintString
+	pop	hl
+	ld	hl, 199
+	push	hl
+	ld	hl, 222
+	push	hl
+	call	_gfx_SetTextXY
+	pop	hl
+	pop	hl
+	ld	hl, L_.str.10
+	push	hl
+	call	_gfx_PrintString
+	pop	hl
+	ld	bc, 0
+	ld.sis	hl, 1
+	ld	(ix + -3), l
+	ld	(ix + -2), h
+	ld	de, 12
+BB0_32:
+	push	bc
+	pop	hl
+	or	a, a
+	sbc	hl, de
+	jq	z, BB0_15
+	ld	(ix + -6), bc
+	push	bc
+	pop	hl
+	ld	bc, 14
+	call	__imulu
+	ld	de, 31
+	add	hl, de
+	ld	(ix + -9), hl
+	ld	iy, 258
+	ld	de, 12
+BB0_34:
+	lea	hl, iy + 0
+	ld	bc, 312
+	or	a, a
+	sbc	hl, bc
+	jq	z, BB0_36
+	ld	hl, (ix + -9)
+	push	hl
+	push	iy
+	ld	(ix + -12), iy
+	call	_gfx_SetTextXY
+	pop	hl
+	pop	hl
+	or	a, a
+	sbc	hl, hl
+	ld	e, (ix + -3)
+	ld	d, (ix + -2)
+	ld	l, e
+	ld	h, d
+	ld	de, 2
+	push	de
+	push	hl
+	call	_gfx_PrintInt
+	ld	iy, (ix + -12)
+	pop	hl
+	pop	hl
+	ld	l, (ix + -3)
+	ld	h, (ix + -2)
+	inc.sis	hl
+	ld	(ix + -3), l
+	ld	(ix + -2), h
+	ld	de, 18
+	add	iy, de
+	ld	de, 12
+	jq	BB0_34
+BB0_36:
+	ld	bc, (ix + -6)
+	inc	bc
+	jq	BB0_32
+BB0_37:
 	ld	sp, ix
 	pop	ix
 	jp	_gfx_End
@@ -400,12 +1202,57 @@ _a:
 	section	.rodata,"a",@progbits
 	private	L_.str
 L_.str:
-	db	"Roulette v0.1.2",000o
+	db	"Roulette v0.2.0",000o
 
 	section	.rodata,"a",@progbits
 	private	L_.str.1
 L_.str.1:
 	db	"Press 2nd to spin or Clear to exit",000o
+
+	section	.rodata,"a",@progbits
+	private	L_.str.2
+L_.str.2:
+	db	"0",000o
+
+	section	.rodata,"a",@progbits
+	private	L_.str.3
+L_.str.3:
+	db	"^",000o
+
+	section	.rodata,"a",@progbits
+	private	L_.str.4
+L_.str.4:
+	db	"1-12",000o
+
+	section	.rodata,"a",@progbits
+	private	L_.str.5
+L_.str.5:
+	db	"13-24",000o
+
+	section	.rodata,"a",@progbits
+	private	L_.str.6
+L_.str.6:
+	db	"25-36",000o
+
+	section	.rodata,"a",@progbits
+	private	L_.str.7
+L_.str.7:
+	db	"1-18",000o
+
+	section	.rodata,"a",@progbits
+	private	L_.str.8
+L_.str.8:
+	db	"19-36",000o
+
+	section	.rodata,"a",@progbits
+	private	L_.str.9
+L_.str.9:
+	db	"ODD",000o
+
+	section	.rodata,"a",@progbits
+	private	L_.str.10
+L_.str.10:
+	db	"EVEN",000o
 
 	section	.bss,"aw",@nobits
 	public	_b
@@ -438,7 +1285,9 @@ _key:
 	extern	_srand
 	extern	_gfx_SetTextBGColor
 	extern	_gfx_SetTextFGColor
+	extern	_gfx_FillRectangle_NoClip
 	extern	_gfx_Begin
+	extern	_gfx_Line
 	extern	_gfx_RotateScaleSprite
 	extern	_palette_gfx
 	extern	_gfx_SetPalette
@@ -447,14 +1296,17 @@ _key:
 	extern	_gfx_SwapDraw
 	extern	_gfx_PrintInt
 	extern	_gfx_SetDraw
+	extern	_gfx_FillTriangle
 	extern	_pfeil_data
 	extern	__sdivu
 	extern	_gfx_FillScreen
 	extern	__Unwind_SjLj_Unregister
 	extern	__irems
+	extern	__imulu
+	extern	_gfx_SetColor
 	extern	_gfx_TransparentSprite_NoClip
-	extern	_gfx_End
 	extern	_gfx_SetTextXY
+	extern	_gfx_End
 	extern	_ro_data
 	extern	__bdivu
 	extern	_gfx_SetTextScale

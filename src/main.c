@@ -18,16 +18,17 @@
 
 gfx_UninitedSprite(rotate_sprite, ro_width, ro_height);//sprite buffer
 
-uint16_t a, b;
-int n, keypressed,e ,c;
-uint8_t stop;
-bool prevkey;
+uint16_t b;
+int e ,c;
+uint8_t a, n;
 kb_key_t key;
 
 
 void main(void)
 {
-    uint16_t x, s, i;
+    uint16_t x, s, f;
+	uint8_t colors[37] = {231,8,231,8,231,8,231,8,231,8,231,8,231,8,231,8,231,8,231,8,231,8,231,8,231,8,231,8,231,8,231,8,231,8,231,8,12};
+	uint8_t numbers[37] = {26,3,35,12,28,7,29,18,22,9,31,14,20,1,33,16,24,5,10,23,8,30,11,36,13,27,6,34,17,25,2,21,4,19,15,32,0};
 	
     gfx_Begin(); //Start the graphics 
     gfx_SetPalette(palette_gfx, sizeof_palette_gfx, 0); //Load Palette
@@ -39,25 +40,26 @@ void main(void)
 	gfx_SetTextBGColor(255);//Transparent text background
 	gfx_SetTextScale(1,1);//Text size for Title
 	gfx_SetTextXY(110,10);//Title position
-	gfx_PrintString("Roulette v0.1.1");//Print title
+	gfx_PrintString("Roulette v0.1.2");//Print title
 	gfx_SetTextXY(49,228);//Text position
-			gfx_PrintString("Press 2nd to spin or Clear to exit");//Print text
+	gfx_PrintString("Press 2nd to spin or Clear to exit");//Print text
 	gfx_TransparentSprite_NoClip(rotate_sprite, 17, 69);//Show rotated sprite
 	gfx_TransparentSprite_NoClip(pfeil, 59, 36);//Show arrow
 	gfx_SwapDraw();
 	
-	for (i = 0; ++i;) //Loop everything
+	do //Loop everything
 	{
 		while (kb_Data[1] != kb_Clear && kb_Data[1] != kb_2nd); //Wait for key press
 		if (kb_Data[1] == kb_Clear) {break;}//Exit
-	
 		srand(rtc_Time());//Set random seed
     
 		/*Generate random amount to rotate*/
 		b = 50000;
 		s = rand() % 256;
+		f = 0;
 		for (x = 0; ++x;)
 		{
+			if (kb_Data[1] == kb_Clear) {f = 1; break;}//Exit
 			int r = rand() % 1000;
 			b = b - r;
 			a = a + b / 5000;
@@ -66,13 +68,6 @@ void main(void)
 				break;
 			}
 			n = a + s;
-			
-			/*Keep rotation value below 256*/
-			if (a > 255)
-			{
-				a = a - 256;
-			}
-			/*Keep rotation value below 256*/
 		
 			/*Generate random amount to rotate*/
 	
@@ -83,58 +78,16 @@ void main(void)
 			gfx_SetTextBGColor(255);//Transparent text background
 			gfx_SetTextScale(1,1);//Text size for Title
 			gfx_SetTextXY(110,10);//Title position
-			gfx_PrintString("Roulette v0.1.1");//Print title
+			gfx_PrintString("Roulette v0.1.2");//Print title
 	
 			gfx_TransparentSprite_NoClip(rotate_sprite, 17, 69);//Show rotated sprite
 			gfx_TransparentSprite_NoClip(pfeil, 59, 36);//Show arrow
 			gfx_SwapDraw();
 		}
-	
-		/*Keep rotation value below 256*/
-		if (n > 255)
-		{
-			n = n - 256;
-		}
-		/*Keep rotation value below 256*/
-	
+		if (f == 1) {break;}//Exit
 		/*Determine number*/
-		if(n >= 0 && n < 7){e = 26; c = 231;}
-		if(n >= 7 && n < 14){e = 3;  c = 8;}
-		if(n >= 14 && n < 20){e = 35; c = 231;}
-		if(n >= 20 && n < 28){e = 12; c = 8;}
-		if(n >= 28 && n < 35){e = 28; c = 231;}
-		if(n >= 35 && n < 42){e = 7; c = 8;}
-		if(n >= 42 && n < 48){e = 29; c = 231;}
-		if(n >= 48 && n < 55){e = 18; c = 8;}
-		if(n >= 55 && n < 62){e = 22; c = 231;}
-		if(n >= 62 && n < 69){e = 9; c = 8;}
-		if(n >= 69 && n < 76){e = 31; c = 231;}
-		if(n >= 76 && n < 83){e = 14; c = 8;}
-		if(n >= 83 && n < 90){e = 20; c = 231;}
-		if(n >= 90 && n < 97){e = 1; c = 8;}
-		if(n >= 97 && n < 104){e = 33; c = 231;}
-		if(n >= 104 && n < 111){e = 16; c = 8;}
-		if(n >= 111 && n < 118){e = 24; c = 231;}
-		if(n >= 118 && n < 125){e = 5; c = 8;}
-		if(n >= 125 && n < 131){e = 10; c = 231;}
-		if(n >= 131 && n < 138){e = 23; c = 8;}
-		if(n >= 138 && n < 145){e = 8; c = 231;}
-		if(n >= 145 && n < 152){e = 30; c = 8;}
-		if(n >= 152 && n < 159){e = 11; c = 231;}
-		if(n >= 159 && n < 166){e = 36; c = 8;}
-		if(n >= 166 && n < 173){e = 13; c = 231;}
-		if(n >= 173 && n < 180){e = 27; c = 8;}
-		if(n >= 180 && n < 187){e = 6; c = 231;}
-		if(n >= 187 && n < 194){e = 34; c = 8;}
-		if(n >= 194 && n < 201){e = 17; c = 231;}
-		if(n >= 201 && n < 208){e = 25; c = 8;}
-		if(n >= 208 && n < 214){e = 2; c = 231;}
-		if(n >= 214 && n < 221){e = 21; c = 8;}
-		if(n >= 221 && n < 228){e = 4; c = 231;}
-		if(n >= 228 && n < 235){e = 19; c = 8;}
-		if(n >= 235 && n < 242){e = 15; c = 231;}
-		if(n >= 242 && n < 249){e = 32; c = 8;}
-		if(n >= 249 && n <= 256){e = 0; c = 12;}
+		c = colors[n / 7];
+		e = numbers[n / 7];
 		/*Determine number*/
 	
 		gfx_SetDrawBuffer();
@@ -143,7 +96,7 @@ void main(void)
 		gfx_SetTextBGColor(255);//Transparent text background
 		gfx_SetTextScale(1,1);//Text size for Title
 		gfx_SetTextXY(110,10);//Title position
-		gfx_PrintString("Roulette v0.1.1");//Print title
+		gfx_PrintString("Roulette v0.1.2");//Print title
 		gfx_SetTextXY(49,228);//Text position
 		gfx_PrintString("Press 2nd to spin or Clear to exit");//Print text
 		gfx_SetTextScale(3,3);//Text size for number
@@ -155,7 +108,7 @@ void main(void)
 		gfx_TransparentSprite_NoClip(rotate_sprite, 17, 69);//Show rotated sprite
 		gfx_TransparentSprite_NoClip(pfeil, 59, 36);//Show arrow
 		gfx_SwapDraw();
-	}
+	} while(1);
 		
     gfx_End();// Close the graphics
 }

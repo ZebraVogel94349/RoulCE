@@ -1,0 +1,21 @@
+palettes:
+  - name: palette_gfx
+    fixed-entries:
+      - color: {index: 0, r: 255, g: 255, b: 255}
+    images: automatic
+
+converts:
+  - name: myimages
+    palette: palette_gfx
+    transparent-color-index: 0
+    images:
+      - pfeil.png
+      - ro.png
+
+outputs:
+  - type: c
+    include-file: gfx.h
+    palettes:
+      - palette_gfx
+    converts:
+      - myimages

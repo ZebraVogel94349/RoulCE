@@ -1,0 +1,855 @@
+	section	.text,"ax",@progbits
+	assume	adl = 1
+	section	.text,"ax",@progbits
+	public	_main
+_main:
+	ld	hl, -12
+	call	__frameset
+	ld.sis	hl, 0
+	ld	(ix + -2), l
+	ld	(ix + -1), h
+	call	_gfx_Begin
+	or	a, a
+	sbc	hl, hl
+	push	hl
+	ld	hl, 464
+	push	hl
+	ld	hl, _palette_gfx
+	push	hl
+	call	_gfx_SetPalette
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, 1
+	push	hl
+	call	_gfx_SetDraw
+	pop	hl
+	ld	hl, (_rotate_sprite)
+	ld	a, (_a)
+	ld	e, a
+	ld	bc, 64
+	push	bc
+	push	de
+	push	hl
+	ld	hl, _ro_data
+	push	hl
+	call	_gfx_RotateScaleSprite
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, 7
+	push	hl
+	call	_gfx_FillScreen
+	pop	hl
+	ld	hl, -25
+	push	hl
+	call	_gfx_SetTextFGColor
+	pop	hl
+	ld	hl, -1
+	push	hl
+	call	_gfx_SetTextBGColor
+	pop	hl
+	ld	hl, 1
+	push	hl
+	push	hl
+	call	_gfx_SetTextScale
+	pop	hl
+	pop	hl
+	ld	hl, 10
+	push	hl
+	ld	hl, 110
+	push	hl
+	call	_gfx_SetTextXY
+	pop	hl
+	pop	hl
+	ld	hl, L_.str
+	push	hl
+	call	_gfx_PrintString
+	pop	hl
+	ld	hl, 228
+	push	hl
+	ld	hl, 49
+	push	hl
+	call	_gfx_SetTextXY
+	pop	hl
+	pop	hl
+	ld	hl, L_.str.1
+	push	hl
+	call	_gfx_PrintString
+	ld	bc, 17
+	pop	hl
+	ld	de, 69
+BB0_1:
+	ld	hl, (_rotate_sprite)
+	push	de
+	push	bc
+	push	hl
+	call	_gfx_TransparentSprite_NoClip
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, 36
+	push	hl
+	ld	hl, 59
+	push	hl
+	ld	hl, _pfeil_data
+	push	hl
+	call	_gfx_TransparentSprite_NoClip
+	pop	hl
+	pop	hl
+	pop	hl
+	call	_gfx_SwapDraw
+	or	a, a
+	ld	c, (ix + -2)
+	ld	b, (ix + -1)
+	ld	l, c
+	ld	h, b
+	ld.sis	de, 1
+	adc.sis	hl, de
+	ld	(ix + -4), l
+	ld	(ix + -3), h
+	jq	c, BB0_3
+BB0_3:
+	or	a, a
+	ld	l, c
+	ld	h, b
+	adc.sis	hl, de
+	ld	iy, -720878
+	jq	c, BB0_55
+BB0_5:
+	ld	l, (iy)
+	ld	h, (iy + 1)
+	ld	a, l
+	cp	a, 64
+	jq	z, BB0_7
+	ld	l, (iy)
+	ld	h, (iy + 1)
+	ld	a, l
+	cp	a, 32
+	jq	nz, BB0_5
+BB0_7:
+	ld	l, (iy)
+	ld	h, (iy + 1)
+	ld	a, l
+	cp	a, 64
+	jq	z, BB0_55
+	ld	hl, -851900
+	push	hl
+	pop	iy
+	ld	hl, (iy)
+	ld	a, (iy + 3)
+	push	hl
+	call	_srand
+	pop	hl
+	ld.sis	hl, -15536
+	ld	iy, _b
+	ld	(iy), l
+	ld	(iy + 1), h
+	call	_rand
+	ld	bc, 256
+	call	__irems
+	ld	(ix + -7), hl
+	ld	bc, 65535
+	call	__iand
+	ld	(ix + -10), hl
+	ld.sis	hl, -1
+BB0_9:
+	ld	(ix + -2), l
+	ld	(ix + -1), h
+	add.sis	hl, bc
+	or	a, a
+	sbc.sis	hl, bc
+	jq	z, BB0_14
+	call	_rand
+	ld	bc, 1000
+	call	__irems
+	push	hl
+	pop	de
+	ld	hl, _b
+	push	hl
+	pop	iy
+	ld	l, (iy)
+	ld	h, (iy + 1)
+	or	a, a
+	sbc.sis	hl, de
+	ld	e, l
+	ld	d, h
+	ld	(iy), e
+	ld	(iy + 1), d
+	ld	hl, _a
+	push	de
+	ld	e, (hl)
+	inc	hl
+	ld	d, (hl)
+	ld	l, e
+	ld	h, d
+	pop	de
+	ld	(ix + -12), l
+	ld	(ix + -11), h
+	ld	l, e
+	ld	h, d
+	ld.sis	bc, 5000
+	call	__sdivu
+	ex	de, hl
+	ld	iyl, e
+	ld	iyh, d
+	ex	de, hl
+	ld	c, (ix + -12)
+	ld	b, (ix + -11)
+	add.sis	iy, bc
+	ld	hl, _a
+	push	de
+	ld	e, iyl
+	ld	d, iyh
+	ld	(hl), e
+	inc	hl
+	ld	(hl), d
+	pop	de
+	ld	l, e
+	ld	h, d
+	ld.sis	de, 2000
+	or	a, a
+	sbc.sis	hl, de
+	jq	c, BB0_14
+	ld	de, 0
+	ld	e, iyl
+	ld	d, iyh
+	ld	hl, (ix + -10)
+	add	hl, de
+	ld	(_n), hl
+	ex	de, hl
+	ld	e, iyl
+	ld	d, iyh
+	ex	de, hl
+	ld.sis	de, 256
+	or	a, a
+	sbc.sis	hl, de
+	jq	c, BB0_13
+	ld.sis	de, -256
+	add.sis	iy, de
+	ld	hl, _a
+	push	de
+	ld	e, iyl
+	ld	d, iyh
+	ld	(hl), e
+	inc	hl
+	ld	(hl), d
+	pop	de
+BB0_13:
+	ld	hl, 1
+	push	hl
+	call	_gfx_SetDraw
+	pop	hl
+	ld	de, (_rotate_sprite)
+	ld	a, (_a)
+	ld	l, a
+	ld	bc, (ix + -7)
+	ld	a, c
+	add	a, l
+	ld	l, a
+	ld	bc, 64
+	push	bc
+	push	hl
+	push	de
+	ld	hl, _ro_data
+	push	hl
+	call	_gfx_RotateScaleSprite
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, 7
+	push	hl
+	call	_gfx_FillScreen
+	pop	hl
+	ld	hl, -25
+	push	hl
+	call	_gfx_SetTextFGColor
+	pop	hl
+	ld	hl, -1
+	push	hl
+	call	_gfx_SetTextBGColor
+	pop	hl
+	ld	hl, 1
+	push	hl
+	push	hl
+	call	_gfx_SetTextScale
+	pop	hl
+	pop	hl
+	ld	hl, 10
+	push	hl
+	ld	hl, 110
+	push	hl
+	call	_gfx_SetTextXY
+	pop	hl
+	pop	hl
+	ld	hl, L_.str
+	push	hl
+	call	_gfx_PrintString
+	pop	hl
+	ld	hl, (_rotate_sprite)
+	ld	de, 69
+	push	de
+	ld	de, 17
+	push	de
+	push	hl
+	call	_gfx_TransparentSprite_NoClip
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, 36
+	push	hl
+	ld	hl, 59
+	push	hl
+	ld	hl, _pfeil_data
+	push	hl
+	call	_gfx_TransparentSprite_NoClip
+	pop	hl
+	pop	hl
+	pop	hl
+	call	_gfx_SwapDraw
+	ld	l, (ix + -2)
+	ld	h, (ix + -1)
+	dec.sis	hl
+	jq	BB0_9
+BB0_14:
+	ld	iy, (_n)
+	lea	hl, iy + 0
+	ld	de, 256
+	or	a, a
+	sbc	hl, de
+	call	__setflag
+	jq	m, BB0_56
+	ld	de, -256
+	add	iy, de
+	ld	(_n), iy
+	jq	BB0_16
+BB0_56:
+BB0_16:
+	lea	hl, iy + 0
+	ld	de, 7
+	or	a, a
+	sbc	hl, de
+	ld	hl, 26
+	ld	de, 231
+	jq	c, BB0_53
+	lea	hl, iy + 0
+	ld	de, -7
+	add	hl, de
+	ld	de, 7
+	or	a, a
+	sbc	hl, de
+	ld	hl, 3
+	ld	de, 1
+	jq	c, BB0_53
+	lea	hl, iy + 0
+	ld	de, -14
+	add	hl, de
+	ld	de, 6
+	or	a, a
+	sbc	hl, de
+	ld	hl, 35
+	ld	de, 231
+	jq	c, BB0_53
+	lea	hl, iy + 0
+	ld	de, -20
+	add	hl, de
+	ld	de, 8
+	or	a, a
+	sbc	hl, de
+	ld	hl, 12
+	ld	de, 1
+	jq	c, BB0_53
+	lea	hl, iy + 0
+	ld	de, -28
+	add	hl, de
+	ld	de, 7
+	or	a, a
+	sbc	hl, de
+	ld	hl, 28
+	ld	de, 231
+	jq	c, BB0_53
+	lea	hl, iy + 0
+	ld	de, -35
+	add	hl, de
+	ld	de, 7
+	or	a, a
+	sbc	hl, de
+	ld	hl, 7
+	ld	de, 1
+	jq	c, BB0_53
+	lea	hl, iy + 0
+	ld	de, -42
+	add	hl, de
+	ld	de, 6
+	or	a, a
+	sbc	hl, de
+	ld	hl, 29
+	ld	de, 231
+	jq	c, BB0_53
+	lea	hl, iy + 0
+	ld	de, -48
+	add	hl, de
+	ld	de, 7
+	or	a, a
+	sbc	hl, de
+	ld	hl, 18
+	ld	de, 1
+	jq	c, BB0_53
+	lea	hl, iy + 0
+	ld	de, -55
+	add	hl, de
+	ld	de, 7
+	or	a, a
+	sbc	hl, de
+	ld	hl, 22
+	ld	de, 231
+	jq	c, BB0_53
+	lea	hl, iy + 0
+	ld	de, -62
+	add	hl, de
+	ld	de, 7
+	or	a, a
+	sbc	hl, de
+	ld	hl, 9
+	ld	de, 1
+	jq	c, BB0_53
+	lea	hl, iy + 0
+	ld	de, -69
+	add	hl, de
+	ld	de, 7
+	or	a, a
+	sbc	hl, de
+	ld	hl, 31
+	ld	de, 231
+	jq	c, BB0_53
+	lea	hl, iy + 0
+	ld	de, -76
+	add	hl, de
+	ld	de, 7
+	or	a, a
+	sbc	hl, de
+	ld	hl, 14
+	ld	de, 1
+	jq	c, BB0_53
+	lea	hl, iy + 0
+	ld	de, -83
+	add	hl, de
+	ld	de, 7
+	or	a, a
+	sbc	hl, de
+	ld	hl, 20
+	ld	de, 231
+	jq	c, BB0_53
+	lea	hl, iy + 0
+	ld	de, -90
+	add	hl, de
+	ld	de, 7
+	or	a, a
+	sbc	hl, de
+	ld	de, 1
+	push	de
+	pop	hl
+	jq	c, BB0_53
+	lea	hl, iy + 0
+	ld	de, -97
+	add	hl, de
+	ld	de, 7
+	or	a, a
+	sbc	hl, de
+	ld	hl, 33
+	ld	de, 231
+	jq	c, BB0_53
+	lea	hl, iy + 0
+	ld	de, -104
+	add	hl, de
+	ld	de, 7
+	or	a, a
+	sbc	hl, de
+	ld	hl, 16
+	ld	de, 1
+	jq	c, BB0_53
+	lea	hl, iy + 0
+	ld	de, -111
+	add	hl, de
+	ld	de, 7
+	or	a, a
+	sbc	hl, de
+	ld	hl, 24
+	ld	de, 231
+	jq	c, BB0_53
+	lea	hl, iy + 0
+	ld	de, -118
+	add	hl, de
+	ld	de, 7
+	or	a, a
+	sbc	hl, de
+	ld	hl, 5
+	ld	de, 1
+	jq	c, BB0_53
+	lea	hl, iy + 0
+	ld	de, -125
+	add	hl, de
+	ld	de, 6
+	or	a, a
+	sbc	hl, de
+	ld	hl, 10
+	ld	de, 231
+	jq	c, BB0_53
+	lea	hl, iy + 0
+	ld	de, -131
+	add	hl, de
+	ld	de, 7
+	or	a, a
+	sbc	hl, de
+	ld	hl, 23
+	ld	de, 1
+	jq	c, BB0_53
+	lea	hl, iy + 0
+	ld	de, -138
+	add	hl, de
+	ld	de, 7
+	or	a, a
+	sbc	hl, de
+	ld	hl, 8
+	ld	de, 231
+	jq	c, BB0_53
+	lea	hl, iy + 0
+	ld	de, -145
+	add	hl, de
+	ld	de, 7
+	or	a, a
+	sbc	hl, de
+	ld	hl, 30
+	ld	de, 1
+	jq	c, BB0_53
+	lea	hl, iy + 0
+	ld	de, -152
+	add	hl, de
+	ld	de, 7
+	or	a, a
+	sbc	hl, de
+	ld	hl, 11
+	ld	de, 231
+	jq	c, BB0_53
+	lea	hl, iy + 0
+	ld	de, -159
+	add	hl, de
+	ld	de, 7
+	or	a, a
+	sbc	hl, de
+	ld	hl, 36
+	ld	de, 1
+	jq	c, BB0_53
+	lea	hl, iy + 0
+	ld	de, -166
+	add	hl, de
+	ld	de, 7
+	or	a, a
+	sbc	hl, de
+	ld	hl, 13
+	ld	de, 231
+	jq	c, BB0_53
+	lea	hl, iy + 0
+	ld	de, -173
+	add	hl, de
+	ld	de, 7
+	or	a, a
+	sbc	hl, de
+	ld	hl, 27
+	ld	de, 1
+	jq	c, BB0_53
+	lea	hl, iy + 0
+	ld	de, -180
+	add	hl, de
+	ld	de, 7
+	or	a, a
+	sbc	hl, de
+	ld	hl, 6
+	ld	de, 231
+	jq	c, BB0_53
+	lea	hl, iy + 0
+	ld	de, -187
+	add	hl, de
+	ld	de, 7
+	or	a, a
+	sbc	hl, de
+	ld	hl, 34
+	ld	de, 1
+	jq	c, BB0_53
+	lea	hl, iy + 0
+	ld	de, -194
+	add	hl, de
+	ld	de, 7
+	or	a, a
+	sbc	hl, de
+	ld	hl, 17
+	ld	de, 231
+	jq	c, BB0_53
+	lea	hl, iy + 0
+	ld	de, -201
+	add	hl, de
+	ld	de, 7
+	or	a, a
+	sbc	hl, de
+	ld	hl, 25
+	ld	de, 1
+	jq	c, BB0_53
+	lea	hl, iy + 0
+	ld	de, -208
+	add	hl, de
+	ld	de, 6
+	or	a, a
+	sbc	hl, de
+	ld	hl, 2
+	ld	de, 231
+	jq	c, BB0_53
+	lea	hl, iy + 0
+	ld	de, -214
+	add	hl, de
+	ld	de, 7
+	or	a, a
+	sbc	hl, de
+	ld	hl, 21
+	ld	de, 1
+	jq	c, BB0_53
+	lea	hl, iy + 0
+	ld	de, -221
+	add	hl, de
+	ld	de, 7
+	or	a, a
+	sbc	hl, de
+	ld	hl, 4
+	ld	de, 231
+	jq	c, BB0_53
+	lea	hl, iy + 0
+	ld	de, -228
+	add	hl, de
+	ld	de, 7
+	or	a, a
+	sbc	hl, de
+	ld	hl, 19
+	ld	de, 1
+	jq	c, BB0_53
+	lea	hl, iy + 0
+	ld	de, -235
+	add	hl, de
+	ld	de, 7
+	or	a, a
+	sbc	hl, de
+	ld	hl, 15
+	ld	de, 231
+	jq	c, BB0_53
+	lea	hl, iy + 0
+	ld	de, -242
+	add	hl, de
+	ld	de, 7
+	or	a, a
+	sbc	hl, de
+	ld	hl, 32
+	ld	de, 1
+	jq	c, BB0_53
+	ld	de, -249
+	add	iy, de
+	lea	hl, iy + 0
+	ld	de, 8
+	or	a, a
+	sbc	hl, de
+	ld	hl, 0
+	ld	de, 12
+	jq	nc, BB0_54
+BB0_53:
+	ld	(_e), hl
+	ld	(_c), de
+BB0_54:
+	ld	hl, 1
+	push	hl
+	call	_gfx_SetDraw
+	pop	hl
+	ld	hl, 7
+	push	hl
+	call	_gfx_FillScreen
+	pop	hl
+	ld	hl, -25
+	push	hl
+	call	_gfx_SetTextFGColor
+	pop	hl
+	ld	hl, -1
+	push	hl
+	call	_gfx_SetTextBGColor
+	pop	hl
+	ld	hl, 1
+	push	hl
+	push	hl
+	call	_gfx_SetTextScale
+	pop	hl
+	pop	hl
+	ld	hl, 10
+	push	hl
+	ld	hl, 110
+	push	hl
+	call	_gfx_SetTextXY
+	pop	hl
+	pop	hl
+	ld	hl, L_.str
+	push	hl
+	call	_gfx_PrintString
+	pop	hl
+	ld	hl, 228
+	push	hl
+	ld	hl, 49
+	push	hl
+	call	_gfx_SetTextXY
+	pop	hl
+	pop	hl
+	ld	hl, L_.str.1
+	push	hl
+	call	_gfx_PrintString
+	pop	hl
+	ld	hl, 3
+	push	hl
+	push	hl
+	call	_gfx_SetTextScale
+	pop	hl
+	pop	hl
+	ld	hl, 200
+	push	hl
+	ld	hl, 56
+	push	hl
+	call	_gfx_SetTextXY
+	pop	hl
+	pop	hl
+	ld	a, (_c)
+	ld	l, a
+	push	hl
+	call	_gfx_SetTextFGColor
+	pop	hl
+	ld	hl, (_e)
+	ld	de, 2
+	push	de
+	push	hl
+	call	_gfx_PrintInt
+	pop	hl
+	pop	hl
+	ld	hl, (_rotate_sprite)
+	ld	a, (_n)
+	ld	e, a
+	ld	bc, 64
+	push	bc
+	push	de
+	push	hl
+	ld	hl, _ro_data
+	push	hl
+	call	_gfx_RotateScaleSprite
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	l, (ix + -4)
+	ld	h, (ix + -3)
+	ld	(ix + -2), l
+	ld	(ix + -1), h
+	ld	hl, 17
+	push	hl
+	pop	bc
+	ld	de, 69
+	jq	BB0_1
+BB0_55:
+	ld	sp, ix
+	pop	ix
+	jp	_gfx_End
+	section	.text,"ax",@progbits
+
+	section	.bss,"aw",@nobits
+	public	_rotate_sprite_data
+_rotate_sprite_data:
+	rb	13691
+
+	section	.data,"aw",@progbits
+	public	_rotate_sprite
+_rotate_sprite:
+	dl	_rotate_sprite_data
+
+	section	.bss,"aw",@nobits
+	public	_a
+_a:
+	rb	2
+
+	section	.rodata,"a",@progbits
+	private	L_.str
+L_.str:
+	db	"Roulette v0.1.1",000o
+
+	section	.rodata,"a",@progbits
+	private	L_.str.1
+L_.str.1:
+	db	"Press 2nd to spin or Clear to exit",000o
+
+	section	.bss,"aw",@nobits
+	public	_b
+_b:
+	rb	2
+
+	section	.bss,"aw",@nobits
+	public	_n
+_n:
+	rb	3
+
+	section	.bss,"aw",@nobits
+	public	_e
+_e:
+	rb	3
+
+	section	.bss,"aw",@nobits
+	public	_c
+_c:
+	rb	3
+
+	section	.bss,"aw",@nobits
+	public	_keypressed
+_keypressed:
+	rb	3
+
+	section	.bss,"aw",@nobits
+	public	_stop
+_stop:
+	rb	1
+
+	section	.bss,"aw",@nobits
+	public	_prevkey
+_prevkey:
+	rb	1
+
+	section	.bss,"aw",@nobits
+	public	_key
+_key:
+	rb	1
+
+	ident	"clang version 12.0.0 (https://github.com/jacobly0/llvm-project 170be88120e3aa88c20eea5615ba76b8f1d6c647)"
+	extern	__Unwind_SjLj_Register
+	extern	__frameset
+	extern	_srand
+	extern	_gfx_SetTextBGColor
+	extern	_gfx_SetTextFGColor
+	extern	_gfx_Begin
+	extern	_gfx_RotateScaleSprite
+	extern	_palette_gfx
+	extern	_gfx_SetPalette
+	extern	_rand
+	extern	_gfx_PrintString
+	extern	_gfx_SwapDraw
+	extern	_gfx_PrintInt
+	extern	_gfx_SetDraw
+	extern	__setflag
+	extern	_pfeil_data
+	extern	__sdivu
+	extern	_gfx_FillScreen
+	extern	__Unwind_SjLj_Unregister
+	extern	__iand
+	extern	__irems
+	extern	_gfx_TransparentSprite_NoClip
+	extern	_gfx_End
+	extern	_gfx_SetTextXY
+	extern	_ro_data
+	extern	_gfx_SetTextScale

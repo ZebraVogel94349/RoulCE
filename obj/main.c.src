@@ -1408,7 +1408,7 @@ _g:
 	section	.rodata,"a",@progbits
 	private	L_.str.9
 L_.str.9:
-	db	"Roulette v0.2.0",000o
+	db	"Roulette v0.2.1",000o
 
 	section	.bss,"aw",@nobits
 	public	_h

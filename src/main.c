@@ -19,7 +19,7 @@
 gfx_UninitedSprite(rotate_sprite, ro_width, ro_height);//sprite buffer
 
 /*Declaring Variables*/
-uint16_t b, x, s, f, y, z, g, posx, posy, h, i, j, k, l;
+uint16_t b, x, s, f, y, z, g, posx, posy, h, i, j, k, l, color, chip;
 int e ,c;
 uint8_t a, n;
 kb_key_t key;
@@ -34,10 +34,9 @@ void createTableau()//this functions shows the tableau
 void DrawTitle() //This function shows the title
 {
 	gfx_SetTextFGColor(254);//Black text color
-	gfx_SetTextBGColor(255);//Transparent text background
 	gfx_SetTextScale(1,1);//Text size for Title
 	gfx_SetTextXY(110,10);//Title position
-	gfx_PrintString("Roulette v0.2.3");//Print title
+	gfx_PrintString("Roulette v0.2.4");//Print title
 }
 
 void DrawCursor() //This function shows the cursor
@@ -54,11 +53,28 @@ void DrawCursor() //This function shows the cursor
 
 void PrintNumber()
 {
+	gfx_SetColor(253);
 	gfx_FillRectangle(56,200,50,30);//Clear old number
 	gfx_SetTextScale(3,3);//Text size for number
 	gfx_SetTextXY(56,200);//number position
 	gfx_SetTextFGColor(c);//Text color of number
 	gfx_PrintInt(e,2);//Print number
+}
+
+void DrawChip(type,cx,cy)
+{
+	gfx_SetTextFGColor(254);
+	if(type == 1){color = 252;}//Red
+	if(type == 2){color = 248;}//Light Blue
+	if(type == 5){color = 249;}//Yellow
+	if(type == 10){color = 247;}//Dark Blue
+	if(type == 20){color = 251;}//Grey
+	if(type == 50){color = 246;}//Purple
+	gfx_SetColor(color);
+	gfx_FillCircle(cx,cy,5);
+	gfx_SetColor(0);
+	gfx_FillCircle(cx,cy,3);
+	
 }
 
 void DrawButtons()//This function creates the Menu
@@ -69,10 +85,28 @@ void DrawButtons()//This function creates the Menu
 		gfx_Rectangle(160,57 + (14 * k),41,15);
 	}
 	gfx_SetTextFGColor(254);//Black text color
-	gfx_SetTextBGColor(255);//Transparent text background
-	gfx_SetTextScale(1,1);//Text size for Title
-	gfx_SetTextXY(165,61);//Title position
+	gfx_SetTextScale(1,1);
+	gfx_SetTextXY(165,61);
 	gfx_PrintString("Spin");//Print Text
+	gfx_SetTextXY(167,75);
+	gfx_PrintString("1");//Print Text
+	DrawChip(1,187,78);
+	gfx_SetTextXY(167,89);
+	gfx_PrintString("2");//Print Text
+	DrawChip(2,187,92);
+	gfx_SetTextXY(167,103);
+	gfx_PrintString("5");//Print Text
+	DrawChip(5,187,106);
+	gfx_SetTextXY(163,117);
+	gfx_PrintString("10");//Print Text
+	DrawChip(10,187,120);
+	gfx_SetTextXY(163,131);
+	gfx_PrintString("20");//Print Text
+	DrawChip(20,187,134);
+	gfx_SetTextXY(163,145);
+	gfx_PrintString("50");//Print Text
+	DrawChip(50,187,148);
+
 }
 
 void main(void)
@@ -84,11 +118,16 @@ void main(void)
 	Red = 252
 	Grey = 251
 	Light Green = 250
+	Yellow = 249
+	Light Blue = 248
+	Dark Blue = 247
+	Purple = 246
 	*/
 	posx = 4;
 	posy = 1;
 	uint8_t colors[37] = {254,252,254,252,254,252,254,252,254,252,254,252,254,252,254,252,254,252,254,252,254,252,254,252,254,252,254,252,254,252,254,252,254,252,254,252,251};//color array
 	uint8_t numbers[37] = {26,3,35,12,28,7,29,18,22,9,31,14,20,1,33,16,24,5,10,23,8,30,11,36,13,27,6,34,17,25,2,21,4,19,15,32,0};//number array
+	chip = 1;
 	
     gfx_Begin(); //Start the graphics 
     gfx_SetPalette(palette_gfx, sizeof_palette_gfx, 0); //Load Palette
@@ -113,7 +152,9 @@ void main(void)
 			gfx_SetColor(253);
 			gfx_FillRectangle(160,10,155,220);//Green background
 			DrawTitle();		
-			
+			gfx_SetTextXY(163,167);
+			gfx_PrintInt(chip,2);//Print Text
+			DrawChip(chip,187,170);
 			PrintNumber();
 			DrawCursor();
 			createTableau();
@@ -145,10 +186,13 @@ void main(void)
 			}
 			if(kb_Data[1] == kb_2nd)//2nd
 			{
-				if(posx == 1 && posy == 4)
-				{
-					break;
-				}
+				if(posx == 1 && posy == 4){break;}//spin
+				if(posx == 1 && posy == 5){chip = 1;}
+				if(posx == 1 && posy == 6){chip = 2;}
+				if(posx == 1 && posy == 7){chip = 5;}
+				if(posx == 1 && posy == 8){chip = 10;}
+				if(posx == 1 && posy == 9){chip = 20;}
+				if(posx == 1 && posy == 10){chip = 50;}
 			}
 			
 			if((posx == 1 && posy == 1) || (posx == 2 && posy == 1) || (posx == 3 && posy == 1) || (posx == 5 && posy == 1)){posx = 4;}
@@ -157,7 +201,7 @@ void main(void)
 			/*Tableau navigation*/
 			
 			gfx_SwapDraw();
-			for(x = 0; x < 26; x++){gfx_SetColor(253); kb_Scan(); DrawTitle();if(kb_Data[1] == kb_2nd || kb_Data[6] == kb_Clear){break;}} //some delay
+			for(x = 0; x < 16; x++){gfx_SetColor(253); kb_Scan(); DrawTitle();if(kb_Data[1] == kb_2nd || kb_Data[6] == kb_Clear){break;}} //some delay
 		}			
 		if (kb_Data[6] == kb_Clear) {break;}//Exit
 		srand(rtc_Time());//Set random seed
@@ -199,18 +243,6 @@ void main(void)
 			/*Determine number*/
 			PrintNumber();
 		}
-		if (f == 1) {break;}//Exit
-		
-		DrawTitle();
-		gfx_RotateSprite(ro, rotate_sprite, n);//Rotate the sprite
-		gfx_TransparentSprite_NoClip(rotate_sprite, 17, 69);//Show rotated sprite
-		gfx_RLETSprite_NoClip(pfeil, 59, 36);//Show arrow
-		
-		DrawCursor();
-		createTableau();
-		DrawButtons();
-		
-		gfx_SwapDraw();
 	} while(1);
 		
     gfx_End();// Close the graphics

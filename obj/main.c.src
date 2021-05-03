@@ -902,7 +902,7 @@ _rotate_sprite:
 	section	.rodata,"a",@progbits
 	private	L_.str
 L_.str:
-	db	"Roulette v0.2.2",000o
+	db	"Roulette v0.2.3",000o
 
 	section	.bss,"aw",@nobits
 	public	_h

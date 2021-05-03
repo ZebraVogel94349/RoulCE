@@ -37,7 +37,7 @@ void DrawTitle() //This function shows the title
 	gfx_SetTextBGColor(255);//Transparent text background
 	gfx_SetTextScale(1,1);//Text size for Title
 	gfx_SetTextXY(110,10);//Title position
-	gfx_PrintString("Roulette v0.2.2");//Print title
+	gfx_PrintString("Roulette v0.2.3");//Print title
 }
 
 void DrawCursor() //This function shows the cursor

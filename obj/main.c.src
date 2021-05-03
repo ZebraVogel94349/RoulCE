@@ -50,8 +50,10 @@ _DrawTitle:
 	section	.text,"ax",@progbits
 	public	_DrawCursor
 _DrawCursor:
-	ld	hl, -5
+	ld	hl, -9
 	call	__frameset
+	ld	hl, 40
+	ld	(ix + -6), hl
 	ld	hl, -6
 	push	hl
 	call	_gfx_SetColor
@@ -66,105 +68,130 @@ _DrawCursor:
 	ld	(hl), e
 	inc	hl
 	ld	(hl), d
+	ld	iy, _l
+	ld	(iy), e
+	ld	(iy + 1), d
 	ld	hl, _posx
-	ld	c, (hl)
+	ld	e, (hl)
 	inc	hl
-	ld	b, (hl)
-	ld.sis	de, 2
-	ld	l, c
-	ld	h, b
+	ld	d, (hl)
+	ld.sis	bc, 1
+	ld	l, e
+	ld	h, d
 	or	a, a
-	sbc.sis	hl, de
-	jq	nz, BB2_4
-	ld.sis	de, 23
-	ld	iy, 23
+	sbc.sis	hl, bc
+	jq	nz, BB2_2
+	ld	bc, -61
+	ld	(ix + -3), bc
 	ld	hl, _h
-	ld	(hl), e
+	ld.sis	bc, 23
+	ld	(hl), c
 	inc	hl
-	ld	(hl), d
-	ld	hl, _posy
-	push	de
-	ld	e, (hl)
-	inc	hl
-	ld	d, (hl)
-	ld	l, e
-	ld	h, d
-	pop	de
-	ld.sis	de, 5
-	ld	(ix + -2), l
-	ld	(ix + -1), h
-	or	a, a
-	sbc.sis	hl, de
-	jq	z, BB2_3
-	ld.sis	de, 8
-	ld	l, (ix + -2)
-	ld	h, (ix + -1)
-	or	a, a
-	sbc.sis	hl, de
-	jq	nz, BB2_5
-BB2_3:
-	ld.sis	de, 28
-	ld	hl, 41
-	ld	(ix + -5), hl
-	ld	hl, _i
-	ld	(hl), e
-	inc	hl
-	ld	(hl), d
-	jq	BB2_6
-BB2_4:
-	ld	hl, _posy
-	push	de
-	ld	e, (hl)
-	inc	hl
-	ld	d, (hl)
-	ld	l, e
-	ld	h, d
-	pop	de
-	ld	(ix + -2), l
-	ld	(ix + -1), h
-	ld	de, 0
-	push	de
-	pop	iy
-	ld	hl, 13
-	ld	(ix + -5), hl
+	ld	(hl), b
+	ld.sis	hl, 61
+	ld	(iy), l
+	ld	(iy + 1), h
+	ld	hl, 14
+	ld	(ix + -9), hl
 	jq	BB2_7
-BB2_5:
-	ld	hl, 13
-	ld	(ix + -5), hl
-BB2_6:
-	ld	de, 0
-BB2_7:
-	ld	e, c
-	ld	d, b
-	push	de
-	pop	hl
-	ld	bc, 18
-	call	__imulu
-	ld	bc, 203
-	add	hl, bc
-	push	de
-	pop	bc
-	lea	de, iy + 0
+BB2_2:
+	ld	iy, _h
+	ld.sis	bc, 2
+	ld	l, e
+	ld	h, d
 	or	a, a
-	sbc	hl, de
-	push	hl
-	pop	de
-	ld	l, (ix + -2)
-	ld	h, (ix + -1)
+	sbc.sis	hl, bc
+	jq	nz, BB2_6
+	ld.sis	hl, 23
 	ld	c, l
 	ld	b, h
-	push	bc
-	pop	hl
+	ld	(iy), c
+	ld	(iy + 1), b
+	ld	hl, _l
+	ld	(hl), c
+	inc	hl
+	ld	(hl), b
+	ld	hl, _posy
+	push	de
+	ld	e, (hl)
+	inc	hl
+	ld	d, (hl)
+	ld	iyl, e
+	ld	iyh, d
+	pop	de
+	ld.sis	bc, 5
+	ex	de, hl
+	ld	e, iyl
+	ld	d, iyh
+	ex	de, hl
+	or	a, a
+	sbc.sis	hl, bc
+	jq	z, BB2_5
+	ld.sis	bc, 8
+	ex	de, hl
+	ld	e, iyl
+	ld	d, iyh
+	ex	de, hl
+	or	a, a
+	sbc.sis	hl, bc
+	jq	nz, BB2_8
+BB2_5:
+	ld.sis	hl, 28
+	ld	bc, 42
+	ld	(ix + -9), bc
+	ld	iy, _i
+	ld	(iy), l
+	ld	(iy + 1), h
+	jq	BB2_9
+BB2_6:
+	ld	hl, 17
+	ld	(ix + -6), hl
+	ld	hl, 14
+	ld	(ix + -9), hl
+	or	a, a
+	sbc	hl, hl
+	ld	(ix + -3), hl
+BB2_7:
+	ld	bc, 18
+	jq	BB2_10
+BB2_8:
+	ld	hl, 14
+	ld	(ix + -9), hl
+BB2_9:
+	ld	bc, 18
+	ld	hl, -23
+	ld	(ix + -3), hl
+BB2_10:
+	ld	iy, 0
+	ld	iyl, e
+	ld	iyh, d
+	lea	hl, iy + 0
+	call	__imulu
+	ld	de, 203
+	add	hl, de
+	ex	de, hl
+	ld	hl, (ix + -3)
+	add	hl, de
+	ld	(ix + -3), hl
+	ld	hl, _posy
+	push	de
+	ld	e, (hl)
+	inc	hl
+	ld	d, (hl)
+	ld	iyl, e
+	ld	iyh, d
+	pop	de
+	lea	hl, iy + 0
 	ld	bc, 14
 	call	__imulu
 	inc	hl
-	ld	bc, 17
-	add	iy, bc
-	ld	bc, (ix + -5)
-	push	bc
-	push	iy
-	push	hl
+	ld	de, (ix + -9)
 	push	de
+	ld	de, (ix + -6)
+	push	de
+	push	hl
+	ld	hl, (ix + -3)
+	push	hl
 	call	_gfx_FillRectangle
 	ld	sp, ix
 	pop	ix
@@ -216,17 +243,94 @@ _PrintNumber:
 	section	.text,"ax",@progbits
 
 	section	.text,"ax",@progbits
-	public	_main
-_main:
-	ld.sis	bc, 1
-	ld	iy, _posx
-	ld	de, _posy
-	ld	(iy), c
-	ld	(iy + 1), b
-	ex	de, hl
+	public	_DrawButtons
+_DrawButtons:
+	ld	hl, -2
+	push	hl
+	call	_gfx_SetColor
+	ld.sis	bc, 0
+	pop	hl
+	ld.sis	de, 7
+BB4_1:
+	ld	hl, _k
 	ld	(hl), c
 	inc	hl
 	ld	(hl), b
+	ld	l, c
+	ld	h, b
+	or	a, a
+	sbc.sis	hl, de
+	jq	nc, BB4_3
+	or	a, a
+	sbc	hl, hl
+	ld	l, c
+	ld	h, b
+	ld	bc, 14
+	call	__imulu
+	ld	de, 57
+	add	hl, de
+	ld	de, 15
+	push	de
+	ld	de, 41
+	push	de
+	push	hl
+	ld	hl, 160
+	push	hl
+	call	_gfx_Rectangle
+	ld.sis	de, 7
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, _k
+	ld	c, (hl)
+	inc	hl
+	ld	b, (hl)
+	inc.sis	bc
+	jq	BB4_1
+BB4_3:
+	ld	hl, -2
+	push	hl
+	call	_gfx_SetTextFGColor
+	pop	hl
+	ld	hl, -1
+	push	hl
+	call	_gfx_SetTextBGColor
+	pop	hl
+	ld	hl, 1
+	push	hl
+	push	hl
+	call	_gfx_SetTextScale
+	pop	hl
+	pop	hl
+	ld	hl, 61
+	push	hl
+	ld	hl, 165
+	push	hl
+	call	_gfx_SetTextXY
+	pop	hl
+	pop	hl
+	ld	hl, L_.str.1
+	push	hl
+	call	_gfx_PrintString
+	pop	hl
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	_main
+_main:
+	ld	hl, -2
+	call	__frameset
+	ld.sis	bc, 4
+	ld	iy, _posx
+	ld.sis	de, 1
+	ld	hl, _posy
+	ld	(iy), c
+	ld	(iy + 1), b
+	ld	(hl), e
+	inc	hl
+	ld	(hl), d
 	call	_gfx_Begin
 	or	a, a
 	sbc	hl, hl
@@ -292,21 +396,14 @@ _main:
 	pop	hl
 	pop	hl
 	call	_createTableau
+	call	_DrawButtons
 	call	_gfx_SwapDraw
 	ld	hl, -3
 	push	hl
 	call	_gfx_FillScreen
-	ld	hl, -720868
-	push	hl
-	pop	iy
 	pop	hl
-BB4_1:
-	ld	l, (iy)
-	ld	h, (iy + 1)
-	ld	a, l
-	cp	a, 64
-	jq	z, BB4_3
-	ld	hl, -720878
+BB5_1:
+	ld	hl, -720868
 	push	de
 	ld	e, (hl)
 	inc	hl
@@ -315,14 +412,20 @@ BB4_1:
 	ld	h, d
 	pop	de
 	ld	a, l
-	cp	a, 32
-	jq	nz, BB4_13
-BB4_3:
-	ld	l, (iy)
-	ld	h, (iy + 1)
+	cp	a, 64
+	jq	nz, BB5_10
+BB5_2:
+	ld	hl, -720868
+	push	de
+	ld	e, (hl)
+	inc	hl
+	ld	d, (hl)
+	ld	l, e
+	ld	h, d
+	pop	de
 	ld	a, l
 	cp	a, 64
-	jq	z, BB4_53
+	jq	z, BB5_63
 	ld	hl, -851900
 	push	hl
 	pop	iy
@@ -333,6 +436,7 @@ BB4_3:
 	pop	hl
 	call	_DrawCursor
 	call	_createTableau
+	call	_DrawButtons
 	ld.sis	hl, -15536
 	ld	iy, _b
 	ld	(iy), l
@@ -348,11 +452,11 @@ BB4_3:
 	ld	(hl), e
 	inc	hl
 	ld	(hl), d
-	ld.sis	bc, 1
-BB4_5:
+BB5_4:
 	or	a, a
 	ld	l, e
 	ld	h, d
+	ld.sis	bc, 1
 	adc.sis	hl, bc
 	ld	iy, _x
 	ld	(iy), l
@@ -361,7 +465,7 @@ BB4_5:
 	ld	l, e
 	ld	h, d
 	adc.sis	hl, bc
-	jq	c, BB4_11
+	jq	c, BB5_20
 	call	_kb_Scan
 	ld	hl, -720868
 	push	de
@@ -373,7 +477,7 @@ BB4_5:
 	pop	de
 	ld	a, l
 	cp	a, 64
-	jq	z, BB4_52
+	jq	z, BB5_62
 	call	_rand
 	ld	bc, 1000
 	call	__irems
@@ -401,7 +505,7 @@ BB4_5:
 	ld.sis	de, 2000
 	or	a, a
 	sbc.sis	hl, de
-	jq	c, BB4_11
+	jq	c, BB5_20
 	ld	a, (_s)
 	ld	l, a
 	ld	a, c
@@ -473,9 +577,127 @@ BB4_5:
 	ld	e, (hl)
 	inc	hl
 	ld	d, (hl)
+	jq	BB5_4
+BB5_10:
+	call	_kb_Scan
+	ld	hl, -3
+	push	hl
+	call	_gfx_SetColor
+	pop	hl
+	ld	hl, 220
+	push	hl
+	ld	hl, 155
+	push	hl
+	ld	hl, 10
+	push	hl
+	ld	hl, 160
+	push	hl
+	call	_gfx_FillRectangle
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	call	_DrawTitle
+	call	_PrintNumber
+	call	_DrawCursor
+	call	_createTableau
+	call	_DrawButtons
+	ld	hl, (_rotate_sprite)
+	ld	de, 69
+	push	de
+	ld	de, 17
+	push	de
+	push	hl
+	call	_gfx_TransparentSprite_NoClip
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, 36
+	push	hl
+	ld	hl, 59
+	push	hl
+	ld	hl, _pfeil_data
+	push	hl
+	call	_gfx_RLETSprite_NoClip
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	iy, -720866
+	ld	l, (iy)
+	ld	h, (iy + 1)
+	ld	a, l
+	cp	a, 8
+	jq	nz, BB5_15
+	ld	hl, _posy
+	ld	e, (hl)
+	inc	hl
+	ld	d, (hl)
+	ld	l, e
+	ld	h, d
+	ld.sis	bc, 2
+	or	a, a
+	sbc.sis	hl, bc
+	jq	c, BB5_15
+	ld	l, e
+	ld	h, d
+	ld.sis	bc, 4
+	or	a, a
+	sbc.sis	hl, bc
+	jq	nz, BB5_14
+	ld	hl, _posx
+	push	de
+	ld	e, (hl)
+	inc	hl
+	ld	d, (hl)
+	ld	l, e
+	ld	h, d
+	pop	de
 	ld.sis	bc, 1
-	jq	BB4_5
-BB4_11:
+	or	a, a
+	sbc.sis	hl, bc
+	jq	z, BB5_15
+BB5_14:
+	dec.sis	de
+	ld	hl, _posy
+	ld	(hl), e
+	inc	hl
+	ld	(hl), d
+BB5_15:
+	ld	l, (iy)
+	ld	h, (iy + 1)
+	ld	a, l
+	cp	a, 1
+	jq	nz, BB5_32
+	ld	hl, _posx
+	ld	c, (hl)
+	inc	hl
+	ld	b, (hl)
+	ld	hl, _posy
+	push	de
+	ld	e, (hl)
+	inc	hl
+	ld	d, (hl)
+	ld	iyl, e
+	ld	iyh, d
+	pop	de
+	ld	l, c
+	ld	h, b
+	ld.sis	de, 2
+	or	a, a
+	sbc.sis	hl, de
+	jq	nz, BB5_22
+	ex	de, hl
+	ld	e, iyl
+	ld	d, iyh
+	ex	de, hl
+	ld.sis	de, 4
+	or	a, a
+	sbc.sis	hl, de
+	jq	nz, BB5_22
+	ld	hl, _posy
+	ld.sis	de, 5
+	jq	BB5_19
+BB5_20:
 	ld	hl, _f
 	push	de
 	ld	e, (hl)
@@ -487,7 +709,7 @@ BB4_11:
 	ld.sis	de, 1
 	or	a, a
 	sbc.sis	hl, de
-	jq	z, BB4_53
+	jq	z, BB5_63
 	call	_DrawTitle
 	ld	hl, (_rotate_sprite)
 	ld	a, (_n)
@@ -525,79 +747,83 @@ BB4_11:
 	pop	hl
 	call	_DrawCursor
 	call	_createTableau
+	call	_DrawButtons
 	call	_gfx_SwapDraw
-	ld	iy, -720868
-	jq	BB4_1
-BB4_13:
-	call	_kb_Scan
-	ld	hl, -3
-	push	hl
-	call	_gfx_SetColor
-	pop	hl
-	ld	hl, 220
-	push	hl
-	ld	hl, 105
-	push	hl
-	ld	hl, 10
-	push	hl
-	ld	hl, 210
-	push	hl
-	call	_gfx_FillRectangle
-	pop	hl
-	pop	hl
-	pop	hl
-	pop	hl
-	call	_DrawTitle
-	call	_PrintNumber
-	call	_DrawCursor
-	call	_createTableau
-	ld	hl, (_rotate_sprite)
-	ld	de, 69
-	push	de
-	ld	de, 17
-	push	de
-	push	hl
-	call	_gfx_TransparentSprite_NoClip
-	pop	hl
-	pop	hl
-	pop	hl
-	ld	hl, 36
-	push	hl
-	ld	hl, 59
-	push	hl
-	ld	hl, _pfeil_data
-	push	hl
-	call	_gfx_RLETSprite_NoClip
-	pop	hl
-	pop	hl
-	pop	hl
-	ld	hl, -720866
-	push	de
-	ld	e, (hl)
-	inc	hl
-	ld	d, (hl)
-	ld	l, e
-	ld	h, d
-	pop	de
-	ld	a, l
-	cp	a, 8
-	jq	nz, BB4_16
-	ld	hl, _posy
-	ld	e, (hl)
-	inc	hl
-	ld	d, (hl)
-	ld	l, e
-	ld	h, d
-	ld.sis	bc, 2
+	jq	BB5_1
+BB5_22:
+	ld	l, c
+	ld	h, b
+	ld.sis	de, 2
 	or	a, a
-	sbc.sis	hl, bc
-	jq	c, BB4_16
-	dec.sis	de
+	sbc.sis	hl, de
+	jq	nz, BB5_25
+	ex	de, hl
+	ld	e, iyl
+	ld	d, iyh
+	ex	de, hl
+	ld.sis	de, 5
+	or	a, a
+	sbc.sis	hl, de
+	jq	nz, BB5_25
 	ld	hl, _posy
+	ld.sis	de, 8
+	jq	BB5_19
+BB5_25:
+	ld	l, c
+	ld	h, b
+	ld.sis	de, 2
+	or	a, a
+	sbc.sis	hl, de
+	jq	nz, BB5_28
+	ex	de, hl
+	ld	e, iyl
+	ld	d, iyh
+	ex	de, hl
+	ld.sis	de, 8
+	or	a, a
+	sbc.sis	hl, de
+	jq	nz, BB5_28
+	ld	hl, _posy
+	ld.sis	de, 11
+BB5_19:
 	ld	(hl), e
 	inc	hl
 	ld	(hl), d
-BB4_16:
+	jq	BB5_32
+BB5_28:
+	ex	de, hl
+	ld	e, iyl
+	ld	d, iyh
+	ex	de, hl
+	ld.sis	de, 14
+	or	a, a
+	sbc.sis	hl, de
+	jq	nc, BB5_32
+	ld	l, c
+	ld	h, b
+	ld.sis	bc, 1
+	or	a, a
+	sbc.sis	hl, bc
+	jq	nz, BB5_31
+	ex	de, hl
+	ld	e, iyl
+	ld	d, iyh
+	ex	de, hl
+	ld.sis	de, 10
+	or	a, a
+	sbc.sis	hl, de
+	jq	z, BB5_32
+BB5_31:
+	inc.sis	iy
+	ld	hl, _posy
+	push	de
+	ld	e, iyl
+	ld	d, iyh
+	ld	(hl), e
+	inc	hl
+	ld	(hl), d
+	pop	de
+BB5_32:
 	ld	hl, -720866
 	push	de
 	ld	e, (hl)
@@ -607,9 +833,95 @@ BB4_16:
 	ld	h, d
 	pop	de
 	ld	a, l
-	cp	a, 1
-	jq	nz, BB4_29
+	cp	a, 2
+	jq	nz, BB5_39
 	ld	hl, _posx
+	push	de
+	ld	e, (hl)
+	inc	hl
+	ld	d, (hl)
+	ld	iyl, e
+	ld	iyh, d
+	pop	de
+	ld	hl, _posy
+	ld	e, (hl)
+	inc	hl
+	ld	d, (hl)
+	ld	l, e
+	ld	h, d
+	ld.sis	bc, -2
+	call	__sand
+	ld	(ix + -2), l
+	ld	(ix + -1), h
+	ex	de, hl
+	ld	e, iyl
+	ld	d, iyh
+	ex	de, hl
+	ld.sis	bc, 2
+	or	a, a
+	sbc.sis	hl, bc
+	jq	nz, BB5_37
+	ld	l, e
+	ld	h, d
+	ld.sis	de, 8
+	or	a, a
+	sbc.sis	hl, de
+	jq	z, BB5_36
+	ld	l, (ix + -2)
+	ld	h, (ix + -1)
+	ld.sis	de, 4
+	or	a, a
+	sbc.sis	hl, de
+	jq	nz, BB5_37
+BB5_36:
+	ld.sis	hl, 1
+	ld	iy, _posx
+	ld	(iy), l
+	ld	(iy + 1), h
+	jq	BB5_39
+BB5_37:
+	ex	de, hl
+	ld	e, iyl
+	ld	d, iyh
+	ex	de, hl
+	ld.sis	de, 3
+	or	a, a
+	sbc.sis	hl, de
+	jq	c, BB5_39
+	dec.sis	iy
+	ld	hl, _posx
+	push	de
+	ld	e, iyl
+	ld	d, iyh
+	ld	(hl), e
+	inc	hl
+	ld	(hl), d
+	pop	de
+BB5_39:
+	ld	hl, -720866
+	ld	c, (hl)
+	inc	hl
+	ld	b, (hl)
+	ld	hl, _posx
+	ld	e, (hl)
+	inc	hl
+	ld	d, (hl)
+	ld	a, c
+	cp	a, 4
+	jq	nz, BB5_44
+	ld	l, e
+	ld	h, d
+	ld.sis	bc, 5
+	or	a, a
+	sbc.sis	hl, bc
+	jq	nc, BB5_44
+	inc.sis	de
+	ld	hl, _posx
+	ld	(hl), e
+	inc	hl
+	ld	(hl), d
+BB5_44:
+	ld	hl, -720878
 	ld	c, (hl)
 	inc	hl
 	ld	b, (hl)
@@ -621,137 +933,24 @@ BB4_16:
 	ld	iyl, e
 	ld	iyh, d
 	pop	de
-	ld	l, c
-	ld	h, b
-	ld.sis	de, 2
-	or	a, a
-	sbc.sis	hl, de
-	jq	nz, BB4_21
-	ex	de, hl
-	ld	e, iyl
-	ld	d, iyh
-	ex	de, hl
-	ld.sis	de, 4
-	or	a, a
-	sbc.sis	hl, de
-	jq	nz, BB4_21
-	ld	hl, _posy
-	ld.sis	de, 5
-	jq	BB4_20
-BB4_21:
-	ld	l, c
-	ld	h, b
-	ld.sis	de, 2
-	or	a, a
-	sbc.sis	hl, de
-	jq	nz, BB4_24
-	ex	de, hl
-	ld	e, iyl
-	ld	d, iyh
-	ex	de, hl
-	ld.sis	de, 5
-	or	a, a
-	sbc.sis	hl, de
-	jq	nz, BB4_24
-	ld	hl, _posy
-	ld.sis	de, 8
-	jq	BB4_20
-BB4_24:
-	ld	l, c
-	ld	h, b
-	ld.sis	de, 2
-	or	a, a
-	sbc.sis	hl, de
-	jq	nz, BB4_27
-	ex	de, hl
-	ld	e, iyl
-	ld	d, iyh
-	ex	de, hl
-	ld.sis	de, 8
-	or	a, a
-	sbc.sis	hl, de
-	jq	nz, BB4_27
-	ld	hl, _posy
-	ld.sis	de, 11
-BB4_20:
-	ld	(hl), e
-	inc	hl
-	ld	(hl), d
-	jq	BB4_29
-BB4_27:
-	ex	de, hl
-	ld	e, iyl
-	ld	d, iyh
-	ex	de, hl
-	ld.sis	de, 14
-	or	a, a
-	sbc.sis	hl, de
-	jq	nc, BB4_29
-	inc.sis	iy
-	ld	hl, _posy
-	push	de
-	ld	e, iyl
-	ld	d, iyh
-	ld	(hl), e
-	inc	hl
-	ld	(hl), d
-	pop	de
-BB4_29:
-	ld	hl, -720866
-	push	de
-	ld	e, (hl)
-	inc	hl
-	ld	d, (hl)
+	ld	a, c
+	cp	a, 32
+	jq	nz, BB5_47
 	ld	l, e
 	ld	h, d
-	pop	de
-	ld	a, l
-	cp	a, 2
-	ld	iy, _posx
-	jq	nz, BB4_32
-	ld	e, (iy)
-	ld	d, (iy + 1)
-	ld	l, e
-	ld	h, d
-	ld.sis	bc, 3
+	ld.sis	bc, 1
 	or	a, a
 	sbc.sis	hl, bc
-	jq	c, BB4_32
-	dec.sis	de
-	ld	(iy), e
-	ld	(iy + 1), d
-BB4_32:
-	ld	hl, -720866
-	push	de
-	ld	e, (hl)
-	inc	hl
-	ld	d, (hl)
-	ld	l, e
-	ld	h, d
-	pop	de
-	ld	e, (iy)
-	ld	d, (iy + 1)
-	ld	a, l
-	cp	a, 4
-	jq	nz, BB4_37
-	ld	l, e
-	ld	h, d
-	ld.sis	bc, 5
+	jq	nz, BB5_47
+	ex	de, hl
+	ld	e, iyl
+	ld	d, iyh
+	ex	de, hl
+	ld.sis	bc, 4
 	or	a, a
 	sbc.sis	hl, bc
-	jq	nc, BB4_37
-	inc.sis	de
-	ld	(iy), e
-	ld	(iy + 1), d
-BB4_37:
-	ld	hl, _posy
-	push	de
-	ld	e, (hl)
-	inc	hl
-	ld	d, (hl)
-	ld	iyl, e
-	ld	iyh, d
-	pop	de
+	jq	z, BB5_2
+BB5_47:
 	ex	de, hl
 	ld	e, iyl
 	ld	d, iyh
@@ -759,27 +958,27 @@ BB4_37:
 	ld.sis	bc, 1
 	or	a, a
 	sbc.sis	hl, bc
-	jq	nz, BB4_42
+	jq	nz, BB5_52
 	ld	l, e
 	ld	h, d
 	ld.sis	bc, 5
 	or	a, a
 	sbc.sis	hl, bc
-	jq	z, BB4_40
+	jq	z, BB5_50
 	ld	l, e
 	ld	h, d
 	dec.sis	hl
 	ld.sis	bc, 3
 	or	a, a
 	sbc.sis	hl, bc
-	jq	nc, BB4_42
-BB4_40:
-	ld	hl, _posx
+	jq	nc, BB5_52
+BB5_50:
 	ld.sis	de, 4
+	ld	hl, _posx
 	ld	(hl), e
 	inc	hl
 	ld	(hl), d
-BB4_42:
+BB5_52:
 	ex	de, hl
 	ld	e, iyl
 	ld	d, iyh
@@ -789,15 +988,15 @@ BB4_42:
 	ld.sis	bc, 6
 	or	a, a
 	sbc.sis	hl, bc
-	jq	nz, BB4_44
+	jq	nz, BB5_54
 	ld	l, e
 	ld	h, d
 	ld.sis	bc, 2
 	or	a, a
 	sbc.sis	hl, bc
 	ld.sis	bc, 5
-	jq	z, BB4_46
-BB4_44:
+	jq	z, BB5_56
+BB5_54:
 	ld.sis	bc, -9
 	add.sis	iy, bc
 	ld	l, e
@@ -805,7 +1004,7 @@ BB4_44:
 	ld.sis	de, 2
 	or	a, a
 	sbc.sis	hl, de
-	jq	nz, BB4_47
+	jq	nz, BB5_57
 	ex	de, hl
 	ld	e, iyl
 	ld	d, iyh
@@ -814,45 +1013,29 @@ BB4_44:
 	or	a, a
 	sbc.sis	hl, de
 	ld.sis	bc, 8
-	jq	nc, BB4_47
-BB4_46:
+	jq	nc, BB5_57
+BB5_56:
 	ld	hl, _posy
 	ld	(hl), c
 	inc	hl
 	ld	(hl), b
-BB4_47:
+BB5_57:
 	call	_gfx_SwapDraw
 	ld.sis	hl, 0
-	ld	iy, -720868
-	lea	bc, iy + 0
-BB4_48:
+BB5_58:
 	ld	iy, _x
 	ld	(iy), l
 	ld	(iy + 1), h
-	ld.sis	de, 46
+	ld.sis	de, 26
 	or	a, a
 	sbc.sis	hl, de
-	push	bc
-	pop	iy
-	jq	nc, BB4_1
+	jq	nc, BB5_1
 	ld	hl, -3
 	push	hl
 	call	_gfx_SetColor
 	pop	hl
 	call	_kb_Scan
-	ld	hl, 100
-	push	hl
-	ld	de, 20
-	push	de
-	push	hl
-	ld	hl, 150
-	push	hl
-	call	_gfx_FillRectangle
-	ld	iy, -720868
-	pop	hl
-	pop	hl
-	pop	hl
-	pop	hl
+	call	_DrawTitle
 	ld	hl, -720878
 	push	de
 	ld	e, (hl)
@@ -863,13 +1046,18 @@ BB4_48:
 	pop	de
 	ld	a, l
 	cp	a, 32
-	jq	z, BB4_1
-	ld	l, (iy)
-	ld	h, (iy + 1)
+	jq	z, BB5_1
+	ld	hl, -720868
+	push	de
+	ld	e, (hl)
+	inc	hl
+	ld	d, (hl)
+	ld	l, e
+	ld	h, d
+	pop	de
 	ld	a, l
 	cp	a, 64
-	jq	z, BB4_1
-	lea	bc, iy + 0
+	jq	z, BB5_1
 	ld	hl, _x
 	push	de
 	ld	e, (hl)
@@ -879,13 +1067,15 @@ BB4_48:
 	ld	h, d
 	pop	de
 	inc.sis	hl
-	jq	BB4_48
-BB4_52:
+	jq	BB5_58
+BB5_62:
 	ld.sis	hl, 1
 	ld	iy, _f
 	ld	(iy), l
 	ld	(iy + 1), h
-BB4_53:
+BB5_63:
+	ld	sp, ix
+	pop	ix
 	jp	_gfx_End
 	section	.text,"ax",@progbits
 
@@ -915,6 +1105,11 @@ _i:
 	rb	2
 
 	section	.bss,"aw",@nobits
+	public	_l
+_l:
+	rb	2
+
+	section	.bss,"aw",@nobits
 	public	_posx
 _posx:
 	rb	2
@@ -933,6 +1128,16 @@ _c:
 	public	_e
 _e:
 	rb	3
+
+	section	.bss,"aw",@nobits
+	public	_k
+_k:
+	rb	2
+
+	section	.rodata,"a",@progbits
+	private	L_.str.1
+L_.str.1:
+	db	"Spin",000o
 
 	section	.rodata,"a",@progbits
 	private	L___const.main.colors
@@ -1026,6 +1231,7 @@ _key:
 	extern	__imulu
 	extern	_gfx_SetColor
 	extern	_tableau_data
+	extern	_gfx_Rectangle
 	extern	_gfx_TransparentSprite_NoClip
 	extern	_gfx_End
 	extern	_gfx_SetTextXY

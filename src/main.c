@@ -19,7 +19,7 @@
 gfx_UninitedSprite(rotate_sprite, ro_width, ro_height);//sprite buffer
 
 /*Declaring Variables*/
-uint16_t b, x, s, f, y, z, g, posx, posy, h, i, j;
+uint16_t b, x, s, f, y, z, g, posx, posy, h, i, j, k, l;
 int e ,c;
 uint8_t a, n;
 kb_key_t key;
@@ -45,9 +45,11 @@ void DrawCursor() //This function shows the cursor
 	gfx_SetColor(250);//Light green
 	h = 0;
 	i = 0;
-	if(posx == 2){h = 23;}//Larger cursor in the left column
+	l = 0;
+	if(posx == 2){h = 23; l = 23;}//Larger cursor in the left column
+	if(posx == 1){h = 23; l = 61;}//Larger cursor for the buttons
 	if(posx == 2 && (posy == 5 || posy == 8)){i = 28;}//Larger cursor for the black and red symbols
-	gfx_FillRectangle(posx * 18 + 203 - h, posy * 14 + 1, 17 + h, 13 + i);//cursor
+	gfx_FillRectangle(posx * 18 + 203 - l, posy * 14 + 1, 17 + h, 14 + i);//cursor
 }
 
 void PrintNumber()
@@ -57,6 +59,20 @@ void PrintNumber()
 	gfx_SetTextXY(56,200);//number position
 	gfx_SetTextFGColor(c);//Text color of number
 	gfx_PrintInt(e,2);//Print number
+}
+
+void DrawButtons()//This function creates the Menu
+{
+	gfx_SetColor(254);
+	for(k = 0; k < 7; k++)
+	{
+		gfx_Rectangle(160,57 + (14 * k),41,15);
+	}
+	gfx_SetTextFGColor(254);//Black text color
+	gfx_SetTextBGColor(255);//Transparent text background
+	gfx_SetTextScale(1,1);//Text size for Title
+	gfx_SetTextXY(165,61);//Title position
+	gfx_PrintString("Spin");//Print Text
 }
 
 void main(void)
@@ -69,7 +85,7 @@ void main(void)
 	Grey = 251
 	Light Green = 250
 	*/
-	posx = 1;
+	posx = 4;
 	posy = 1;
 	uint8_t colors[37] = {254,252,254,252,254,252,254,252,254,252,254,252,254,252,254,252,254,252,254,252,254,252,254,252,254,252,254,252,254,252,254,252,254,252,254,252,251};//color array
 	uint8_t numbers[37] = {26,3,35,12,28,7,29,18,22,9,31,14,20,1,33,16,24,5,10,23,8,30,11,36,13,27,6,34,17,25,2,21,4,19,15,32,0};//number array
@@ -85,58 +101,71 @@ void main(void)
 	gfx_RLETSprite_NoClip(pfeil, 59, 36);//Show arrow
 	
 	createTableau();
+	DrawButtons();
 	
 	gfx_SwapDraw();
 	gfx_FillScreen(253);
 	do //Loop everything
 	{
-		while (kb_Data[6] != kb_Clear && kb_Data[1] != kb_2nd)//Controls
+		while (kb_Data[6] != kb_Clear)//Controls
 		{
 			kb_Scan();
 			gfx_SetColor(253);
-			gfx_FillRectangle(210,10,105,220);//Green background
+			gfx_FillRectangle(160,10,155,220);//Green background
 			DrawTitle();		
 			
 			PrintNumber();
 			DrawCursor();
 			createTableau();
+			DrawButtons();
 			gfx_TransparentSprite_NoClip(rotate_sprite, 17, 69);//Show rotated sprite
 			gfx_RLETSprite_NoClip(pfeil, 59, 36);//Show arrow
 			
 			/*Tableau navigation*/
 			if(kb_Data[7] == kb_Up)//Up
 			{
-				if(posy > 1){posy = posy - 1;}
+				if(posy > 1){if(!(posx == 1 && posy == 4)){posy = posy - 1;}}
 			}
 			if(kb_Data[7] == kb_Down)//Down
 			{
 				if(posx == 2 && posy == 4){posy = 5;}
 				else if(posx == 2 && posy == 5){posy = 8;}
 				else if(posx == 2 && posy == 8){posy = 11;}
-				else if(posy < 14){posy = posy + 1;}	
+				else if(posy < 14){if(!(posx == 1 && posy == 10)){posy = posy + 1;}}	
 			}
 			if(kb_Data[7] == kb_Left)//Left
 			{
-				if(posx > 2){posx = posx - 1;}
+				if((posx == 2 && posy == 4) || (posx == 2 && posy == 5) || (posx == 2 && posy == 8)){posx = 1;}
+				else if(posx > 2){posx = posx - 1;}
+				
 			}
 			if(kb_Data[7] == kb_Right)//Right
 			{
 				if(posx < 5){posx = posx + 1;}
 			}
+			if(kb_Data[1] == kb_2nd)//2nd
+			{
+				if(posx == 1 && posy == 4)
+				{
+					break;
+				}
+			}
+			
 			if((posx == 1 && posy == 1) || (posx == 2 && posy == 1) || (posx == 3 && posy == 1) || (posx == 5 && posy == 1)){posx = 4;}
 			if((posx == 2 && posy == 6) || (posx == 2 && posy == 7)){posy = 5;}
 			if((posx == 2 && posy == 9) || (posx == 2 && posy == 10)){posy = 8;}
 			/*Tableau navigation*/
 			
 			gfx_SwapDraw();
-			for(x = 0; x < 46; x++){gfx_SetColor(253); kb_Scan(); gfx_FillRectangle(150,100,20,100);if(kb_Data[1] == kb_2nd || kb_Data[6] == kb_Clear){break;}} //some delay
+			for(x = 0; x < 26; x++){gfx_SetColor(253); kb_Scan(); DrawTitle();if(kb_Data[1] == kb_2nd || kb_Data[6] == kb_Clear){break;}} //some delay
 		}			
 		if (kb_Data[6] == kb_Clear) {break;}//Exit
 		srand(rtc_Time());//Set random seed
 		
 		DrawCursor();
 		createTableau();
-
+		DrawButtons();
+		
 		/*Generate random amount to rotate*/
 		b = 50000;
 		s = rand() % 256;
@@ -179,7 +208,7 @@ void main(void)
 		
 		DrawCursor();
 		createTableau();
-		
+		DrawButtons();
 		
 		gfx_SwapDraw();
 	} while(1);

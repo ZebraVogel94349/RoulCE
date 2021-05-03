@@ -7,8 +7,10 @@ extern "C" {
 
 #include "palette_gfx.h"
 #define myimages_palette_offset 0
-#include "pfeil.h"
 #include "ro.h"
+#define rletimg_palette_offset 0
+#include "pfeil.h"
+#include "tableau.h"
 
 #ifdef __cplusplus
 }

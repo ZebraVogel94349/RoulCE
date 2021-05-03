@@ -2,6 +2,11 @@ palettes:
   - name: palette_gfx
     fixed-entries:
       - color: {index: 0, r: 255, g: 255, b: 255}
+      - color: {index: 254, r: 0, g: 0, b: 0}
+      - color: {index: 253, r: 8, g: 121, b: 49}
+      - color: {index: 252, r: 255, g: 0, b: 0}
+      - color: {index: 251, r: 107, g: 101, b: 99}
+      - color: {index: 250, r: 66, g: 142, b: 90}
     images: automatic
 
 converts:
@@ -9,8 +14,15 @@ converts:
     palette: palette_gfx
     transparent-color-index: 0
     images:
-      - pfeil.png
       - ro.png
+  - name: rletimg
+    palette: palette_gfx
+    transparent-color-index: 0
+    style: rlet
+    images:
+      - pfeil.png
+      - tableau.png
+    
 
 outputs:
   - type: c
@@ -19,3 +31,4 @@ outputs:
       - palette_gfx
     converts:
       - myimages
+      - rletimg

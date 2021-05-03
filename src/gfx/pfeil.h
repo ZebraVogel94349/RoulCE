@@ -7,9 +7,9 @@ extern "C" {
 
 #define pfeil_width 32
 #define pfeil_height 32
-#define pfeil_size 1026
-#define pfeil ((gfx_sprite_t*)pfeil_data)
-extern unsigned char pfeil_data[1026];
+#define pfeil_size 752
+#define pfeil ((gfx_rletsprite_t*)pfeil_data)
+extern unsigned char pfeil_data[752];
 
 #ifdef __cplusplus
 }

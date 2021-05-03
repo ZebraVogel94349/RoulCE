@@ -9,7 +9,7 @@
 
 NAME        ?= ROUL
 DEBUGMODE   ?= NDEBUG
-COMPRESSED  ?= NO
+COMPRESSED  ?= YES
 ICON        ?= iconc.png
 DESCRIPTION ?= "C SDK Demo"
 

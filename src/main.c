@@ -90,12 +90,12 @@ void main(void)
 	gfx_FillScreen(253);
 	do //Loop everything
 	{
-		while (kb_Data[1] != kb_Clear && kb_Data[1] != kb_2nd)//Controls
+		while (kb_Data[6] != kb_Clear && kb_Data[1] != kb_2nd)//Controls
 		{
+			kb_Scan();
 			gfx_SetColor(253);
 			gfx_FillRectangle(210,10,105,220);//Green background
 			DrawTitle();		
-			if (kb_Data[1] == kb_Clear || kb_Data[1] == kb_2nd) {break;}//Exit
 			
 			PrintNumber();
 			DrawCursor();
@@ -103,25 +103,23 @@ void main(void)
 			gfx_TransparentSprite_NoClip(rotate_sprite, 17, 69);//Show rotated sprite
 			gfx_RLETSprite_NoClip(pfeil, 59, 36);//Show arrow
 			
-			if (kb_Data[1] == kb_Clear || kb_Data[1] == kb_2nd) {break;}//Exit
-			
 			/*Tableau navigation*/
-			if(kb_Data[1] == kb_Up)//Up
+			if(kb_Data[7] == kb_Up)//Up
 			{
 				if(posy > 1){posy = posy - 1;}
 			}
-			if(kb_Data[1] == kb_Down)//Down
+			if(kb_Data[7] == kb_Down)//Down
 			{
 				if(posx == 2 && posy == 4){posy = 5;}
 				else if(posx == 2 && posy == 5){posy = 8;}
 				else if(posx == 2 && posy == 8){posy = 11;}
 				else if(posy < 14){posy = posy + 1;}	
 			}
-			if(kb_Data[1] == kb_Left)//Left
+			if(kb_Data[7] == kb_Left)//Left
 			{
 				if(posx > 2){posx = posx - 1;}
 			}
-			if(kb_Data[1] == kb_Right)//Right
+			if(kb_Data[7] == kb_Right)//Right
 			{
 				if(posx < 5){posx = posx + 1;}
 			}
@@ -131,9 +129,9 @@ void main(void)
 			/*Tableau navigation*/
 			
 			gfx_SwapDraw();
-			for(x = 0; x < 121; x++){gfx_SetColor(253); gfx_FillRectangle(150,100,20,100);if(kb_Data[1] == kb_2nd || kb_Data[1] == kb_Clear){break;}}
+			for(x = 0; x < 46; x++){gfx_SetColor(253); kb_Scan(); gfx_FillRectangle(150,100,20,100);if(kb_Data[1] == kb_2nd || kb_Data[6] == kb_Clear){break;}} //some delay
 		}			
-		if (kb_Data[1] == kb_Clear) {break;}//Exit
+		if (kb_Data[6] == kb_Clear) {break;}//Exit
 		srand(rtc_Time());//Set random seed
 		
 		DrawCursor();
@@ -147,7 +145,8 @@ void main(void)
 		f = 0;
 		for (x = 0; ++x;)
 		{
-			if (kb_Data[1] == kb_Clear) {f = 1; break;}//Exit
+			kb_Scan();
+			if (kb_Data[6] == kb_Clear) {f = 1; break;}//Exit
 			int r = rand() % 1000;
 			b = b - r;
 			a = a + b / 5000;

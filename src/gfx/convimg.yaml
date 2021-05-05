@@ -11,6 +11,7 @@ palettes:
       - color: {index: 248, r: 76, g: 222, b: 255}
       - color: {index: 247, r: 0, g: 50, b: 200}
       - color: {index: 246, r: 180, g: 80, b: 255}
+      - color: {index: 245, r: 200, g: 200, b: 200}
     images: automatic
 
 converts:

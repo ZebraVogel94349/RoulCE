@@ -18,7 +18,7 @@
 gfx_UninitedSprite(rotate_sprite, ro_width, ro_height);//sprite buffer
 
 /*Declaring Variables*/
-uint16_t b, x, s, f, y, z, g, posx, posy, h, i, j, k, l, color, chip, chipa, chipb, m, p , o, v, s, t , u, e, c;
+uint16_t b, x, s, f, y, z, g, posx, posy, h, i, j, k, l, color, chip, chipa, chipb, m, p , o, v, s, t , u, e, c, credits, menu;
 uint8_t a, n;
 kb_key_t key;
 uint16_t bets[50] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};//bets array
@@ -29,7 +29,31 @@ void DrawTitle() //This function shows the title
 	gfx_SetTextFGColor(254);//Black text color
 	gfx_SetTextScale(1,1);//Text size for Title
 	gfx_SetTextXY(110,10);//Title position
-	gfx_PrintString("Roulette v0.3.0");//Print title
+	gfx_PrintString("Roulette v0.3.1");//Print title
+}
+
+void DrawMenu()
+{
+	gfx_SetColor(253);
+	gfx_FillRectangle(10,230,300,8);
+	gfx_SetTextFGColor(254);
+	gfx_SetTextScale(1,1);
+	gfx_SetTextXY(10,230);
+	gfx_PrintString("Add Credits");
+	if(menu == 1)
+	{
+		gfx_FillRectangle(10,230,300,8);
+		gfx_SetTextXY(18,230);
+		gfx_PrintString("+10");
+		gfx_SetTextXY(82,230);
+		gfx_PrintString("+20");
+		gfx_SetTextXY(146,230);
+		gfx_PrintString("+50");
+		gfx_SetTextXY(210,230);
+		gfx_PrintString("+100");
+		gfx_SetTextXY(274,230);
+		gfx_PrintString("+200");
+	}
 }
 
 void DrawCursor() //This function shows the cursor
@@ -173,11 +197,22 @@ void bet(s, t, u)
 {
 	if(posx == t && posy == u)
 	{
-		if(bets[s] + chip < 51)
+		if(bets[s] + chip < 51 && credits >= chip)
 		{
 			bets[s] = bets[s] + chip;
+			credits = credits - chip;
 		}
 	}
+}
+
+void PrintCredits()
+{
+	gfx_SetColor(253);
+	gfx_FillRectangle(10,15,100,10);//Green background
+	gfx_SetTextFGColor(0);
+	gfx_SetTextXY(10,15);
+	gfx_PrintString("Credits: ");
+	gfx_PrintInt(credits, 1);
 }
 
 void main(void)
@@ -198,6 +233,7 @@ void main(void)
 	*/
 	posx = 4;
 	posy = 1;
+	credits = 0;
 	uint8_t colors[37] = {254,252,254,252,254,252,254,252,254,252,254,252,254,252,254,252,254,252,254,252,254,252,254,252,254,252,254,252,254,252,254,252,254,252,254,252,251};//color array
 	uint8_t numbers[37] = {26,3,35,12,28,7,29,18,22,9,31,14,20,1,33,16,24,5,10,23,8,30,11,36,13,27,6,34,17,25,2,21,4,19,15,32,0};//number array
 	chip = 1;
@@ -209,6 +245,7 @@ void main(void)
 	gfx_RotateSprite(ro, rotate_sprite, a + s);//Rotate the sprite
 	gfx_FillScreen(253);//Green background
 	DrawTitle();
+	DrawMenu();
 	gfx_TransparentSprite_NoClip(rotate_sprite, 17, 69);//Show rotated sprite
 	gfx_RLETSprite_NoClip(pfeil, 59, 36);//Show arrow
 	
@@ -219,19 +256,37 @@ void main(void)
 	gfx_FillScreen(253);
 	do //Loop everything
 	{
-		for(x=0; x < 50; x++)//Clear bets array
+		for(x=0; x < 50; x++)//Payout prize and clear bets array
 		{
+			if(x < 36 && x + 1 == e){credits = credits + bets[x] * 36;}
+			if(x == 39 && e == 0){credits = credits + bets[x] * 36;}
+			if(x == 36 && e % 3 == 1){credits = credits + bets[x] * 3;}
+			if(x == 37 && e % 3 == 2){credits = credits + bets[x] * 3;}
+			if(x == 38 && e % 3 == 0 && e != 0){credits = credits + bets[x] * 3;}
+			if(x == 40 && e > 0 && e < 13){credits = credits + bets[x] * 3;}
+			if(x == 41 && e < 25 && e > 12){credits = credits + bets[x] * 3;}
+			if(x == 42 && e > 24){credits = credits + bets[x] * 3;}
+			if(x == 43 && c == 252){credits = credits + bets[x] * 2;}
+			if(x == 44 && c == 254){credits = credits + bets[x] * 2;}
+			if(x == 45 && e < 19 && e > 0){credits = credits + bets[x] * 2;}
+			if(x == 46 && e > 18){credits = credits + bets[x] * 2;}
+			if(x == 47 && e % 2 == 1){credits = credits + bets[x] * 2;}
+			if(x == 48 && e % 2 == 0 && e != 0){credits = credits + bets[x] * 2;}
 			bets[x] = 0;
 		}
+		
+		
 		while (kb_Data[6] != kb_Clear)//Controls
 		{
 			kb_Scan();
 			gfx_SetColor(253);
 			gfx_FillRectangle(160,10,155,220);//Green background
-			DrawTitle();		
+			DrawTitle();
+			DrawMenu();
 			gfx_SetTextXY(163,167);
 			gfx_PrintInt(chip,2);//Print Text
 			DrawChip(chip,187,170);
+			PrintCredits();
 			PrintNumber();
 			DrawCursor();
 			createTableau();
@@ -272,11 +327,12 @@ void main(void)
 				if(posx == 1 && posy == 9){chip = 20;}
 				if(posx == 1 && posy == 10){chip = 50;}
 				
-				if((posx == 3 && posy < 15) || (posx == 4 && posy < 15 && posy > 1) || (posx == 5 && posy < 15))//Bet on single number except 0
+				if(((posx == 3 && posy < 15) || (posx == 4 && posy < 15 && posy > 1) || (posx == 5 && posy < 15)) && credits >= chip)//Bet on single number except 0
 				{
 					if(bets[(posy - 2) * 3 + posx - 3] + chip < 51)
 					{
 						bets[(posy - 2) * 3 + posx - 3] = bets[(posy - 2) * 3 + posx - 3] + chip;
+						credits = credits - chip;
 					}
 				}
 				bet(39,4,1);
@@ -289,6 +345,16 @@ void main(void)
 				bet(46,2,12);
 				bet(47,2,13);
 				bet(48,2,14);
+			}
+			
+			if(kb_Data[1] == kb_Window && menu == 1){credits = credits + 20; menu = 0;}
+			if(kb_Data[1] == kb_Zoom && menu == 1){credits = credits + 50; menu = 0;}
+			if(kb_Data[1] == kb_Trace && menu == 1){credits = credits + 100; menu = 0;}
+			if(kb_Data[1] == kb_Graph && menu == 1){credits = credits + 200; menu = 0;}
+			if(kb_Data[1] == kb_Yequ && menu == 1){credits = credits + 10; menu = 0;}
+			else if(kb_Data[1] == kb_Yequ && menu == 0)
+			{
+				menu = 1;
 			}
 			
 			if((posx == 1 && posy == 1) || (posx == 2 && posy == 1) || (posx == 3 && posy == 1) || (posx == 5 && posy == 1)){posx = 4;}
@@ -305,10 +371,12 @@ void main(void)
 		/*Draw everything*/
 		gfx_SetColor(253);
 		gfx_FillRectangle(160,10,155,220);//Green background
-		DrawTitle();		
+		DrawTitle();
+		DrawMenu();		
 		gfx_SetTextXY(163,167);
 		gfx_PrintInt(chip,2);//Print Text
 		DrawChip(chip,187,170);
+		PrintCredits();
 		PrintNumber();
 		DrawCursor();
 		createTableau();
@@ -318,10 +386,12 @@ void main(void)
 		gfx_SwapDraw();
 		gfx_SetColor(253);
 		gfx_FillRectangle(160,10,155,220);//Green background
-		DrawTitle();		
+		DrawTitle();	
+		DrawMenu();		
 		gfx_SetTextXY(163,167);
 		gfx_PrintInt(chip,2);//Print Text
 		DrawChip(chip,187,170);
+		PrintCredits();
 		PrintNumber();
 		DrawCursor();
 		createTableau();
@@ -353,6 +423,7 @@ void main(void)
 			gfx_RotateSprite(ro, rotate_sprite, a + s);//Rotate the sprite
 			gfx_SetColor(253);
 			DrawTitle();
+			DrawMenu();
 			
 			gfx_TransparentSprite_NoClip(rotate_sprite, 17, 69);//Show rotated sprite
 			gfx_RLETSprite_NoClip(pfeil, 59, 36);//Show arrow

@@ -9,6 +9,7 @@
 #include <string.h>
 
 #include <keypadc.h>
+#include <fileioc.h>
 #include <graphx.h>
 #include <debug.h>
 
@@ -29,10 +30,10 @@ void DrawTitle() //This function shows the title
 	gfx_SetTextFGColor(254);//Black text color
 	gfx_SetTextScale(1,1);//Text size for Title
 	gfx_SetTextXY(110,10);//Title position
-	gfx_PrintString("Roulette v0.3.1");//Print title
+	gfx_PrintString("Roulette v0.4.0");//Print title
 }
 
-void DrawMenu()
+void DrawMenu()//This function draws the menu at the bottom
 {
 	gfx_SetColor(253);
 	gfx_FillRectangle(10,230,300,8);
@@ -68,7 +69,7 @@ void DrawCursor() //This function shows the cursor
 	gfx_FillRectangle(posx * 18 + 203 - l, posy * 14 + 1, 17 + h, 14 + i);//cursor
 }
 
-void PrintNumber()
+void PrintNumber()//This function shows the number
 {
 	gfx_SetColor(253);
 	gfx_FillRectangle(56,200,50,30);//Clear old number
@@ -78,7 +79,7 @@ void PrintNumber()
 	gfx_PrintInt(e,2);//Print number
 }
 
-void DrawChip(type,cx,cy)
+void DrawChip(type,cx,cy)//This function draws a chip at a specific location
 {
 	gfx_SetTextFGColor(254);
 	if(type == 1){color = 252;}//Red
@@ -125,7 +126,7 @@ void DrawButtons()//This function creates the Menu
 	DrawChip(50,187,148);
 }
 
-void correctchip()
+void correctchip()//This function selects the chip to be shown when stacking chips
 {
 	if(chipa > 0){chipb = 1;} 
 	if(chipa > 1){chipb = 2;} 
@@ -135,7 +136,7 @@ void correctchip()
 	if(chipa > 49){chipb = 50;} 
 }
 
-void placechip(v, x, y)
+void placechip(v, x, y)//This function draws placed chips
 {
 	chipa = 0;
 	chipb = 0;
@@ -193,7 +194,7 @@ void createTableau()//this functions shows the tableau
 	placechip(49, 250, 218);	
 }
 
-void bet(s, t, u)
+void bet(s, t, u)//This functions makes chips stack
 {
 	if(posx == t && posy == u)
 	{
@@ -205,10 +206,10 @@ void bet(s, t, u)
 	}
 }
 
-void PrintCredits()
+void PrintCredits()//This function prints the amount of chips the player has
 {
 	gfx_SetColor(253);
-	gfx_FillRectangle(10,15,100,10);//Green background
+	gfx_FillRectangle(10,15,100,10);
 	gfx_SetTextFGColor(0);
 	gfx_SetTextXY(10,15);
 	gfx_PrintString("Credits: ");
@@ -237,6 +238,14 @@ void main(void)
 	uint8_t colors[37] = {254,252,254,252,254,252,254,252,254,252,254,252,254,252,254,252,254,252,254,252,254,252,254,252,254,252,254,252,254,252,254,252,254,252,254,252,251};//color array
 	uint8_t numbers[37] = {26,3,35,12,28,7,29,18,22,9,31,14,20,1,33,16,24,5,10,23,8,30,11,36,13,27,6,34,17,25,2,21,4,19,15,32,0};//number array
 	chip = 1;
+	
+	ti_CloseAll();
+	ti_var_t sv = ti_Open("ROULSV","r");
+	uint16_t* creditsv = &credits;
+	ti_Read(creditsv,2,1,sv);
+	ti_Close(sv);
+	credits = *creditsv;
+	
 	
     gfx_Begin(); //Start the graphics 
     gfx_SetPalette(palette_gfx, sizeof_palette_gfx, 0); //Load Palette
@@ -436,6 +445,10 @@ void main(void)
 			PrintNumber();
 		}
 	} while(1);
-		
+	*creditsv = credits;
+	sv = ti_Open("ROULSV","w");
+    ti_Write(creditsv,2,1,sv);
+    ti_Close(sv);
+    pgrm_CleanUp();
     gfx_End();// Close the graphics
 }

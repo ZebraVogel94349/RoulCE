@@ -1332,24 +1332,50 @@ _PrintCredits:
 _main:
 	ld	hl, -24
 	call	__frameset
-	ld.sis	de, 4
 	ld.sis	bc, 1
-	ld	hl, _posx
-	ld	(hl), e
-	inc	hl
-	ld	(hl), d
 	ld	hl, _posy
+	ld.sis	de, 4
+	ld	iy, _posx
+	ld	(iy), e
+	ld	(iy + 1), d
 	ld	(hl), c
 	inc	hl
 	ld	(hl), b
-	ld.sis	hl, 500
-	ld	iy, _credits
-	ld	(iy), l
-	ld	(iy + 1), h
+	ld.sis	de, 0
+	ld	hl, _credits
+	ld	(hl), e
+	inc	hl
+	ld	(hl), d
 	ld	hl, _chip
 	ld	(hl), c
 	inc	hl
 	ld	(hl), b
+	call	_ti_CloseAll
+	ld	hl, L_.str.16
+	push	hl
+	ld	hl, L_.str.15
+	push	hl
+	call	_ti_Open
+	ld	e, a
+	ld	(ix + -3), de
+	pop	hl
+	pop	hl
+	push	de
+	ld	hl, 1
+	push	hl
+	inc	hl
+	push	hl
+	ld	hl, _credits
+	push	hl
+	call	_ti_Read
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, (ix + -3)
+	push	hl
+	call	_ti_Close
+	pop	hl
 	call	_gfx_Begin
 	or	a, a
 	sbc	hl, hl
@@ -1362,10 +1388,11 @@ _main:
 	pop	hl
 	pop	hl
 	pop	hl
-	ld.sis	hl, 0
-	ld	iy, _s
-	ld	(iy), l
-	ld	(iy + 1), h
+	ld	hl, _s
+	ld.sis	de, 0
+	ld	(hl), e
+	inc	hl
+	ld	(hl), d
 	ld	hl, 1
 	push	hl
 	call	_gfx_SetDraw
@@ -3231,6 +3258,30 @@ BB11_162:
 	ld	(iy + 1), h
 	jq	BB11_1
 BB11_163:
+	ld	hl, L_.str.17
+	push	hl
+	ld	hl, L_.str.15
+	push	hl
+	call	_ti_Open
+	ld	e, a
+	ld	(ix + -3), de
+	pop	hl
+	pop	hl
+	push	de
+	ld	hl, 1
+	push	hl
+	inc	hl
+	push	hl
+	ld	hl, _credits
+	push	hl
+	call	_ti_Write
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, (ix + -3)
+	push	hl
+	call	_ti_Close
 	ld	sp, ix
 	pop	ix
 	jp	_gfx_End
@@ -3264,7 +3315,7 @@ _bets:
 	section	.rodata,"a",@progbits
 	private	L_.str
 L_.str:
-	db	"Roulette v0.3.0",000o
+	db	"Roulette v0.4.0",000o
 
 	section	.rodata,"a",@progbits
 	private	L_.str.1
@@ -3431,6 +3482,16 @@ L___const.main.colors:
 L___const.main.numbers:
 	db	"",032o,003o,"#",014o,034o,007o,035o,022o,026o,011o,037o,016o,024o,001o,"!",020o,030o,005o,012o,027o,010o,036o,013o,"$",015o,033o,006o,"""",021o,031o,002o,025o,004o,023o,017o," ",000o
 
+	section	.rodata,"a",@progbits
+	private	L_.str.15
+L_.str.15:
+	db	"ROULSV",000o
+
+	section	.rodata,"a",@progbits
+	private	L_.str.16
+L_.str.16:
+	db	"r",000o
+
 	section	.bss,"aw",@nobits
 	public	_s
 _s:
@@ -3460,6 +3521,11 @@ _f:
 	public	_n
 _n:
 	rb	1
+
+	section	.rodata,"a",@progbits
+	private	L_.str.17
+L_.str.17:
+	db	"w",000o
 
 	section	.bss,"aw",@nobits
 	public	_y
@@ -3508,13 +3574,16 @@ _key:
 	extern	_gfx_Begin
 	extern	_gfx_SetPalette
 	extern	_rand
+	extern	_ti_Close
 	extern	__sand
 	extern	_gfx_PrintString
+	extern	_ti_Read
 	extern	_gfx_PrintInt
 	extern	_gfx_FillRectangle
 	extern	__smulu
 	extern	_tableau_data
 	extern	__sremu
+	extern	_ti_Open
 	extern	_gfx_FillCircle
 	extern	__bdivu
 	extern	_ro_data
@@ -3522,11 +3591,13 @@ _key:
 	extern	_kb_Scan
 	extern	_palette_gfx
 	extern	_gfx_RotateScaleSprite
+	extern	_ti_Write
 	extern	_gfx_RLETSprite_NoClip
 	extern	_gfx_SwapDraw
 	extern	_gfx_SetDraw
 	extern	_pfeil_data
 	extern	__sdivu
+	extern	_ti_CloseAll
 	extern	_gfx_FillScreen
 	extern	__Unwind_SjLj_Unregister
 	extern	__irems

@@ -19,9 +19,9 @@
 gfx_UninitedSprite(rotate_sprite, ro_width, ro_height);//sprite buffer
 
 /*Declaring Variables*/
-uint16_t b, x, s, f, y, z, g, posx, posy, h, i, j, k, l, color, chip, chipa, chipb, m, p , o, v, s, t , u, e, c, credits, menu;
+uint16_t b, x, s, f, y, z, g, posx, posy, h, i, j, k, l, color, chip, chipa, chipb, m, p , o, v, s, t , u, e, c, credits, menu, keycount;
 uint8_t a, n;
-kb_key_t key;
+kb_key_t keyA, keyB, keyC, prevkeyA, prevkeyB, prevkeyC;
 uint16_t bets[50] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};//bets array
 /*Declaring Variables*/
 
@@ -30,7 +30,7 @@ void DrawTitle() //This function shows the title
 	gfx_SetTextFGColor(254);//Black text color
 	gfx_SetTextScale(1,1);//Text size for Title
 	gfx_SetTextXY(110,10);//Title position
-	gfx_PrintString("Roulette v0.4.0");//Print title
+	gfx_PrintString("Roulette v0.4.1");//Print title
 }
 
 void DrawMenu()//This function draws the menu at the bottom
@@ -304,28 +304,28 @@ void main(void)
 			gfx_RLETSprite_NoClip(pfeil, 59, 36);//Show arrow
 			
 			/*Tableau navigation*/
-			if(kb_Data[7] == kb_Up)//Up
+			if(kb_Data[7] == kb_Up && keyC != prevkeyC)//Up
 			{
 				if(posy > 1){if(!(posx == 1 && posy == 4)){posy = posy - 1;}}
 			}
-			if(kb_Data[7] == kb_Down)//Down
+			if(kb_Data[7] == kb_Down && keyC != prevkeyC)//Down
 			{
 				if(posx == 2 && posy == 4){posy = 5;}
 				else if(posx == 2 && posy == 5){posy = 8;}
 				else if(posx == 2 && posy == 8){posy = 11;}
 				else if(posy < 14){if(!(posx == 1 && posy == 10)){posy = posy + 1;}}	
 			}
-			if(kb_Data[7] == kb_Left)//Left
+			if(kb_Data[7] == kb_Left && keyC != prevkeyC)//Left
 			{
 				if((posx == 2 && posy == 4) || (posx == 2 && posy == 5) || (posx == 2 && posy == 8)){posx = 1;}
 				else if(posx > 2){posx = posx - 1;}
 				
 			}
-			if(kb_Data[7] == kb_Right)//Right
+			if(kb_Data[7] == kb_Right && keyC != prevkeyC)//Right
 			{
 				if(posx < 5){posx = posx + 1;}
 			}
-			if(kb_Data[1] == kb_2nd)//2nd
+			if(kb_Data[1] == kb_2nd && keyA != prevkeyA)//2nd
 			{
 				if(posx == 1 && posy == 4){break;}//spin
 				
@@ -356,12 +356,12 @@ void main(void)
 				bet(48,2,14);
 			}
 			
-			if(kb_Data[1] == kb_Window && menu == 1){credits = credits + 20; menu = 0;}
-			if(kb_Data[1] == kb_Zoom && menu == 1){credits = credits + 50; menu = 0;}
-			if(kb_Data[1] == kb_Trace && menu == 1){credits = credits + 100; menu = 0;}
-			if(kb_Data[1] == kb_Graph && menu == 1){credits = credits + 200; menu = 0;}
-			if(kb_Data[1] == kb_Yequ && menu == 1){credits = credits + 10; menu = 0;}
-			else if(kb_Data[1] == kb_Yequ && menu == 0)
+			if(kb_Data[1] == kb_Window && menu == 1 && keyA != prevkeyA){credits = credits + 20; menu = 0;}
+			if(kb_Data[1] == kb_Zoom && menu == 1 && keyA != prevkeyA){credits = credits + 50; menu = 0;}
+			if(kb_Data[1] == kb_Trace && menu == 1 && keyA != prevkeyA){credits = credits + 100; menu = 0;}
+			if(kb_Data[1] == kb_Graph && menu == 1 && keyA != prevkeyA){credits = credits + 200; menu = 0;}
+			if(kb_Data[1] == kb_Yequ && menu == 1 && keyA != prevkeyA){credits = credits + 10; menu = 0;}
+			else if(kb_Data[1] == kb_Yequ && menu == 0 && keyA != prevkeyA)
 			{
 				menu = 1;
 			}
@@ -372,7 +372,28 @@ void main(void)
 			/*Tableau navigation*/
 			
 			gfx_SwapDraw();
-			for(x = 0; x < 45; x++){gfx_SetColor(253); kb_Scan(); DrawTitle();if(kb_Data[6] == kb_Clear){break;}} //some delay
+			kb_Scan();
+			prevkeyA = keyA;
+			prevkeyB = keyB;
+			prevkeyC = keyC;
+			keyA = kb_Data[1];
+			keyB = kb_Data[6];
+			keyC = kb_Data[7];
+			if(keyC == prevkeyC)
+			{
+				keycount = keycount + 1;
+				if(keycount > 3)//Long press
+				{
+					if(keycount % 2 == 1)
+					{
+						prevkeyC = 0;
+					}
+				}
+			}
+			else
+			{
+				keycount = 0;
+			}
 		}			
 		if (kb_Data[6] == kb_Clear) {break;}//Exit
 		srand(rtc_Time());//Set random seed

@@ -31,7 +31,7 @@ void DrawTitle() //This function shows the title
 {
 	gfx_SetTextFGColor(254);//Black text color
 	gfx_SetTextScale(1,1);//Text size for Title
-	gfx_SetTextXY(130,10);//Title position
+	gfx_SetTextXY(118,10);//Title position
 	gfx_PrintString("RoulCE v0.5.0");//Print title
 }
 

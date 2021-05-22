@@ -15,7 +15,7 @@ _DrawTitle:
 	pop	hl
 	ld	hl, 10
 	push	hl
-	ld	hl, 130
+	ld	hl, 118
 	push	hl
 	call	_gfx_SetTextXY
 	pop	hl

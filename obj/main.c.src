@@ -15,7 +15,7 @@ _DrawTitle:
 	pop	hl
 	ld	hl, 10
 	push	hl
-	ld	hl, 110
+	ld	hl, 130
 	push	hl
 	call	_gfx_SetTextXY
 	pop	hl
@@ -1175,6 +1175,100 @@ BB8_6:
 	ld	hl, 49
 	push	hl
 	call	_placechip
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, 40
+	push	hl
+	ld	hl, 110
+	push	hl
+	call	_gfx_SetTextXY
+	pop	hl
+	pop	hl
+	ld	hl, -3
+	push	hl
+	call	_gfx_SetColor
+	pop	hl
+	ld	hl, 10
+	push	hl
+	ld	hl, 60
+	push	hl
+	ld	hl, 40
+	push	hl
+	ld	hl, 110
+	push	hl
+	call	_gfx_FillRectangle
+	ld	iy, _m
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	ld.sis	de, 5
+	ld.sis	hl, 0
+BB8_7:
+	ld	(iy), l
+	ld	(iy + 1), h
+	or	a, a
+	sbc.sis	hl, de
+	jq	nc, BB8_9
+	ld	hl, 1
+	push	hl
+	push	hl
+	call	_gfx_SetTextScale
+	pop	hl
+	pop	hl
+	ld	hl, _m
+	push	de
+	ld	e, (hl)
+	inc	hl
+	ld	d, (hl)
+	ld	l, e
+	ld	h, d
+	pop	de
+	ld	de, 0
+	ld	e, l
+	ld	d, h
+	ld	hl, _hcolor
+	add	hl, de
+	ld	a, (hl)
+	ld	l, a
+	push	hl
+	call	_gfx_SetTextFGColor
+	pop	hl
+	ld	hl, _m
+	push	de
+	ld	e, (hl)
+	inc	hl
+	ld	d, (hl)
+	ld	l, e
+	ld	h, d
+	pop	de
+	ld	bc, 0
+	push	bc
+	pop	de
+	ld	e, l
+	ld	d, h
+	ld	hl, _hnumbers
+	add	hl, de
+	ld	a, (hl)
+	ld	c, a
+	ld	hl, 1
+	push	hl
+	push	bc
+	call	_gfx_PrintInt
+	pop	hl
+	pop	hl
+	ld	hl, L_.str.14
+	push	hl
+	call	_gfx_PrintString
+	ld.sis	de, 5
+	ld	iy, _m
+	pop	hl
+	ld	l, (iy)
+	ld	h, (iy + 1)
+	inc.sis	hl
+	jq	BB8_7
+BB8_9:
 	ld	sp, ix
 	pop	ix
 	ret
@@ -1303,7 +1397,7 @@ _PrintCredits:
 	call	_gfx_SetTextXY
 	pop	hl
 	pop	hl
-	ld	hl, L_.str.14
+	ld	hl, L_.str.15
 	push	hl
 	call	_gfx_PrintString
 	pop	hl
@@ -1354,9 +1448,9 @@ _main:
 	inc	hl
 	ld	(hl), b
 	call	_ti_CloseAll
-	ld	hl, L_.str.16
+	ld	hl, L_.str.17
 	push	hl
-	ld	hl, L_.str.15
+	ld	hl, L_.str.16
 	push	hl
 	call	_ti_Open
 	ld	e, a
@@ -1451,7 +1545,6 @@ _main:
 	push	hl
 	call	_gfx_FillScreen
 	pop	hl
-BB11_1:
 	ld	hl, _e
 	push	de
 	ld	e, (hl)
@@ -1460,6 +1553,18 @@ BB11_1:
 	ld	iyl, e
 	ld	iyh, d
 	pop	de
+	ld	hl, _c
+	push	de
+	ld	e, (hl)
+	inc	hl
+	ld	d, (hl)
+	ld	l, e
+	ld	h, d
+	pop	de
+	ld	(ix + -16), l
+	ld	(ix + -15), h
+	ld	a, 1
+BB11_1:
 	or	a, a
 	sbc	hl, hl
 	ex	de, hl
@@ -1470,7 +1575,6 @@ BB11_1:
 	add.sis	hl, bc
 	or	a, a
 	sbc.sis	hl, bc
-	ld	a, 1
 	jq	z, BB11_3
 	ld	a, 0
 BB11_3:
@@ -1497,16 +1601,11 @@ BB11_3:
 	call	__sremu
 	ld	(ix + -20), l
 	ld	(ix + -19), h
-	ld	hl, _c
-	push	de
-	ld	e, (hl)
-	inc	hl
-	ld	d, (hl)
-	ld	l, e
-	ld	h, d
-	pop	de
-	ld	(ix + -16), l
-	ld	(ix + -15), h
+	push	iy
+	ex	(sp), hl
+	ld	(ix + -14), l
+	ld	(ix + -13), h
+	pop	hl
 	ex	de, hl
 	ld	e, iyl
 	ld	d, iyh
@@ -1524,18 +1623,13 @@ BB11_3:
 	ld	(ix + -3), l
 	ld	(ix + -2), h
 	ld	de, 0
-	push	iy
-	ex	(sp), hl
-	ld	(ix + -14), l
-	ld	(ix + -13), h
-	pop	hl
 BB11_4:
 	push	de
 	pop	hl
 	ld	bc, 50
 	or	a, a
 	sbc	hl, bc
-	jq	z, BB11_52
+	jq	z, BB11_53
 	push	de
 	pop	hl
 	ld	bc, 36
@@ -1548,12 +1642,10 @@ BB11_4:
 	sbc	hl, de
 	jq	nz, BB11_8
 	ld	hl, _credits
-	ld	e, (hl)
-	inc	hl
-	ld	d, (hl)
-	dec	hl
 	push	hl
 	pop	iy
+	ld	e, (iy)
+	ld	d, (iy + 1)
 	ld	hl, (ix + -12)
 	push	de
 	ld	e, (hl)
@@ -1567,30 +1659,24 @@ BB11_4:
 	add.sis	hl, de
 	ld	(iy), l
 	ld	(iy + 1), h
-	ld	e, (ix + -3)
-	ld	d, (ix + -2)
-	jq	BB11_13
+	jq	BB11_14
 BB11_8:
 	ex	de, hl
 	ld	de, 39
 	or	a, a
 	sbc	hl, de
-	ld	e, (ix + -3)
-	ld	d, (ix + -2)
-	jq	nz, BB11_13
+	jq	nz, BB11_14
 	ld	l, (ix + -14)
 	ld	h, (ix + -13)
 	add.sis	hl, bc
 	or	a, a
 	sbc.sis	hl, bc
-	jq	nz, BB11_13
+	jq	nz, BB11_14
 	ld	hl, _credits
-	ld	e, (hl)
-	inc	hl
-	ld	d, (hl)
-	dec	hl
 	push	hl
 	pop	iy
+	ld	e, (iy)
+	ld	d, (iy + 1)
 	ld	hl, _bets+78
 	push	de
 	ld	e, (hl)
@@ -1601,11 +1687,9 @@ BB11_8:
 	pop	de
 	ld.sis	bc, 36
 	jq	BB11_11
-BB11_13:
-	ld	(ix + -3), e
-	ld	(ix + -2), d
-	ld	l, e
-	ld	h, d
+BB11_14:
+	ld	l, (ix + -3)
+	ld	h, (ix + -2)
 	ld.sis	bc, 36
 	or	a, a
 	sbc.sis	hl, bc
@@ -1617,26 +1701,24 @@ BB11_13:
 	ld	de, 6
 	or	a, a
 	sbc	hl, de
-	jq	c, BB11_17
-BB11_14:
+	jq	c, BB11_18
+BB11_15:
 	ld	hl, (ix + -6)
 	ld	de, 42
 	or	a, a
 	sbc	hl, de
-	jq	nz, BB11_30
+	jq	nz, BB11_31
 	ld	l, (ix + -14)
 	ld	h, (ix + -13)
 	ld.sis	de, 25
 	or	a, a
 	sbc.sis	hl, de
-	jq	c, BB11_30
+	jq	c, BB11_31
 	ld	hl, _credits
-	ld	e, (hl)
-	inc	hl
-	ld	d, (hl)
-	dec	hl
 	push	hl
 	pop	iy
+	ld	e, (iy)
+	ld	d, (iy + 1)
 	ld	hl, _bets+84
 	push	de
 	ld	e, (hl)
@@ -1650,91 +1732,85 @@ BB11_11:
 	call	__smulu
 	add.sis	hl, de
 	jq	BB11_12
-BB11_17:
+BB11_18:
 	ld	hl, LJTI11_0
 	add	hl, bc
 	add	hl, bc
 	add	hl, bc
 	ld	hl, (hl)
 	jp	(hl)
-BB11_18:
+BB11_19:
 	ld	l, (ix + -20)
 	ld	h, (ix + -19)
 	ld.sis	bc, 1
 	or	a, a
 	sbc.sis	hl, bc
-	jq	nz, BB11_30
-	ld	iy, _credits
+	jq	nz, BB11_31
+	ld	hl, _credits
+	push	hl
+	pop	iy
 	ld	e, (iy)
 	ld	d, (iy + 1)
 	ld	hl, _bets+72
-	jq	BB11_29
-BB11_20:
+	jq	BB11_30
+BB11_21:
 	ld	l, (ix + -20)
 	ld	h, (ix + -19)
 	ld.sis	bc, 2
 	or	a, a
 	sbc.sis	hl, bc
-	jq	nz, BB11_30
+	jq	nz, BB11_31
 	ld	hl, _credits
-	ld	e, (hl)
-	inc	hl
-	ld	d, (hl)
-	dec	hl
 	push	hl
 	pop	iy
+	ld	e, (iy)
+	ld	d, (iy + 1)
 	ld	hl, _bets+74
-	jq	BB11_29
-BB11_22:
+	jq	BB11_30
+BB11_23:
 	bit	0, a
-	jq	nz, BB11_30
+	jq	nz, BB11_31
 	ld	l, (ix + -20)
 	ld	h, (ix + -19)
 	add.sis	hl, bc
 	or	a, a
 	sbc.sis	hl, bc
-	jq	nz, BB11_30
+	jq	nz, BB11_31
 	ld	hl, _credits
-	ld	e, (hl)
-	inc	hl
-	ld	d, (hl)
-	dec	hl
 	push	hl
 	pop	iy
+	ld	e, (iy)
+	ld	d, (iy + 1)
 	ld	hl, _bets+76
-	jq	BB11_29
-BB11_25:
+	jq	BB11_30
+BB11_26:
 	ld	l, (ix + -18)
 	ld	h, (ix + -17)
 	ld.sis	de, 12
 	or	a, a
 	sbc.sis	hl, de
-	jq	nc, BB11_30
+	jq	nc, BB11_31
 	ld	hl, _credits
-	ld	e, (hl)
-	inc	hl
-	ld	d, (hl)
-	dec	hl
 	push	hl
 	pop	iy
+	ld	e, (iy)
+	ld	d, (iy + 1)
 	ld	hl, _bets+80
-	jq	BB11_29
-BB11_27:
+	jq	BB11_30
+BB11_28:
 	ld	l, (ix + -24)
 	ld	h, (ix + -23)
 	ld.sis	de, 12
 	or	a, a
 	sbc.sis	hl, de
-	jq	nc, BB11_30
+	jq	nc, BB11_31
 	ld	hl, _credits
-	ld	e, (hl)
-	inc	hl
-	ld	d, (hl)
-	dec	hl
 	push	hl
 	pop	iy
+	ld	e, (iy)
+	ld	d, (iy + 1)
 	ld	hl, _bets+82
-BB11_29:
+BB11_30:
 	push	de
 	ld	e, (hl)
 	inc	hl
@@ -1747,87 +1823,44 @@ BB11_29:
 	add.sis	hl, de
 	ld	(iy), l
 	ld	(iy + 1), h
-BB11_30:
+BB11_31:
 	ld	hl, (ix + -6)
 	ld	de, 43
 	or	a, a
 	sbc	hl, de
-	jq	nz, BB11_34
+	jq	nz, BB11_35
 	ld	l, (ix + -16)
 	ld	h, (ix + -15)
 	ld.sis	de, 252
 	or	a, a
 	sbc.sis	hl, de
-	jq	nz, BB11_34
+	jq	nz, BB11_35
 	ld	hl, _credits
 	push	hl
 	pop	iy
 	ld	c, (iy)
 	ld	b, (iy + 1)
 	ld	hl, _bets+86
-	jq	BB11_33
-BB11_34:
+	jq	BB11_34
+BB11_35:
 	ld	hl, (ix + -6)
 	ld	de, 44
 	or	a, a
 	sbc	hl, de
-	jq	nz, BB11_37
+	jq	nz, BB11_38
 	ld	l, (ix + -16)
 	ld	h, (ix + -15)
 	ld.sis	de, 254
 	or	a, a
 	sbc.sis	hl, de
-	jq	nz, BB11_37
+	jq	nz, BB11_38
 	ld	hl, _credits
 	push	hl
 	pop	iy
 	ld	c, (iy)
 	ld	b, (iy + 1)
 	ld	hl, _bets+88
-	jq	BB11_33
-BB11_37:
-	ld	bc, (ix + -6)
-	push	bc
-	pop	hl
-	ld	de, 45
-	or	a, a
-	sbc	hl, de
-	jq	nz, BB11_40
-	ld	l, (ix + -18)
-	ld	h, (ix + -17)
-	ld.sis	de, 18
-	or	a, a
-	sbc.sis	hl, de
-	push	bc
-	pop	de
-	jq	nc, BB11_51
-	ld	hl, _credits
-	push	hl
-	pop	iy
-	ld	c, (iy)
-	ld	b, (iy + 1)
-	ld	hl, _bets+90
-	jq	BB11_50
-BB11_40:
-	push	bc
-	pop	hl
-	ld	de, 46
-	or	a, a
-	sbc	hl, de
-	jq	nz, BB11_43
-	ld	l, (ix + -14)
-	ld	h, (ix + -13)
-	ld.sis	de, 19
-	or	a, a
-	sbc.sis	hl, de
-	jq	c, BB11_43
-	ld	hl, _credits
-	push	hl
-	pop	iy
-	ld	c, (iy)
-	ld	b, (iy + 1)
-	ld	hl, _bets+92
-BB11_33:
+BB11_34:
 	push	de
 	ld	e, (hl)
 	inc	hl
@@ -1840,47 +1873,65 @@ BB11_33:
 BB11_12:
 	ld	(iy), l
 	ld	(iy + 1), h
+	ld	c, (ix + -3)
+	ld	b, (ix + -2)
+BB11_13:
 	ld	de, (ix + -6)
-BB11_51:
+BB11_52:
 	inc	de
 	ld.sis	hl, 0
 	ld	iy, (ix + -12)
 	ld	(iy), l
 	ld	(iy + 1), h
-	ld	l, (ix + -3)
-	ld	h, (ix + -2)
-	inc.sis	hl
-	ld	(ix + -3), l
-	ld	(ix + -2), h
+	inc.sis	bc
+	ld	(ix + -3), c
+	ld	(ix + -2), b
 	lea	iy, iy + 2
 	ld	(ix + -12), iy
 	jq	BB11_4
-BB11_43:
-	ld	c, (ix + -3)
-	ld	b, (ix + -2)
-	ld	l, c
-	ld	h, b
-	ld.sis	de, 47
+BB11_38:
+	ld	iy, (ix + -6)
+	lea	hl, iy + 0
+	ld	de, 45
+	or	a, a
+	sbc	hl, de
+	jq	nz, BB11_41
+	ld	l, (ix + -18)
+	ld	h, (ix + -17)
+	ld.sis	de, 18
 	or	a, a
 	sbc.sis	hl, de
-	jq	nz, BB11_46
-	ld	e, a
-	ld	l, (ix + -22)
-	ld	h, (ix + -21)
-	ld	a, l
-	ld	l, 1
-	xor	a, l
-	bit	0, a
-	ld	a, e
-	ld	de, (ix + -6)
-	jq	nz, BB11_51
+	ld	c, (ix + -3)
+	ld	b, (ix + -2)
+	lea	de, iy + 0
+	jq	nc, BB11_52
 	ld	hl, _credits
 	push	hl
 	pop	iy
 	ld	c, (iy)
 	ld	b, (iy + 1)
-	ld	hl, _bets+94
-BB11_50:
+	ld	hl, _bets+90
+	jq	BB11_51
+BB11_41:
+	lea	hl, iy + 0
+	ld	de, 46
+	or	a, a
+	sbc	hl, de
+	ld	c, (ix + -3)
+	ld	b, (ix + -2)
+	jq	nz, BB11_44
+	ld	l, (ix + -14)
+	ld	h, (ix + -13)
+	ld.sis	de, 19
+	or	a, a
+	sbc.sis	hl, de
+	jq	c, BB11_44
+	ld	hl, _credits
+	push	hl
+	pop	iy
+	ld	c, (iy)
+	ld	b, (iy + 1)
+	ld	hl, _bets+92
 	push	de
 	ld	e, (hl)
 	inc	hl
@@ -1890,42 +1941,82 @@ BB11_50:
 	pop	de
 	add.sis	hl, hl
 	add.sis	hl, bc
+	ld	c, (ix + -3)
+	ld	b, (ix + -2)
 	ld	(iy), l
 	ld	(iy + 1), h
-	jq	BB11_51
-BB11_46:
+	jq	BB11_13
+BB11_44:
+	ld	l, c
+	ld	h, b
+	ld.sis	de, 47
+	or	a, a
+	sbc.sis	hl, de
+	jq	nz, BB11_47
+	ld	e, a
+	ld	l, (ix + -22)
+	ld	h, (ix + -21)
+	ld	a, l
+	ld	l, 1
+	xor	a, l
+	bit	0, a
+	ld	a, e
+	ld	de, (ix + -6)
+	jq	nz, BB11_52
+	ld	hl, _credits
+	push	hl
+	pop	iy
+	ld	c, (iy)
+	ld	b, (iy + 1)
+	ld	hl, _bets+94
+BB11_51:
+	push	de
+	ld	e, (hl)
+	inc	hl
+	ld	d, (hl)
+	ld	l, e
+	ld	h, d
+	pop	de
+	add.sis	hl, hl
+	add.sis	hl, bc
+	ld	c, (ix + -3)
+	ld	b, (ix + -2)
+	ld	(iy), l
+	ld	(iy + 1), h
+	jq	BB11_52
+BB11_47:
 	ld	l, c
 	ld	h, b
 	ld.sis	de, 48
 	or	a, a
 	sbc.sis	hl, de
 	ld	de, (ix + -6)
-	jq	nz, BB11_51
+	jq	nz, BB11_52
 	bit	0, a
-	jq	nz, BB11_51
+	jq	nz, BB11_52
 	ld	l, (ix + -22)
 	ld	h, (ix + -21)
 	bit	0, l
-	jq	nz, BB11_51
+	jq	nz, BB11_52
 	ld	hl, _credits
 	push	hl
 	pop	iy
 	ld	c, (iy)
 	ld	b, (iy + 1)
 	ld	hl, _bets+96
-	jq	BB11_50
-BB11_52:
+	jq	BB11_51
+BB11_53:
 	ld.sis	hl, 50
 	ld	iy, _x
 	ld	(iy), l
 	ld	(iy + 1), h
 	ld	iy, -720868
-BB11_53:
+BB11_54:
 	ld	l, (iy)
 	ld	h, (iy + 1)
 	ld	a, l
 	cp	a, 64
-	jq	z, BB11_167
+	jq	z, BB11_168
 	call	_kb_Scan
 	ld	hl, -3
 	push	hl
@@ -2025,14 +2116,14 @@ BB11_53:
 	pop	de
 	ld	a, l
 	cp	a, 8
-	jq	nz, BB11_60
+	jq	nz, BB11_61
 	ld	a, (_keyC)
 	ld	l, a
 	ld	a, (_prevkeyC)
 	ld	e, a
 	ld	a, l
 	cp	a, e
-	jq	z, BB11_60
+	jq	z, BB11_61
 	ld	hl, _posy
 	ld	e, (hl)
 	inc	hl
@@ -2042,13 +2133,13 @@ BB11_53:
 	ld.sis	bc, 2
 	or	a, a
 	sbc.sis	hl, bc
-	jq	c, BB11_60
+	jq	c, BB11_61
 	ld	l, e
 	ld	h, d
 	ld.sis	bc, 4
 	or	a, a
 	sbc.sis	hl, bc
-	jq	nz, BB11_59
+	jq	nz, BB11_60
 	ld	hl, _posx
 	push	de
 	ld	e, (hl)
@@ -2060,14 +2151,14 @@ BB11_53:
 	ld.sis	bc, 1
 	or	a, a
 	sbc.sis	hl, bc
-	jq	z, BB11_60
-BB11_59:
+	jq	z, BB11_61
+BB11_60:
 	dec.sis	de
 	ld	hl, _posy
 	ld	(hl), e
 	inc	hl
 	ld	(hl), d
-BB11_60:
+BB11_61:
 	ld	hl, -720866
 	push	de
 	ld	e, (hl)
@@ -2078,14 +2169,14 @@ BB11_60:
 	pop	de
 	ld	a, l
 	cp	a, 1
-	jq	nz, BB11_62
+	jq	nz, BB11_63
 	ld	a, (_keyC)
 	ld	l, a
 	ld	a, (_prevkeyC)
 	ld	e, a
 	ld	a, l
 	cp	a, e
-	jq	z, BB11_62
+	jq	z, BB11_63
 	ld	hl, _posx
 	ld	c, (hl)
 	inc	hl
@@ -2103,7 +2194,7 @@ BB11_60:
 	ld.sis	de, 2
 	or	a, a
 	sbc.sis	hl, de
-	jq	nz, BB11_72
+	jq	nz, BB11_73
 	ex	de, hl
 	ld	e, iyl
 	ld	d, iyh
@@ -2111,17 +2202,17 @@ BB11_60:
 	ld.sis	de, 4
 	or	a, a
 	sbc.sis	hl, de
-	jq	nz, BB11_72
+	jq	nz, BB11_73
 	ld	hl, _posy
 	ld.sis	de, 5
-	jq	BB11_71
-BB11_72:
+	jq	BB11_72
+BB11_73:
 	ld	l, c
 	ld	h, b
 	ld.sis	de, 2
 	or	a, a
 	sbc.sis	hl, de
-	jq	nz, BB11_88
+	jq	nz, BB11_89
 	ex	de, hl
 	ld	e, iyl
 	ld	d, iyh
@@ -2129,17 +2220,17 @@ BB11_72:
 	ld.sis	de, 5
 	or	a, a
 	sbc.sis	hl, de
-	jq	nz, BB11_88
+	jq	nz, BB11_89
 	ld	hl, _posy
 	ld.sis	de, 8
-	jq	BB11_71
-BB11_88:
+	jq	BB11_72
+BB11_89:
 	ld	l, c
 	ld	h, b
 	ld.sis	de, 2
 	or	a, a
 	sbc.sis	hl, de
-	jq	nz, BB11_95
+	jq	nz, BB11_96
 	ex	de, hl
 	ld	e, iyl
 	ld	d, iyh
@@ -2147,15 +2238,15 @@ BB11_88:
 	ld.sis	de, 8
 	or	a, a
 	sbc.sis	hl, de
-	jq	nz, BB11_95
+	jq	nz, BB11_96
 	ld	hl, _posy
 	ld.sis	de, 11
-BB11_71:
+BB11_72:
 	ld	(hl), e
 	inc	hl
 	ld	(hl), d
-	jq	BB11_62
-BB11_95:
+	jq	BB11_63
+BB11_96:
 	ex	de, hl
 	ld	e, iyl
 	ld	d, iyh
@@ -2163,13 +2254,13 @@ BB11_95:
 	ld.sis	de, 14
 	or	a, a
 	sbc.sis	hl, de
-	jq	nc, BB11_62
+	jq	nc, BB11_63
 	ld	l, c
 	ld	h, b
 	ld.sis	de, 1
 	or	a, a
 	sbc.sis	hl, de
-	jq	nz, BB11_98
+	jq	nz, BB11_99
 	ex	de, hl
 	ld	e, iyl
 	ld	d, iyh
@@ -2177,8 +2268,8 @@ BB11_95:
 	ld.sis	de, 10
 	or	a, a
 	sbc.sis	hl, de
-	jq	z, BB11_62
-BB11_98:
+	jq	z, BB11_63
+BB11_99:
 	inc.sis	iy
 	ld	hl, _posy
 	push	de
@@ -2188,7 +2279,7 @@ BB11_98:
 	inc	hl
 	ld	(hl), d
 	pop	de
-BB11_62:
+BB11_63:
 	ld	hl, -720866
 	push	de
 	ld	e, (hl)
@@ -2199,14 +2290,14 @@ BB11_62:
 	pop	de
 	ld	a, l
 	cp	a, 2
-	jq	nz, BB11_77
+	jq	nz, BB11_78
 	ld	a, (_keyC)
 	ld	l, a
 	ld	a, (_prevkeyC)
 	ld	e, a
 	ld	a, l
 	cp	a, e
-	jq	z, BB11_77
+	jq	z, BB11_78
 	ld	hl, _posx
 	push	de
 	ld	e, (hl)
@@ -2232,27 +2323,27 @@ BB11_62:
 	ld.sis	bc, 2
 	or	a, a
 	sbc.sis	hl, bc
-	jq	nz, BB11_75
+	jq	nz, BB11_76
 	ld	l, e
 	ld	h, d
 	ld.sis	de, 8
 	or	a, a
 	sbc.sis	hl, de
-	jq	z, BB11_67
+	jq	z, BB11_68
 	ld	l, (ix + -3)
 	ld	h, (ix + -2)
 	ld.sis	de, 4
 	or	a, a
 	sbc.sis	hl, de
-	jq	nz, BB11_75
-BB11_67:
+	jq	nz, BB11_76
+BB11_68:
 	ld	hl, _posx
 	ld.sis	de, 1
 	ld	(hl), e
 	inc	hl
 	ld	(hl), d
-	jq	BB11_77
-BB11_75:
+	jq	BB11_78
+BB11_76:
 	ex	de, hl
 	ld	e, iyl
 	ld	d, iyh
@@ -2260,7 +2351,7 @@ BB11_75:
 	ld.sis	de, 3
 	or	a, a
 	sbc.sis	hl, de
-	jq	c, BB11_77
+	jq	c, BB11_78
 	dec.sis	iy
 	ld	hl, _posx
 	push	de
@@ -2270,7 +2361,7 @@ BB11_75:
 	inc	hl
 	ld	(hl), d
 	pop	de
-BB11_77:
+BB11_78:
 	ld	hl, -720866
 	push	de
 	ld	e, (hl)
@@ -2281,14 +2372,14 @@ BB11_77:
 	pop	de
 	ld	a, l
 	cp	a, 4
-	jq	nz, BB11_81
+	jq	nz, BB11_82
 	ld	a, (_keyC)
 	ld	l, a
 	ld	a, (_prevkeyC)
 	ld	e, a
 	ld	a, l
 	cp	a, e
-	jq	z, BB11_81
+	jq	z, BB11_82
 	ld	hl, _posx
 	ld	e, (hl)
 	inc	hl
@@ -2298,26 +2389,26 @@ BB11_77:
 	ld.sis	bc, 5
 	or	a, a
 	sbc.sis	hl, bc
-	jq	nc, BB11_81
+	jq	nc, BB11_82
 	inc.sis	de
 	ld	hl, _posx
 	ld	(hl), e
 	inc	hl
 	ld	(hl), d
-BB11_81:
+BB11_82:
 	ld	iy, -720878
 	ld	l, (iy)
 	ld	h, (iy + 1)
 	ld	a, l
 	cp	a, 32
-	jq	nz, BB11_123
+	jq	nz, BB11_124
 	ld	a, (_keyA)
 	ld	l, a
 	ld	a, (_prevkeyA)
 	ld	e, a
 	ld	a, l
 	cp	a, e
-	jq	z, BB11_123
+	jq	z, BB11_124
 	ld	hl, _posx
 	ld	e, (hl)
 	inc	hl
@@ -2335,7 +2426,7 @@ BB11_81:
 	ld.sis	bc, 1
 	or	a, a
 	sbc.sis	hl, bc
-	jq	nz, BB11_85
+	jq	nz, BB11_86
 	ex	de, hl
 	ld	e, iyl
 	ld	d, iyh
@@ -2343,14 +2434,14 @@ BB11_81:
 	ld.sis	bc, 4
 	or	a, a
 	sbc.sis	hl, bc
-	jq	z, BB11_167
-BB11_85:
+	jq	z, BB11_168
+BB11_86:
 	ld	l, e
 	ld	h, d
 	ld.sis	bc, 1
 	or	a, a
 	sbc.sis	hl, bc
-	jq	nz, BB11_91
+	jq	nz, BB11_92
 	ex	de, hl
 	ld	e, iyl
 	ld	d, iyh
@@ -2358,20 +2449,20 @@ BB11_85:
 	ld.sis	bc, 5
 	or	a, a
 	sbc.sis	hl, bc
-	jq	nz, BB11_91
+	jq	nz, BB11_92
 	ld.sis	hl, 1
 	ld	iy, _chip
-BB11_121:
+BB11_122:
 	ld	(iy), l
 	ld	(iy + 1), h
-	jq	BB11_122
-BB11_91:
+	jq	BB11_123
+BB11_92:
 	ld	l, e
 	ld	h, d
 	ld.sis	bc, 1
 	or	a, a
 	sbc.sis	hl, bc
-	jq	nz, BB11_99
+	jq	nz, BB11_100
 	ex	de, hl
 	ld	e, iyl
 	ld	d, iyh
@@ -2379,17 +2470,17 @@ BB11_91:
 	ld.sis	bc, 6
 	or	a, a
 	sbc.sis	hl, bc
-	jq	nz, BB11_99
+	jq	nz, BB11_100
 	ld	hl, _chip
 	ld.sis	de, 2
-	jq	BB11_94
-BB11_99:
+	jq	BB11_95
+BB11_100:
 	ld	l, e
 	ld	h, d
 	ld.sis	bc, 1
 	or	a, a
 	sbc.sis	hl, bc
-	jq	nz, BB11_102
+	jq	nz, BB11_103
 	ex	de, hl
 	ld	e, iyl
 	ld	d, iyh
@@ -2397,17 +2488,17 @@ BB11_99:
 	ld.sis	bc, 7
 	or	a, a
 	sbc.sis	hl, bc
-	jq	nz, BB11_102
+	jq	nz, BB11_103
 	ld	hl, _chip
 	ld.sis	de, 5
-	jq	BB11_94
-BB11_102:
+	jq	BB11_95
+BB11_103:
 	ld	l, e
 	ld	h, d
 	ld.sis	bc, 1
 	or	a, a
 	sbc.sis	hl, bc
-	jq	nz, BB11_105
+	jq	nz, BB11_106
 	ex	de, hl
 	ld	e, iyl
 	ld	d, iyh
@@ -2415,17 +2506,17 @@ BB11_102:
 	ld.sis	bc, 8
 	or	a, a
 	sbc.sis	hl, bc
-	jq	nz, BB11_105
+	jq	nz, BB11_106
 	ld	hl, _chip
 	ld.sis	de, 10
-	jq	BB11_94
-BB11_105:
+	jq	BB11_95
+BB11_106:
 	ld	l, e
 	ld	h, d
 	ld.sis	bc, 1
 	or	a, a
 	sbc.sis	hl, bc
-	jq	nz, BB11_108
+	jq	nz, BB11_109
 	ex	de, hl
 	ld	e, iyl
 	ld	d, iyh
@@ -2433,17 +2524,17 @@ BB11_105:
 	ld.sis	bc, 9
 	or	a, a
 	sbc.sis	hl, bc
-	jq	nz, BB11_108
+	jq	nz, BB11_109
 	ld	hl, _chip
 	ld.sis	de, 20
-	jq	BB11_94
-BB11_108:
+	jq	BB11_95
+BB11_109:
 	ld	l, e
 	ld	h, d
 	ld.sis	bc, 1
 	or	a, a
 	sbc.sis	hl, bc
-	jq	nz, BB11_111
+	jq	nz, BB11_112
 	ex	de, hl
 	ld	e, iyl
 	ld	d, iyh
@@ -2451,14 +2542,14 @@ BB11_108:
 	ld.sis	bc, 10
 	or	a, a
 	sbc.sis	hl, bc
-	jq	nz, BB11_111
+	jq	nz, BB11_112
 	ld	hl, _chip
 	ld.sis	de, 50
-BB11_94:
+BB11_95:
 	ld	(hl), e
 	inc	hl
 	ld	(hl), d
-BB11_122:
+BB11_123:
 	ld	hl, 1
 	push	hl
 	ld	hl, 4
@@ -2559,7 +2650,7 @@ BB11_122:
 	pop	hl
 	pop	hl
 	ld	iy, -720878
-BB11_123:
+BB11_124:
 	lea	de, iy + 0
 	ld	l, (iy)
 	ld	h, (iy + 1)
@@ -2571,7 +2662,7 @@ BB11_123:
 	pop	iy
 	ld	a, l
 	cp	a, 8
-	jq	nz, BB11_127
+	jq	nz, BB11_128
 	ex	de, hl
 	ld	e, iyl
 	ld	d, iyh
@@ -2580,7 +2671,7 @@ BB11_123:
 	or	a, a
 	sbc.sis	hl, bc
 	ex	de, hl
-	jq	nz, BB11_128
+	jq	nz, BB11_129
 	ld	a, (_keyA)
 	push	hl
 	pop	bc
@@ -2592,7 +2683,7 @@ BB11_123:
 	pop	hl
 	cp	a, e
 	ld.sis	iy, 1
-	jq	z, BB11_128
+	jq	z, BB11_129
 	ld	hl, _credits
 	push	hl
 	pop	iy
@@ -2611,10 +2702,10 @@ BB11_123:
 	lea	hl, iy + 0
 	ld	iyl, e
 	ld	iyh, d
-	jq	BB11_128
-BB11_127:
-	ex	de, hl
+	jq	BB11_129
 BB11_128:
+	ex	de, hl
+BB11_129:
 	push	de
 	ld	e, (hl)
 	inc	hl
@@ -2624,7 +2715,7 @@ BB11_128:
 	pop	de
 	ld	a, l
 	cp	a, 4
-	jq	nz, BB11_133
+	jq	nz, BB11_134
 	ex	de, hl
 	ld	e, iyl
 	ld	d, iyh
@@ -2632,7 +2723,7 @@ BB11_128:
 	ld.sis	bc, 1
 	or	a, a
 	sbc.sis	hl, bc
-	jq	nz, BB11_133
+	jq	nz, BB11_134
 	ld	a, (_keyA)
 	ld	l, a
 	ld	a, (_prevkeyA)
@@ -2640,7 +2731,7 @@ BB11_128:
 	ld	a, l
 	cp	a, e
 	ld.sis	iy, 1
-	jq	z, BB11_133
+	jq	z, BB11_134
 	ld	hl, _credits
 	push	hl
 	pop	iy
@@ -2659,7 +2750,7 @@ BB11_128:
 	inc	hl
 	ld	(hl), d
 	pop	de
-BB11_133:
+BB11_134:
 	ld	hl, -720878
 	push	de
 	ld	e, (hl)
@@ -2670,7 +2761,7 @@ BB11_133:
 	pop	de
 	ld	a, l
 	cp	a, 2
-	jq	nz, BB11_138
+	jq	nz, BB11_139
 	ex	de, hl
 	ld	e, iyl
 	ld	d, iyh
@@ -2678,7 +2769,7 @@ BB11_133:
 	ld.sis	bc, 1
 	or	a, a
 	sbc.sis	hl, bc
-	jq	nz, BB11_138
+	jq	nz, BB11_139
 	ld	a, (_keyA)
 	ld	l, a
 	ld	a, (_prevkeyA)
@@ -2686,7 +2777,7 @@ BB11_133:
 	ld	a, l
 	cp	a, e
 	ld.sis	iy, 1
-	jq	z, BB11_138
+	jq	z, BB11_139
 	ld	hl, _credits
 	push	hl
 	pop	iy
@@ -2705,7 +2796,7 @@ BB11_133:
 	inc	hl
 	ld	(hl), d
 	pop	de
-BB11_138:
+BB11_139:
 	ld	hl, -720878
 	push	de
 	ld	e, (hl)
@@ -2716,7 +2807,7 @@ BB11_138:
 	pop	de
 	ld	a, l
 	cp	a, 1
-	jq	nz, BB11_143
+	jq	nz, BB11_144
 	ex	de, hl
 	ld	e, iyl
 	ld	d, iyh
@@ -2724,7 +2815,7 @@ BB11_138:
 	ld.sis	bc, 1
 	or	a, a
 	sbc.sis	hl, bc
-	jq	nz, BB11_143
+	jq	nz, BB11_144
 	ld	a, (_keyA)
 	ld	l, a
 	ld	a, (_prevkeyA)
@@ -2732,7 +2823,7 @@ BB11_138:
 	ld	a, l
 	cp	a, e
 	ld.sis	iy, 1
-	jq	z, BB11_143
+	jq	z, BB11_144
 	ld	hl, _credits
 	push	hl
 	pop	iy
@@ -2751,7 +2842,7 @@ BB11_138:
 	inc	hl
 	ld	(hl), d
 	pop	de
-BB11_143:
+BB11_144:
 	ld	hl, -720878
 	push	de
 	ld	e, (hl)
@@ -2762,7 +2853,7 @@ BB11_143:
 	pop	de
 	ld	a, l
 	cp	a, 16
-	jq	nz, BB11_146
+	jq	nz, BB11_147
 	ex	de, hl
 	ld	e, iyl
 	ld	d, iyh
@@ -2770,15 +2861,15 @@ BB11_143:
 	ld.sis	bc, 1
 	or	a, a
 	sbc.sis	hl, bc
-	jq	nz, BB11_146
+	jq	nz, BB11_147
 	ld	a, (_keyA)
 	ld	l, a
 	ld	a, (_prevkeyA)
 	ld	c, a
 	ld	a, l
 	cp	a, c
-	jq	nz, BB11_150
-BB11_146:
+	jq	nz, BB11_151
+BB11_147:
 	ld	hl, -720878
 	ld	c, (hl)
 	inc	hl
@@ -2790,20 +2881,20 @@ BB11_146:
 	add.sis	hl, bc
 	or	a, a
 	sbc.sis	hl, bc
-	jq	nz, BB11_152
+	jq	nz, BB11_153
 	ld	a, c
 	cp	a, 16
-	jq	nz, BB11_152
+	jq	nz, BB11_153
 	ld	a, (_keyA)
 	ld	l, a
 	ld	a, (_prevkeyA)
 	ld	e, a
 	ld	a, l
 	cp	a, e
-	jq	z, BB11_152
+	jq	z, BB11_153
 	ld.sis	hl, 1
-	jq	BB11_151
-BB11_150:
+	jq	BB11_152
+BB11_151:
 	ld	hl, _credits
 	push	hl
 	pop	iy
@@ -2814,11 +2905,11 @@ BB11_150:
 	ld	(iy), l
 	ld	(iy + 1), h
 	ld.sis	hl, 0
-BB11_151:
+BB11_152:
 	ld	iy, _menu
 	ld	(iy), l
 	ld	(iy + 1), h
-BB11_152:
+BB11_153:
 	ld	hl, _posx
 	ld	e, (hl)
 	inc	hl
@@ -2838,27 +2929,27 @@ BB11_152:
 	ld.sis	bc, 1
 	or	a, a
 	sbc.sis	hl, bc
-	jq	nz, BB11_157
+	jq	nz, BB11_158
 	ld	l, e
 	ld	h, d
 	ld.sis	bc, 5
 	or	a, a
 	sbc.sis	hl, bc
-	jq	z, BB11_155
+	jq	z, BB11_156
 	ld	l, e
 	ld	h, d
 	dec.sis	hl
 	ld.sis	bc, 3
 	or	a, a
 	sbc.sis	hl, bc
-	jq	nc, BB11_157
-BB11_155:
+	jq	nc, BB11_158
+BB11_156:
 	ld.sis	de, 4
 	ld	hl, _posx
 	ld	(hl), e
 	inc	hl
 	ld	(hl), d
-BB11_157:
+BB11_158:
 	ex	de, hl
 	ld	e, iyl
 	ld	d, iyh
@@ -2868,15 +2959,15 @@ BB11_157:
 	ld.sis	bc, 6
 	or	a, a
 	sbc.sis	hl, bc
-	jq	nz, BB11_159
+	jq	nz, BB11_160
 	ld	l, e
 	ld	h, d
 	ld.sis	bc, 2
 	or	a, a
 	sbc.sis	hl, bc
 	ld.sis	bc, 5
-	jq	z, BB11_161
-BB11_159:
+	jq	z, BB11_162
+BB11_160:
 	ld.sis	bc, -9
 	add.sis	iy, bc
 	ld	l, e
@@ -2884,7 +2975,7 @@ BB11_159:
 	ld.sis	de, 2
 	or	a, a
 	sbc.sis	hl, de
-	jq	nz, BB11_162
+	jq	nz, BB11_163
 	ex	de, hl
 	ld	e, iyl
 	ld	d, iyh
@@ -2893,13 +2984,13 @@ BB11_159:
 	or	a, a
 	sbc.sis	hl, de
 	ld.sis	bc, 8
-	jq	nc, BB11_162
-BB11_161:
+	jq	nc, BB11_163
+BB11_162:
 	ld	hl, _posy
 	ld	(hl), c
 	inc	hl
 	ld	(hl), b
-BB11_162:
+BB11_163:
 	call	_gfx_SwapDraw
 	call	_kb_Scan
 	ld	a, (_keyA)
@@ -2928,7 +3019,7 @@ BB11_162:
 	ld	(_keyC), a
 	ld	a, c
 	cp	a, e
-	jq	nz, BB11_166
+	jq	nz, BB11_167
 	ld	hl, _keycount
 	ld	e, (hl)
 	inc	hl
@@ -2949,18 +3040,18 @@ BB11_162:
 	ld.sis	de, 4
 	or	a, a
 	sbc.sis	hl, de
-	jq	c, BB11_53
+	jq	c, BB11_54
 	ld	a, c
 	ld	l, 1
 	xor	a, l
 	bit	0, a
-	jq	nz, BB11_53
+	jq	nz, BB11_54
 	ld	l, (ix + -26)
 	ld	h, (ix + -25)
 	ld	a, h
 	ld	(_prevkeyC), a
-	jq	BB11_53
-BB11_166:
+	jq	BB11_54
+BB11_167:
 	ld.sis	hl, 0
 	lea	de, iy + 0
 	ld	iy, _keycount
@@ -2968,14 +3059,14 @@ BB11_166:
 	ld	(iy + 1), h
 	push	de
 	pop	iy
-	jq	BB11_53
-BB11_111:
+	jq	BB11_54
+BB11_112:
 	ld	l, e
 	ld	h, d
 	ld.sis	bc, 3
 	or	a, a
 	sbc.sis	hl, bc
-	jq	nz, BB11_113
+	jq	nz, BB11_114
 	ex	de, hl
 	ld	e, iyl
 	ld	d, iyh
@@ -2983,14 +3074,14 @@ BB11_111:
 	ld.sis	bc, 15
 	or	a, a
 	sbc.sis	hl, bc
-	jq	c, BB11_118
-BB11_113:
+	jq	c, BB11_119
+BB11_114:
 	ld	l, e
 	ld	h, d
 	ld.sis	bc, 4
 	or	a, a
 	sbc.sis	hl, bc
-	jq	nz, BB11_115
+	jq	nz, BB11_116
 	ex	de, hl
 	ld	e, iyl
 	ld	d, iyh
@@ -2998,24 +3089,24 @@ BB11_113:
 	ld.sis	bc, -2
 	add.sis	hl, bc
 	ld.sis	bc, 13
-	jq	BB11_117
-BB11_115:
+	jq	BB11_118
+BB11_116:
 	ld	l, e
 	ld	h, d
 	ld.sis	bc, 5
 	or	a, a
 	sbc.sis	hl, bc
-	jq	nz, BB11_122
+	jq	nz, BB11_123
 	ex	de, hl
 	ld	e, iyl
 	ld	d, iyh
 	ex	de, hl
 	ld.sis	bc, 15
-BB11_117:
+BB11_118:
 	or	a, a
 	sbc.sis	hl, bc
-	jq	nc, BB11_122
-BB11_118:
+	jq	nc, BB11_123
+BB11_119:
 	ld	hl, _credits
 	push	de
 	ld	e, (hl)
@@ -3036,7 +3127,7 @@ BB11_118:
 	ld	(ix + -5), b
 	or	a, a
 	sbc.sis	hl, bc
-	jq	c, BB11_122
+	jq	c, BB11_123
 	or	a, a
 	sbc	hl, hl
 	push	hl
@@ -3078,7 +3169,7 @@ BB11_118:
 	ld	de, 51
 	or	a, a
 	sbc	hl, de
-	jq	nc, BB11_122
+	jq	nc, BB11_123
 	ld	(iy), c
 	ld	(iy + 1), b
 	ld	l, (ix + -3)
@@ -3088,8 +3179,8 @@ BB11_118:
 	or	a, a
 	sbc.sis	hl, de
 	ld	iy, _credits
-	jq	BB11_121
-BB11_167:
+	jq	BB11_122
+BB11_168:
 	ld	hl, -720868
 	push	de
 	ld	e, (hl)
@@ -3100,7 +3191,7 @@ BB11_167:
 	pop	de
 	ld	a, l
 	cp	a, 64
-	jq	z, BB11_176
+	jq	z, BB11_178
 	ld	hl, -851900
 	push	hl
 	pop	iy
@@ -3295,7 +3386,7 @@ BB11_167:
 	inc	hl
 	ld	(hl), d
 	ld.sis	bc, 1
-BB11_169:
+BB11_170:
 	or	a, a
 	ld	l, e
 	ld	h, d
@@ -3307,7 +3398,7 @@ BB11_169:
 	ld	l, e
 	ld	h, d
 	adc.sis	hl, bc
-	jq	c, BB11_1
+	jq	c, BB11_177
 	call	_kb_Scan
 	ld	hl, -720868
 	push	de
@@ -3319,7 +3410,7 @@ BB11_169:
 	pop	de
 	ld	a, l
 	cp	a, 64
-	jq	z, BB11_175
+	jq	z, BB11_176
 	call	_rand
 	ld	bc, 1000
 	call	__irems
@@ -3347,7 +3438,7 @@ BB11_169:
 	ld.sis	de, 2000
 	or	a, a
 	sbc.sis	hl, de
-	jq	c, BB11_1
+	jq	c, BB11_177
 	ld	a, (_s)
 	ld	l, a
 	ld	a, c
@@ -3425,17 +3516,57 @@ BB11_169:
 	inc	hl
 	ld	d, (hl)
 	ld.sis	bc, 1
-	jq	BB11_169
-BB11_175:
+	jq	BB11_170
+BB11_176:
 	ld.sis	hl, 1
 	ld	iy, _f
 	ld	(iy), l
 	ld	(iy + 1), h
+BB11_177:
+	ld	a, (_hnumbers+3)
+	ld	(_hnumbers+4), a
+	ld	a, (_hnumbers+2)
+	ld	(_hnumbers+3), a
+	ld	a, (_hnumbers+1)
+	ld	(_hnumbers+2), a
+	ld	a, (_hnumbers)
+	ld	(_hnumbers+1), a
+	ld	hl, _e
+	push	de
+	ld	e, (hl)
+	inc	hl
+	ld	d, (hl)
+	ld	iyl, e
+	ld	iyh, d
+	pop	de
+	ld	a, iyl
+	ld	(_hnumbers), a
+	ld	a, (_hcolor+3)
+	ld	(_hcolor+4), a
+	ld	a, (_hcolor+2)
+	ld	(_hcolor+3), a
+	ld	a, (_hcolor+1)
+	ld	(_hcolor+2), a
+	ld	a, (_hcolor)
+	ld	(_hcolor+1), a
+	ld	hl, _c
+	push	de
+	ld	e, (hl)
+	inc	hl
+	ld	d, (hl)
+	ld	l, e
+	ld	h, d
+	pop	de
+	ld	(ix + -16), l
+	ld	(ix + -15), h
+	ld	a, l
+	ld	(_hcolor), a
+	ld	a, 1
 	jq	BB11_1
-BB11_176:
-	ld	hl, L_.str.17
+BB11_178:
+	ld	hl, L_.str.18
 	push	hl
-	ld	hl, L_.str.15
+	ld	hl, L_.str.16
 	push	hl
 	call	_ti_Open
 	ld	e, a
@@ -3465,12 +3596,12 @@ BB11_176:
 lJTI11_0:
 	private	LJTI11_0
 LJTI11_0:
-	dl	BB11_18
-	dl	BB11_20
-	dl	BB11_22
-	dl	BB11_14
-	dl	BB11_25
-	dl	BB11_27
+	dl	BB11_19
+	dl	BB11_21
+	dl	BB11_23
+	dl	BB11_15
+	dl	BB11_26
+	dl	BB11_28
 
 	section	.bss,"aw",@nobits
 	public	_rotate_sprite_data
@@ -3487,10 +3618,20 @@ _rotate_sprite:
 _bets:
 	rb	100
 
+	section	.bss,"aw",@nobits
+	public	_hnumbers
+_hnumbers:
+	rb	5
+
+	section	.bss,"aw",@nobits
+	public	_hcolor
+_hcolor:
+	rb	5
+
 	section	.rodata,"a",@progbits
 	private	L_.str
 L_.str:
-	db	"Roulette v0.4.1",000o
+	db	"RoulCE v0.5.0",000o
 
 	section	.rodata,"a",@progbits
 	private	L_.str.1
@@ -3632,6 +3773,11 @@ _p:
 _o:
 	rb	2
 
+	section	.rodata,"a",@progbits
+	private	L_.str.14
+L_.str.14:
+	db	"  ",000o
+
 	section	.bss,"aw",@nobits
 	public	_chip
 _chip:
@@ -3643,8 +3789,8 @@ _credits:
 	rb	2
 
 	section	.rodata,"a",@progbits
-	private	L_.str.14
-L_.str.14:
+	private	L_.str.15
+L_.str.15:
 	db	"Credits: ",000o
 
 	section	.rodata,"a",@progbits
@@ -3658,13 +3804,13 @@ L___const.main.numbers:
 	db	"",032o,003o,"#",014o,034o,007o,035o,022o,026o,011o,037o,016o,024o,001o,"!",020o,030o,005o,012o,027o,010o,036o,013o,"$",015o,033o,006o,"""",021o,031o,002o,025o,004o,023o,017o," ",000o
 
 	section	.rodata,"a",@progbits
-	private	L_.str.15
-L_.str.15:
+	private	L_.str.16
+L_.str.16:
 	db	"ROULSV",000o
 
 	section	.rodata,"a",@progbits
-	private	L_.str.16
-L_.str.16:
+	private	L_.str.17
+L_.str.17:
 	db	"r",000o
 
 	section	.bss,"aw",@nobits
@@ -3733,8 +3879,8 @@ _n:
 	rb	1
 
 	section	.rodata,"a",@progbits
-	private	L_.str.17
-L_.str.17:
+	private	L_.str.18
+L_.str.18:
 	db	"w",000o
 
 	section	.bss,"aw",@nobits
@@ -3793,9 +3939,9 @@ _u:
 	extern	__bdivu
 	extern	_ro_data
 	extern	__frameset
-	extern	_kb_Scan
 	extern	_palette_gfx
 	extern	_gfx_RotateScaleSprite
+	extern	_kb_Scan
 	extern	_ti_Write
 	extern	_gfx_RLETSprite_NoClip
 	extern	_gfx_SwapDraw
@@ -3803,8 +3949,8 @@ _u:
 	extern	_pfeil_data
 	extern	__sdivu
 	extern	_ti_CloseAll
-	extern	_gfx_FillScreen
 	extern	__Unwind_SjLj_Unregister
+	extern	_gfx_FillScreen
 	extern	__irems
 	extern	__imulu
 	extern	_gfx_SetColor

@@ -23,14 +23,16 @@ uint16_t b, x, s, f, y, z, g, posx, posy, h, i, j, k, l, color, chip, chipa, chi
 uint8_t a, n;
 kb_key_t keyA, keyB, keyC, prevkeyA, prevkeyB, prevkeyC;
 uint16_t bets[50] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};//bets array
+uint8_t hnumbers[5] = {0,0,0,0,0};//Number history
+uint8_t hcolor[5] = {0,0,0,0,0};//Color history
 /*Declaring Variables*/
 
 void DrawTitle() //This function shows the title
 {
 	gfx_SetTextFGColor(254);//Black text color
 	gfx_SetTextScale(1,1);//Text size for Title
-	gfx_SetTextXY(110,10);//Title position
-	gfx_PrintString("Roulette v0.4.1");//Print title
+	gfx_SetTextXY(130,10);//Title position
+	gfx_PrintString("RoulCE v0.5.0");//Print title
 }
 
 void DrawMenu()//This function draws the menu at the bottom
@@ -155,7 +157,7 @@ void placechip(v, x, y)//This function draws placed chips
 	}
 }
 
-void createTableau()//this functions shows the tableau
+void createTableau()//this functions shows the tableau and the history
 {
 	gfx_RLETSprite_NoClip(tableau,215,15);
 	for(m=0; m < 39; m++)
@@ -192,6 +194,20 @@ void createTableau()//this functions shows the tableau
 	placechip(47, 250, 190);
 	placechip(48, 250, 204);
 	placechip(49, 250, 218);	
+	
+	gfx_SetTextXY(110,40);
+	
+	gfx_SetColor(253);
+	gfx_FillRectangle(110,40,60,10);
+	for(m=0; m < 5; m++)
+	{
+		gfx_SetTextScale(1,1);
+		gfx_SetTextFGColor(hcolor[m]);
+		gfx_PrintInt(hnumbers[m], 1);
+		gfx_PrintString("  ");
+	}
+	
+	
 }
 
 void bet(s, t, u)//This functions makes chips stack
@@ -437,7 +453,7 @@ void main(void)
 		/*Generate random amount to rotate*/
 		
 		f = 0;
-		for (x = 0; ++x;)
+		for (x = 0; ++x;)//Spin
 		{
 			kb_Scan();
 			if (kb_Data[6] == kb_Clear) {f = 1; break;}//Exit
@@ -465,6 +481,17 @@ void main(void)
 			/*Determine number*/
 			PrintNumber();
 		}
+		//store number and color in history
+		hnumbers[4] = hnumbers[3];
+		hnumbers[3] = hnumbers[2];
+		hnumbers[2] = hnumbers[1];
+		hnumbers[1] = hnumbers[0];
+		hnumbers[0] = e;
+		hcolor[4] = hcolor[3];
+		hcolor[3] = hcolor[2];
+		hcolor[2] = hcolor[1];
+		hcolor[1] = hcolor[0];
+		hcolor[0] = c;
 	} while(1);
 	*creditsv = credits;
 	sv = ti_Open("ROULSV","w");

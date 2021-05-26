@@ -864,26 +864,31 @@ _createTableau:
 	push	de
 	push	hl
 	call	_gfx_RLETSprite_NoClip
-	ld	hl, _m
-	push	hl
-	pop	iy
+	ld.sis	iy, 0
 	pop	hl
 	pop	hl
 	pop	hl
 	ld.sis	bc, 39
-	ld.sis	de, 0
+	ld	e, iyl
+	ld	d, iyh
 BB8_1:
-	ld	(iy), e
-	ld	(iy + 1), d
+	ld	hl, _k
+	ld	(hl), e
+	inc	hl
+	ld	(hl), d
 	ld	l, e
 	ld	h, d
 	or	a, a
 	sbc.sis	hl, bc
 	jq	nc, BB8_6
-	ld.sis	hl, 0
-	ld	iy, _chipb
-	ld	(iy), l
-	ld	(iy + 1), h
+	ld	hl, _chipb
+	push	de
+	ld	e, iyl
+	ld	d, iyh
+	ld	(hl), e
+	inc	hl
+	ld	(hl), d
+	pop	de
 	or	a, a
 	sbc	hl, hl
 	ld	l, e
@@ -905,7 +910,7 @@ BB8_1:
 	ld	(iy), l
 	ld	(iy + 1), h
 	call	_correctchip
-	ld	hl, _m
+	ld	hl, _k
 	ld	e, (hl)
 	inc	hl
 	ld	d, (hl)
@@ -1034,7 +1039,7 @@ BB8_1:
 	call	_gfx_SetTextXY
 	pop	hl
 	pop	hl
-	ld	hl, _m
+	ld	hl, _k
 	ld	e, (hl)
 	inc	hl
 	ld	d, (hl)
@@ -1057,14 +1062,12 @@ BB8_1:
 	pop	hl
 	pop	hl
 BB8_5:
-	ld	hl, _m
+	ld	hl, _k
 	ld	e, (hl)
 	inc	hl
 	ld	d, (hl)
-	dec	hl
 	inc.sis	de
-	push	hl
-	pop	iy
+	ld.sis	iy, 0
 	ld.sis	bc, 39
 	jq	BB8_1
 BB8_6:
@@ -1178,13 +1181,6 @@ BB8_6:
 	pop	hl
 	pop	hl
 	pop	hl
-	ld	hl, 40
-	push	hl
-	ld	hl, 110
-	push	hl
-	call	_gfx_SetTextXY
-	pop	hl
-	pop	hl
 	ld	hl, -3
 	push	hl
 	call	_gfx_SetColor
@@ -1198,56 +1194,74 @@ BB8_6:
 	ld	hl, 110
 	push	hl
 	call	_gfx_FillRectangle
-	ld	iy, _m
 	pop	hl
 	pop	hl
 	pop	hl
 	pop	hl
-	ld.sis	de, 5
-	ld.sis	hl, 0
-BB8_7:
-	ld	(iy), l
-	ld	(iy + 1), h
-	or	a, a
-	sbc.sis	hl, de
-	jq	nc, BB8_9
 	ld	hl, 1
 	push	hl
 	push	hl
 	call	_gfx_SetTextScale
 	pop	hl
 	pop	hl
-	ld	hl, _m
-	push	de
-	ld	e, (hl)
-	inc	hl
-	ld	d, (hl)
-	ld	l, e
-	ld	h, d
-	pop	de
+	ld	hl, -2
+	push	hl
+	call	_gfx_SetTextFGColor
+	pop	hl
+	ld	hl, 26
+	push	hl
+	ld	hl, 110
+	push	hl
+	call	_gfx_SetTextXY
+	pop	hl
+	pop	hl
+	ld	hl, L_.str.14
+	push	hl
+	call	_gfx_PrintString
+	pop	hl
+	ld	hl, 40
+	push	hl
+	ld	hl, 110
+	push	hl
+	call	_gfx_SetTextXY
+	ld.sis	bc, 0
+	ld	iy, _k
+	pop	hl
+	pop	hl
+	ld.sis	de, 5
+BB8_7:
+	ld	(iy), c
+	ld	(iy + 1), b
+	ld	l, c
+	ld	h, b
+	or	a, a
+	sbc.sis	hl, de
+	jq	nc, BB8_11
 	ld	de, 0
-	ld	e, l
-	ld	d, h
+	ld	e, c
+	ld	d, b
 	ld	hl, _hcolor
 	add	hl, de
 	ld	a, (hl)
 	ld	l, a
 	push	hl
 	call	_gfx_SetTextFGColor
-	pop	hl
-	ld	hl, _m
-	push	de
-	ld	e, (hl)
-	inc	hl
-	ld	d, (hl)
-	ld	l, e
-	ld	h, d
-	pop	de
 	ld	bc, 0
+	ld	iy, _k
+	pop	hl
+	ld	l, (iy)
+	ld	h, (iy + 1)
 	push	bc
 	pop	de
 	ld	e, l
 	ld	d, h
+	ld	hl, _hcolor
+	add	hl, de
+	ld	a, (hl)
+	or	a, a
+	jq	nz, BB8_9
+	jq	BB8_10
+BB8_9:
 	ld	hl, _hnumbers
 	add	hl, de
 	ld	a, (hl)
@@ -1258,17 +1272,36 @@ BB8_7:
 	call	_gfx_PrintInt
 	pop	hl
 	pop	hl
-	ld	hl, L_.str.14
+	ld	hl, _k
+	push	de
+	ld	e, (hl)
+	inc	hl
+	ld	d, (hl)
+	ld	l, e
+	ld	h, d
+	pop	de
+	ld	de, 0
+	ld	e, l
+	ld	d, h
+BB8_10:
+	ex	de, hl
+	ld	bc, 20
+	call	__imulu
+	ld	de, 130
+	add	hl, de
+	ld	de, 40
+	push	de
 	push	hl
-	call	_gfx_PrintString
-	ld.sis	de, 5
-	ld	iy, _m
+	call	_gfx_SetTextXY
 	pop	hl
-	ld	l, (iy)
-	ld	h, (iy + 1)
-	inc.sis	hl
+	pop	hl
+	ld	iy, _k
+	ld	c, (iy)
+	ld	b, (iy + 1)
+	inc.sis	bc
+	ld.sis	de, 5
 	jq	BB8_7
-BB8_9:
+BB8_11:
 	ld	sp, ix
 	pop	ix
 	ret
@@ -2007,7 +2040,7 @@ BB11_47:
 	jq	BB11_51
 BB11_53:
 	ld.sis	hl, 50
-	ld	iy, _x
+	ld	iy, _k
 	ld	(iy), l
 	ld	(iy + 1), h
 	ld	iy, -720868
@@ -3191,7 +3224,7 @@ BB11_168:
 	pop	de
 	ld	a, l
 	cp	a, 64
-	jq	z, BB11_178
+	jq	z, BB11_183
 	ld	hl, -851900
 	push	hl
 	pop	iy
@@ -3371,7 +3404,7 @@ BB11_168:
 	pop	hl
 	call	_gfx_SwapDraw
 	ld.sis	hl, -15536
-	ld	iy, _b
+	ld	iy, _toSpin
 	ld	(iy), l
 	ld	(iy + 1), h
 	call	_rand
@@ -3381,24 +3414,20 @@ BB11_168:
 	ld	(iy), l
 	ld	(iy + 1), h
 	ld.sis	de, 0
-	ld	hl, _f
-	ld	(hl), e
-	inc	hl
-	ld	(hl), d
 	ld.sis	bc, 1
 BB11_170:
 	or	a, a
 	ld	l, e
 	ld	h, d
 	adc.sis	hl, bc
-	ld	iy, _x
+	ld	iy, _k
 	ld	(iy), l
 	ld	(iy + 1), h
 	or	a, a
 	ld	l, e
 	ld	h, d
 	adc.sis	hl, bc
-	jq	c, BB11_177
+	jq	c, BB11_182
 	call	_kb_Scan
 	ld	hl, -720868
 	push	de
@@ -3410,13 +3439,13 @@ BB11_170:
 	pop	de
 	ld	a, l
 	cp	a, 64
-	jq	z, BB11_176
+	jq	z, BB11_182
 	call	_rand
 	ld	bc, 1000
 	call	__irems
 	push	hl
 	pop	de
-	ld	hl, _b
+	ld	hl, _toSpin
 	push	hl
 	pop	iy
 	ld	l, (iy)
@@ -3438,7 +3467,7 @@ BB11_170:
 	ld.sis	de, 2000
 	or	a, a
 	sbc.sis	hl, de
-	jq	c, BB11_177
+	jq	c, BB11_182
 	ld	a, (_s)
 	ld	l, a
 	ld	a, c
@@ -3485,9 +3514,44 @@ BB11_170:
 	pop	hl
 	call	_gfx_SwapDraw
 	ld	a, (_n)
+	ld	l, a
+	add	a, -39
+	cp	a, -43
+	ld	c, 1
+	ld	a, c
+	jq	c, BB11_177
+	ld	a, 0
+BB11_177:
+	and	a, 1
+	ld	e, a
+	ld	a, l
+	add	a, e
+	ld	l, a
+	add	a, 127
+	cp	a, 123
+	ld	a, c
+	jq	c, BB11_179
+	ld	a, 0
+BB11_179:
+	and	a, 1
+	ld	e, a
+	ld	a, l
+	add	a, e
+	ld	l, a
+	add	a, 44
+	cp	a, 40
+	ld	a, c
+	jq	c, BB11_181
+	ld	a, 0
+BB11_181:
+	and	a, 1
+	ld	e, a
+	ld	a, l
+	add	a, e
 	ld	b, a
 	ld	c, 7
 	call	__bdivu
+	ld	(_n), a
 	ld	de, 0
 	ld	e, a
 	ld	hl, L___const.main.colors
@@ -3511,18 +3575,13 @@ BB11_170:
 	ld	(iy), l
 	ld	(iy + 1), h
 	call	_PrintNumber
-	ld	hl, _x
+	ld	hl, _k
 	ld	e, (hl)
 	inc	hl
 	ld	d, (hl)
 	ld.sis	bc, 1
 	jq	BB11_170
-BB11_176:
-	ld.sis	hl, 1
-	ld	iy, _f
-	ld	(iy), l
-	ld	(iy + 1), h
-BB11_177:
+BB11_182:
 	ld	a, (_hnumbers+3)
 	ld	(_hnumbers+4), a
 	ld	a, (_hnumbers+2)
@@ -3563,7 +3622,7 @@ BB11_177:
 	ld	(_hcolor), a
 	ld	a, 1
 	jq	BB11_1
-BB11_178:
+BB11_183:
 	ld	hl, L_.str.18
 	push	hl
 	ld	hl, L_.str.16
@@ -3631,7 +3690,7 @@ _hcolor:
 	section	.rodata,"a",@progbits
 	private	L_.str
 L_.str:
-	db	"RoulCE v0.5.0",000o
+	db	"RoulCE v0.5.2",000o
 
 	section	.rodata,"a",@progbits
 	private	L_.str.1
@@ -3759,11 +3818,6 @@ _chipb:
 	rb	2
 
 	section	.bss,"aw",@nobits
-	public	_m
-_m:
-	rb	2
-
-	section	.bss,"aw",@nobits
 	public	_p
 _p:
 	rb	2
@@ -3776,7 +3830,7 @@ _o:
 	section	.rodata,"a",@progbits
 	private	L_.str.14
 L_.str.14:
-	db	"  ",000o
+	db	"History:",000o
 
 	section	.bss,"aw",@nobits
 	public	_chip
@@ -3824,11 +3878,6 @@ _a:
 	rb	1
 
 	section	.bss,"aw",@nobits
-	public	_x
-_x:
-	rb	2
-
-	section	.bss,"aw",@nobits
 	public	_keyC
 _keyC:
 	rb	1
@@ -3864,13 +3913,8 @@ _keycount:
 	rb	2
 
 	section	.bss,"aw",@nobits
-	public	_b
-_b:
-	rb	2
-
-	section	.bss,"aw",@nobits
-	public	_f
-_f:
+	public	_toSpin
+_toSpin:
 	rb	2
 
 	section	.bss,"aw",@nobits
@@ -3882,21 +3926,6 @@ _n:
 	private	L_.str.18
 L_.str.18:
 	db	"w",000o
-
-	section	.bss,"aw",@nobits
-	public	_y
-_y:
-	rb	2
-
-	section	.bss,"aw",@nobits
-	public	_z
-_z:
-	rb	2
-
-	section	.bss,"aw",@nobits
-	public	_g
-_g:
-	rb	2
 
 	section	.bss,"aw",@nobits
 	public	_j

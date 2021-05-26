@@ -19,7 +19,7 @@
 gfx_UninitedSprite(rotate_sprite, ro_width, ro_height);//sprite buffer
 
 /*Declaring Variables*/
-uint16_t b, x, s, f, y, z, g, posx, posy, h, i, j, k, l, color, chip, chipa, chipb, m, p , o, v, s, t , u, e, c, credits, menu, keycount;
+uint16_t toSpin, s, posx, posy, h, i, j, k, l, color, chip, chipa, chipb, p, o, v, s, t , u, e, c, credits, menu, keycount;
 uint8_t a, n;
 kb_key_t keyA, keyB, keyC, prevkeyA, prevkeyB, prevkeyC;
 uint16_t bets[50] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};//bets array
@@ -32,7 +32,7 @@ void DrawTitle() //This function shows the title
 	gfx_SetTextFGColor(254);//Black text color
 	gfx_SetTextScale(1,1);//Text size for Title
 	gfx_SetTextXY(118,10);//Title position
-	gfx_PrintString("RoulCE v0.5.0");//Print title
+	gfx_PrintString("RoulCE v0.5.2");//Print title
 }
 
 void DrawMenu()//This function draws the menu at the bottom
@@ -100,7 +100,7 @@ void DrawChip(type,cx,cy)//This function draws a chip at a specific location
 void DrawButtons()//This function creates the Menu
 {
 	gfx_SetColor(254);
-	for(k = 0; k < 7; k++)
+	for(k = 0; k < 7; ++k)
 	{
 		gfx_Rectangle(160,57 + (14 * k),41,15);
 	}
@@ -160,14 +160,14 @@ void placechip(v, x, y)//This function draws placed chips
 void createTableau()//this functions shows the tableau and the history
 {
 	gfx_RLETSprite_NoClip(tableau,215,15);
-	for(m=0; m < 39; m++)
+	for(k=0; k < 39; ++k)
 	{
 		chipa = 0;
 		chipb = 0;
-		chipa = bets[m];
+		chipa = bets[k];
 		correctchip();
-		p = m % 3;//column
-		o = m / 3;//row
+		p = k % 3;//column
+		o = k / 3;//row
 		p = p * 18;
 		o = o * 14;
 		if(chipa > 0)
@@ -178,7 +178,7 @@ void createTableau()//this functions shows the tableau and the history
 				gfx_SetTextScale(1,1);
 				gfx_SetTextFGColor(0);
 				gfx_SetTextXY(p + 264, o + 36);
-				gfx_PrintInt(bets[m], 1);
+				gfx_PrintInt(bets[k], 1);
 			}
 		}
 	}
@@ -195,16 +195,22 @@ void createTableau()//this functions shows the tableau and the history
 	placechip(48, 250, 204);
 	placechip(49, 250, 218);	
 	
-	gfx_SetTextXY(110,40);
 	
 	gfx_SetColor(253);
 	gfx_FillRectangle(110,40,60,10);
-	for(m=0; m < 5; m++)
+	gfx_SetTextScale(1,1);
+	gfx_SetTextFGColor(254);
+	gfx_SetTextXY(110,26);
+	gfx_PrintString("History:");
+	gfx_SetTextXY(110,40);
+	for(k=0; k < 5; k++)
 	{
-		gfx_SetTextScale(1,1);
-		gfx_SetTextFGColor(hcolor[m]);
-		gfx_PrintInt(hnumbers[m], 1);
-		gfx_PrintString("  ");
+		gfx_SetTextFGColor(hcolor[k]);
+		if(hcolor[k] != 0)
+		{
+			gfx_PrintInt(hnumbers[k], 1);
+		}
+		gfx_SetTextXY(110 + (k + 1) * 20,40);
 	}
 	
 	
@@ -281,23 +287,23 @@ void main(void)
 	gfx_FillScreen(253);
 	do //Loop everything
 	{
-		for(x=0; x < 50; x++)//Payout prize and clear bets array
+		for(k=0; k < 50; ++k)//Payout prize and clear bets array
 		{
-			if(x < 36 && x + 1 == e){credits = credits + bets[x] * 36;}
-			if(x == 39 && e == 0){credits = credits + bets[x] * 36;}
-			if(x == 36 && e % 3 == 1){credits = credits + bets[x] * 3;}
-			if(x == 37 && e % 3 == 2){credits = credits + bets[x] * 3;}
-			if(x == 38 && e % 3 == 0 && e != 0){credits = credits + bets[x] * 3;}
-			if(x == 40 && e > 0 && e < 13){credits = credits + bets[x] * 3;}
-			if(x == 41 && e < 25 && e > 12){credits = credits + bets[x] * 3;}
-			if(x == 42 && e > 24){credits = credits + bets[x] * 3;}
-			if(x == 43 && c == 252){credits = credits + bets[x] * 2;}
-			if(x == 44 && c == 254){credits = credits + bets[x] * 2;}
-			if(x == 45 && e < 19 && e > 0){credits = credits + bets[x] * 2;}
-			if(x == 46 && e > 18){credits = credits + bets[x] * 2;}
-			if(x == 47 && e % 2 == 1){credits = credits + bets[x] * 2;}
-			if(x == 48 && e % 2 == 0 && e != 0){credits = credits + bets[x] * 2;}
-			bets[x] = 0;
+			if(k < 36 && k + 1 == e){credits = credits + bets[k] * 36;}
+			if(k == 39 && e == 0){credits = credits + bets[k] * 36;}
+			if(k == 36 && e % 3 == 1){credits = credits + bets[k] * 3;}
+			if(k == 37 && e % 3 == 2){credits = credits + bets[k] * 3;}
+			if(k == 38 && e % 3 == 0 && e != 0){credits = credits + bets[k] * 3;}
+			if(k == 40 && e > 0 && e < 13){credits = credits + bets[k] * 3;}
+			if(k == 41 && e < 25 && e > 12){credits = credits + bets[k] * 3;}
+			if(k == 42 && e > 24){credits = credits + bets[k] * 3;}
+			if(k == 43 && c == 252){credits = credits + bets[k] * 2;}
+			if(k == 44 && c == 254){credits = credits + bets[k] * 2;}
+			if(k == 45 && e < 19 && e > 0){credits = credits + bets[k] * 2;}
+			if(k == 46 && e > 18){credits = credits + bets[k] * 2;}
+			if(k == 47 && e % 2 == 1){credits = credits + bets[k] * 2;}
+			if(k == 48 && e % 2 == 0 && e != 0){credits = credits + bets[k] * 2;}
+			bets[k] = 0;
 		}
 		
 		
@@ -448,19 +454,18 @@ void main(void)
 		/*Draw everything*/
 		
 		/*Generate random amount to rotate*/
-		b = 50000;
+		toSpin = 50000;
 		s = rand() % 256;
 		/*Generate random amount to rotate*/
 		
-		f = 0;
-		for (x = 0; ++x;)//Spin
+		for (k = 0; ++k;)//Spin
 		{
 			kb_Scan();
-			if (kb_Data[6] == kb_Clear) {f = 1; break;}//Exit
+			if (kb_Data[6] == kb_Clear) {break;}//Exit
 			int r = rand() % 1000;
-			b = b - r;
-			a = a + b / 5000;
-			if (b / 2000 < 1)
+			toSpin = toSpin - r;
+			a = a + toSpin / 5000;
+			if (toSpin / 2000 < 1)
 			{
 				break;
 			}
@@ -476,8 +481,12 @@ void main(void)
 			gfx_SwapDraw();
 			
 			/*Determine number*/
-			c = colors[n / 7];
-			e = numbers[n / 7];
+			if(n > 38 && n < 252){n = n + 1;}
+			if(n > 128 && n < 252){n = n + 1;}
+			if(n > 211 && n < 252){n = n + 1;}
+			n = n / 7;
+			c = colors[n];
+			e = numbers[n];
 			/*Determine number*/
 			PrintNumber();
 		}

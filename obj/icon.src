@@ -5,5 +5,5 @@
 
 	public ___description
 ___description:
-	db	"C SDK Demo", 0
+	db	"Roulette", 0
 ___prgm_init:

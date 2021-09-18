@@ -11,7 +11,7 @@ NAME        ?= ROUL
 DEBUGMODE   ?= NDEBUG
 COMPRESSED  ?= YES
 ICON        ?= iconc.png
-DESCRIPTION ?= "C SDK Demo"
+DESCRIPTION ?= "Roulette"
 
 L ?= graphx
 
@@ -29,5 +29,6 @@ GFXDIR ?= src/gfx
 # ----------------------------
 
 USE_FLASH_FUNCTIONS ?= YES
+
 
 include $(CEDEV)/meta/makefile.mk

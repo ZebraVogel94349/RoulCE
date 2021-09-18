@@ -11,28 +11,27 @@
 #include <keypadc.h>
 #include <fileioc.h>
 #include <graphx.h>
-#include <debug.h>
 
 #include "gfx/palette_gfx.h"
-#include "gfx/gfx.h"
+#include "gfx/gfx.h" 
 
 gfx_UninitedSprite(rotate_sprite, ro_width, ro_height);//sprite buffer
 
 /*Declaring Variables*/
 uint16_t toSpin, s, posx, posy, h, i, j, k, l, color, chip, chipa, chipb, p, o, v, s, t , u, e, c, credits, menu, keycount;
 uint8_t a, n;
-kb_key_t keyA, keyB, keyC, prevkeyA, prevkeyB, prevkeyC;
+kb_key_t keyA, keyC, prevkeyA, prevkeyC;
 uint16_t bets[50] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};//bets array
 uint8_t hnumbers[5] = {0,0,0,0,0};//Number history
 uint8_t hcolor[5] = {0,0,0,0,0};//Color history
 /*Declaring Variables*/
 
-void DrawTitle() //This function shows the title
+void DrawTitle()
 {
 	gfx_SetTextFGColor(254);//Black text color
 	gfx_SetTextScale(1,1);//Text size for Title
 	gfx_SetTextXY(118,10);//Title position
-	gfx_PrintString("RoulCE v0.5.2");//Print title
+	gfx_PrintString("RoulCE v1.0.0");//Print title
 }
 
 void DrawMenu()//This function draws the menu at the bottom
@@ -396,10 +395,8 @@ void main(void)
 			gfx_SwapDraw();
 			kb_Scan();
 			prevkeyA = keyA;
-			prevkeyB = keyB;
 			prevkeyC = keyC;
 			keyA = kb_Data[1];
-			keyB = kb_Data[6];
 			keyC = kb_Data[7];
 			if(keyC == prevkeyC)
 			{

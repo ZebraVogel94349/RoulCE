@@ -3028,8 +3028,6 @@ BB11_163:
 	call	_kb_Scan
 	ld	a, (_keyA)
 	ld	(_prevkeyA), a
-	ld	a, (_keyB)
-	ld	(_prevkeyB), a
 	ld	a, (_keyC)
 	ld	c, a
 	ld	(_prevkeyC), a
@@ -3039,11 +3037,6 @@ BB11_163:
 	ld	d, (hl)
 	ld	a, e
 	ld	(_keyA), a
-	ld	iy, -720868
-	ld	e, (iy)
-	ld	d, (iy + 1)
-	ld	a, e
-	ld	(_keyB), a
 	ld	hl, -720866
 	ld	e, (hl)
 	inc	hl
@@ -3073,6 +3066,7 @@ BB11_163:
 	ld.sis	de, 4
 	or	a, a
 	sbc.sis	hl, de
+	ld	iy, -720868
 	jq	c, BB11_54
 	ld	a, c
 	ld	l, 1
@@ -3086,12 +3080,10 @@ BB11_163:
 	jq	BB11_54
 BB11_167:
 	ld.sis	hl, 0
-	lea	de, iy + 0
 	ld	iy, _keycount
 	ld	(iy), l
 	ld	(iy + 1), h
-	push	de
-	pop	iy
+	ld	iy, -720868
 	jq	BB11_54
 BB11_112:
 	ld	l, e
@@ -3690,7 +3682,7 @@ _hcolor:
 	section	.rodata,"a",@progbits
 	private	L_.str
 L_.str:
-	db	"RoulCE v0.5.2",000o
+	db	"RoulCE v1.0.0",000o
 
 	section	.rodata,"a",@progbits
 	private	L_.str.1
@@ -3895,16 +3887,6 @@ _keyA:
 	section	.bss,"aw",@nobits
 	public	_prevkeyA
 _prevkeyA:
-	rb	1
-
-	section	.bss,"aw",@nobits
-	public	_keyB
-_keyB:
-	rb	1
-
-	section	.bss,"aw",@nobits
-	public	_prevkeyB
-_prevkeyB:
 	rb	1
 
 	section	.bss,"aw",@nobits

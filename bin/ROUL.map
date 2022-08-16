@@ -1,405 +1,158 @@
-
-IEEE 695 OMF Linker Version 6.25 (11121301)
-Copyright (C) 1999-2008 Zilog, Inc. All Rights Reserved
-
-LINK MAP:
-
-DATE:      Fri Apr 30 19:03:26 2021
-PROCESSOR: assembler
-FILES:     obj\main.obj           
-           obj\palette_gfx.obj
-           obj\pfeil.obj          obj\ro.obj             
-           C:\CEdev\lib\ccleanup.obj
-           C:\CEdev\lib\cce.lib
-           C:\CEdev\lib\cshared.lib
-           C:\CEdev\lib\clinked.lib
-           C:\CEdev\lib\graphx.lib
-           C:\CEdev\lib\graphx_header.obj
-           C:\CEdev\lib\libheader.obj
-           C:\CEdev\lib\cstartup.obj
-           
-
-
-COMMAND LIST:
-=============
--FORMAT=INTEL32 -map -maxhexlen=64 -quiet -warnoverlap -xref -unresolved=fatal -sort ADDRESS=ascending -warn -NOdebug -NOigcase define __copy_code_to_ram = 0 range rom $000000 : $3FFFFF range ram $D00000 : $FFFFFF range bss $D031F6 : $D13FD6 change code is ram change data is ram change text is ram change strsect is text define __low_bss = base of bss define __len_bss = length of bss define __heaptop = (highaddr of bss) define __heapbot = (top of bss)+1 define __stack = $D1A87E locate .header at $D1A87F locate .launcher at (top of .header)+1 locate .libs at (top of .launcher)+1 locate .graphx_header at (top of .libs)+1 locate .graphx at (top of .graphx_header)+1 locate .startup at (top of .graphx)+1 locate .cleanup at (top of .startup)+1 locate .exit at (top of .cleanup)+1 locate code at (top of .exit)+1 locate data at (top of code)+1 locate text at (top of data)+1 bin/ROUL.hex = obj\main.obj,obj\palette_gfx.obj,obj\pfeil.obj,obj\ro.obj,C:\CEdev\lib\ccleanup.obj,C:\CEdev\lib\cce.lib,C:\CEdev\lib\cshared.lib,C:\CEdev\lib\clinked.lib,C:\CEdev\lib\graphx.lib,C:\CEdev\lib\graphx_header.obj,C:\CEdev\lib\libheader.obj,C:\CEdev\lib\cstartup.obj 
-
-SPACE ALLOCATION:
-=================
-
-Space                     Base         Top      Size      Used    Unused
------------------- ----------- ----------- --------- --------- ---------
-RAM                   D:D031F6    D:D1FE3C   300000H     95D3H   2F6A2DH
-                                          (  3145728     38355   3107373)
-
-
-SEGMENTS WITHIN SPACE:
-======================
-
-RAM                Type                Base        Top         Size
------------------- ------------------- ----------- ----------- ---------
-.cleanup           normal data            D:D1A94E    D:D1A961       14h
-.exit              normal data            D:D1A962    D:D1A969        8h
-.graphx            normal data            D:D1A8DB    D:D1A912       38h
-.graphx_header     normal data            D:D1A8D2    D:D1A8DA        9h
-.header            normal data            D:D1A87F    D:D1A881        3h
-.launcher          normal data            D:D1A882    D:D1A8D1       50h
-.startup           normal data            D:D1A913    D:D1A94D       3bh
-BSS                normal data            D:D031F6    D:D0720A     4015h
-CODE               normal data            D:D1A96A    D:D1B799      e30h
-DATA               normal data            D:D1B79A    D:D1FDC6     462dh
-TEXT               normal data            D:D1FDC7    D:D1FE3C       76h
-
-SEGMENTS WITHIN MODULES:
-========================
-
-Module: ..\SRC\GFX\PALETTE_GFX.C (File: palette_gfx.obj) Version: 1:0 04/30/2021 18:45:46
-
-    Name                                        Base        Top      Size
-    --------------------------------------- ----------- ----------- ---------
-    Segment: DATA                              D:D1B79D    D:D1B990      1f4h
-
-
-Module: ..\SRC\GFX\PFEIL.C (File: pfeil.obj) Version: 1:0 04/30/2021 18:45:46
-
-    Name                                        Base        Top      Size
-    --------------------------------------- ----------- ----------- ---------
-    Segment: DATA                              D:D1B991    D:D1BD92      402h
-
-
-Module: ..\SRC\GFX\RO.C (File: ro.obj) Version: 1:0 04/30/2021 18:45:46
-
-    Name                                        Base        Top      Size
-    --------------------------------------- ----------- ----------- ---------
-    Segment: DATA                              D:D1BD93    D:D1FD94     4002h
-
-
-Module: ..\SRC\MAIN.C (File: main.obj) Version: 1:0 04/30/2021 19:03:26
-
-    Name                                        Base        Top      Size
-    --------------------------------------- ----------- ----------- ---------
-    Segment: BSS                               D:D031F6    D:D0720A     4015h
-    Segment: CODE                              D:D1A96A    D:D1B708      d9fh
-    Segment: DATA                              D:D1B79A    D:D1B79C        3h
-    Segment: TEXT (was STRSECT)                D:D1FDC7    D:D1FE3C       76h
-
-
-Module: ccleanup.asm (File: ccleanup.obj) Version: 1:0 12/15/2017 10:11:07
-
-    Name                                        Base        Top      Size
-    --------------------------------------- ----------- ----------- ---------
-    Segment: .cleanup                          D:D1A94E    D:D1A961       14h
-
-
-Module: cstartup.asm (File: cstartup.obj) Version: 1:0 12/15/2017 10:11:07
-
-    Name                                        Base        Top      Size
-    --------------------------------------- ----------- ----------- ---------
-    Segment: .exit                             D:D1A962    D:D1A969        8h
-    Segment: .header                           D:D1A87F    D:D1A881        3h
-    Segment: .startup                          D:D1A913    D:D1A94D       3bh
-
-
-Module: frameset.src (Library: cshared.lib) Version: 1:0 12/15/2017 10:08:41
-
-    Name                                        Base        Top      Size
-    --------------------------------------- ----------- ----------- ---------
-    Segment: CODE                              D:D1B711    D:D1B71E        eh
-
-
-Module: gfx_Begin.src (Library: graphx.lib) Version: 1:0 12/15/2017 10:06:13
-
-    Name                                        Base        Top      Size
-    --------------------------------------- ----------- ----------- ---------
-    Segment: .graphx                           D:D1A8FB    D:D1A8FE        4h
-
-
-Module: gfx_End.src (Library: graphx.lib) Version: 1:0 12/15/2017 10:06:04
-
-    Name                                        Base        Top      Size
-    --------------------------------------- ----------- ----------- ---------
-    Segment: .graphx                           D:D1A90B    D:D1A90E        4h
-
-
-Module: gfx_FillScreen.src (Library: graphx.lib) Version: 1:0 12/15/2017 10:06:41
-
-    Name                                        Base        Top      Size
-    --------------------------------------- ----------- ----------- ---------
-    Segment: .graphx                           D:D1A8F7    D:D1A8FA        4h
-
-
-Module: gfx_PrintInt.src (Library: graphx.lib) Version: 1:0 12/15/2017 10:06:15
-
-    Name                                        Base        Top      Size
-    --------------------------------------- ----------- ----------- ---------
-    Segment: .graphx                           D:D1A8DF    D:D1A8E2        4h
-
-
-Module: gfx_PrintString.src (Library: graphx.lib) Version: 1:0 12/15/2017 10:05:42
-
-    Name                                        Base        Top      Size
-    --------------------------------------- ----------- ----------- ---------
-    Segment: .graphx                           D:D1A8EF    D:D1A8F2        4h
-
-
-Module: gfx_RotateScaleSprite.src (Library: graphx.lib) Version: 1:0 12/15/2017 10:05:56
-
-    Name                                        Base        Top      Size
-    --------------------------------------- ----------- ----------- ---------
-    Segment: .graphx                           D:D1A8E7    D:D1A8EA        4h
-
-
-Module: gfx_SetDraw.src (Library: graphx.lib) Version: 1:0 12/15/2017 10:06:03
-
-    Name                                        Base        Top      Size
-    --------------------------------------- ----------- ----------- ---------
-    Segment: .graphx                           D:D1A8F3    D:D1A8F6        4h
-
-
-Module: gfx_SetPalette.src (Library: graphx.lib) Version: 1:0 12/15/2017 10:06:43
-
-    Name                                        Base        Top      Size
-    --------------------------------------- ----------- ----------- ---------
-    Segment: .graphx                           D:D1A903    D:D1A906        4h
-
-
-Module: gfx_SetTextBGColor.src (Library: graphx.lib) Version: 1:0 12/15/2017 10:06:37
-
-    Name                                        Base        Top      Size
-    --------------------------------------- ----------- ----------- ---------
-    Segment: .graphx                           D:D1A90F    D:D1A912        4h
-
-
-Module: gfx_SetTextFGColor.src (Library: graphx.lib) Version: 1:0 12/15/2017 10:06:22
-
-    Name                                        Base        Top      Size
-    --------------------------------------- ----------- ----------- ---------
-    Segment: .graphx                           D:D1A8E3    D:D1A8E6        4h
-
-
-Module: gfx_SetTextScale.src (Library: graphx.lib) Version: 1:0 12/15/2017 10:06:19
-
-    Name                                        Base        Top      Size
-    --------------------------------------- ----------- ----------- ---------
-    Segment: .graphx                           D:D1A8FF    D:D1A902        4h
-
-
-Module: gfx_SetTextXY.src (Library: graphx.lib) Version: 1:0 12/15/2017 10:06:30
-
-    Name                                        Base        Top      Size
-    --------------------------------------- ----------- ----------- ---------
-    Segment: .graphx                           D:D1A8EB    D:D1A8EE        4h
-
-
-Module: gfx_SwapDraw.src (Library: graphx.lib) Version: 1:0 12/15/2017 10:06:01
-
-    Name                                        Base        Top      Size
-    --------------------------------------- ----------- ----------- ---------
-    Segment: .graphx                           D:D1A8DB    D:D1A8DE        4h
-
-
-Module: gfx_TransparentSprite_NoClip.src (Library: graphx.lib) Version: 1:0 12/15/2017 10:05:33
-
-    Name                                        Base        Top      Size
-    --------------------------------------- ----------- ----------- ---------
-    Segment: .graphx                           D:D1A907    D:D1A90A        4h
-
-
-Module: graphx_header.asm (File: graphx_header.obj) Version: 1:0 12/15/2017 10:06:44
-
-    Name                                        Base        Top      Size
-    --------------------------------------- ----------- ----------- ---------
-    Segment: .graphx_header                    D:D1A8D2    D:D1A8DA        9h
-
-
-Module: libheader.asm (File: libheader.obj) Version: 1:0 12/15/2017 10:11:08
-
-    Name                                        Base        Top      Size
-    --------------------------------------- ----------- ----------- ---------
-    Segment: .launcher                         D:D1A882    D:D1A8D1       50h
-    Segment: DATA                              D:D1FD95    D:D1FDB6       22h
-
-
-Module: rand.src (Library: cshared.lib) Version: 1:0 12/15/2017 10:09:01
-
-    Name                                        Base        Top      Size
-    --------------------------------------- ----------- ----------- ---------
-    Segment: CODE                              D:D1B78D    D:D1B799        dh
-
-
-Module: random.src (Library: cce.lib) Version: 1:0 12/15/2017 10:07:23
-
-    Name                                        Base        Top      Size
-    --------------------------------------- ----------- ----------- ---------
-    Segment: CODE                              D:D1B736    D:D1B78C       57h
-    Segment: DATA                              D:D1FDB7    D:D1FDC6       10h
-
-
-Module: srand.src (Library: cshared.lib) Version: 1:0 12/15/2017 10:09:40
-
-    Name                                        Base        Top      Size
-    --------------------------------------- ----------- ----------- ---------
-    Segment: CODE                              D:D1B709    D:D1B710        8h
-
-
-Module: srandom.src (Library: cce.lib) Version: 1:0 12/15/2017 10:07:22
-
-    Name                                        Base        Top      Size
-    --------------------------------------- ----------- ----------- ---------
-    Segment: CODE                              D:D1B71F    D:D1B735       17h
-
-EXTERNAL DEFINITIONS:
-=====================
-
-Symbol                             Address   Module          Segment
--------------------------------- ----------- --------------- --------------------------------
-__copy_code_to_ram                  00000000 (User Defined)
-__len_bss                           00004015 (User Defined)
-__low_bss                           00D031F6 (User Defined)
-__heapbot                           00D0720B (User Defined)
-__heaptop                           00D13FD6 (User Defined)
-__stack                             00D1A87E (User Defined)
-__idivs                             D:00013C idivs           CODE                            
-__irems                             D:00016C irems           CODE                            
-__scmpzero                          D:000204 scmpzero        CODE                            
-__stoiu                             D:000264 stoiu           CODE                            
-_errno                              D:D008DC cstartup        CODE                            
-_rotate_sprite_data                 D:D031F6 MAIN            BSS                             
-_a                                  D:D071F8 MAIN            BSS                             
-_b                                  D:D071FA MAIN            BSS                             
-_n                                  D:D071FC MAIN            BSS                             
-_keypressed                         D:D071FF MAIN            BSS                             
-_e                                  D:D07202 MAIN            BSS                             
-_c                                  D:D07205 MAIN            BSS                             
-_stop                               D:D07208 MAIN            BSS                             
-_prevkey                            D:D07209 MAIN            BSS                             
-_key                                D:D0720A MAIN            BSS                             
-_init                               D:D1A882 cstartup        .header                         
-_gfx_SwapDraw                       D:D1A8DB gfx_SwapDraw    .graphx                         
-_gfx_PrintInt                       D:D1A8DF gfx_PrintInt    .graphx                         
-_gfx_SetTextFGColor                 D:D1A8E3 gfx_SetTextFGCo .graphx                         
-_gfx_RotateScaleSprite              D:D1A8E7 gfx_RotateScale .graphx                         
-_gfx_SetTextXY                      D:D1A8EB gfx_SetTextXY   .graphx                         
-_gfx_PrintString                    D:D1A8EF gfx_PrintString .graphx                         
-_gfx_SetDraw                        D:D1A8F3 gfx_SetDraw     .graphx                         
-_gfx_FillScreen                     D:D1A8F7 gfx_FillScreen  .graphx                         
-_gfx_Begin                          D:D1A8FB gfx_Begin       .graphx                         
-_gfx_SetTextScale                   D:D1A8FF gfx_SetTextScal .graphx                         
-_gfx_SetPalette                     D:D1A903 gfx_SetPalette  .graphx                         
-_gfx_TransparentSprite_NoClip       D:D1A907 gfx_Transparent .graphx                         
-_gfx_End                            D:D1A90B gfx_End         .graphx                         
-_gfx_SetTextBGColor                 D:D1A90F gfx_SetTextBGCo .graphx                         
-__exit                              D:D1A940 cstartup        .startup                        
-__errsp                             D:D1A940 cstartup        .startup                        
-_exit                               D:D1A964 cstartup        .exit                           
-_main                               D:D1A96A MAIN            CODE                            
-_srand                              D:D1B709 srand           CODE                            
-__frameset                          D:D1B711 frameset        CODE                            
-_srandom                            D:D1B71F srandom         CODE                            
-__setstate                          D:D1B726 srandom         CODE                            
-_random                             D:D1B736 random          CODE                            
-_rand                               D:D1B78D rand            CODE                            
-_rotate_sprite                      D:D1B79A MAIN            DATA                            
-_palette_gfx_pal                    D:D1B79D PALETTE_GFX     DATA                            
-_pfeil_data                         D:D1B991 PFEIL           DATA                            
-_ro_data                            D:D1BD93 RO              DATA                            
-__state                             D:D1FDB7 random          DATA                            
-
-51 external symbol(s).
-
-SYMBOL CROSS REFERENCE:
-=======================
-Name                              Use         Module
---------------------------------- ----------- -------------------------
-__copy_code_to_ram                Defined     LINKER
-__len_bss                         Defined     LINKER
-                                  Referenced  cstartup.asm
-__low_bss                         Defined     LINKER
-                                  Referenced  cstartup.asm
-__heapbot                         Defined     LINKER
-__heaptop                         Defined     LINKER
-__stack                           Defined     LINKER
-__idivs                           Defined     idivs.src
-                                  Referenced  ..\SRC\MAIN.C
-__irems                           Defined     irems.src
-                                  Referenced  ..\SRC\MAIN.C
-__scmpzero                        Defined     scmpzero.src
-                                  Referenced  ..\SRC\MAIN.C
-__stoiu                           Defined     stoiu.src
-                                  Referenced  ..\SRC\MAIN.C
-_errno                            Defined     cstartup.asm
-_rotate_sprite_data               Defined     ..\SRC\MAIN.C
-_a                                Defined     ..\SRC\MAIN.C
-_b                                Defined     ..\SRC\MAIN.C
-_n                                Defined     ..\SRC\MAIN.C
-_keypressed                       Defined     ..\SRC\MAIN.C
-_e                                Defined     ..\SRC\MAIN.C
-_c                                Defined     ..\SRC\MAIN.C
-_stop                             Defined     ..\SRC\MAIN.C
-_prevkey                          Defined     ..\SRC\MAIN.C
-_key                              Defined     ..\SRC\MAIN.C
-_init                             Defined     cstartup.asm
-_gfx_SwapDraw                     Defined     gfx_SwapDraw.src
-                                  Referenced  ..\SRC\MAIN.C
-_gfx_PrintInt                     Defined     gfx_PrintInt.src
-                                  Referenced  ..\SRC\MAIN.C
-_gfx_SetTextFGColor               Defined     gfx_SetTextFGColor.src
-                                  Referenced  ..\SRC\MAIN.C
-_gfx_RotateScaleSprite            Defined     gfx_RotateScaleSprite.src
-                                  Referenced  ..\SRC\MAIN.C
-_gfx_SetTextXY                    Defined     gfx_SetTextXY.src
-                                  Referenced  ..\SRC\MAIN.C
-_gfx_PrintString                  Defined     gfx_PrintString.src
-                                  Referenced  ..\SRC\MAIN.C
-_gfx_SetDraw                      Defined     gfx_SetDraw.src
-                                  Referenced  ..\SRC\MAIN.C
-_gfx_FillScreen                   Defined     gfx_FillScreen.src
-                                  Referenced  ..\SRC\MAIN.C
-_gfx_Begin                        Defined     gfx_Begin.src
-                                  Referenced  ..\SRC\MAIN.C
-_gfx_SetTextScale                 Defined     gfx_SetTextScale.src
-                                  Referenced  ..\SRC\MAIN.C
-_gfx_SetPalette                   Defined     gfx_SetPalette.src
-                                  Referenced  ..\SRC\MAIN.C
-_gfx_TransparentSprite_NoClip     Defined     gfx_TransparentSprite_NoClip.src
-                                  Referenced  ..\SRC\MAIN.C
-_gfx_End                          Defined     gfx_End.src
-                                  Referenced  ..\SRC\MAIN.C
-_gfx_SetTextBGColor               Defined     gfx_SetTextBGColor.src
-                                  Referenced  ..\SRC\MAIN.C
-__exit                            Defined     cstartup.asm
-__errsp                           Defined     cstartup.asm
-_exit                             Defined     cstartup.asm
-_main                             Defined     ..\SRC\MAIN.C
-                                  Referenced  cstartup.asm
-_srand                            Defined     srand.src
-                                  Referenced  ..\SRC\MAIN.C
-__frameset                        Defined     frameset.src
-                                  Referenced  ..\SRC\MAIN.C
-_srandom                          Defined     srandom.src
-__setstate                        Defined     srandom.src
-                                  Referenced  srand.src
-_random                           Defined     random.src
-                                  Referenced  rand.src
-_rand                             Defined     rand.src
-                                  Referenced  ..\SRC\MAIN.C
-_rotate_sprite                    Defined     ..\SRC\MAIN.C
-_palette_gfx_pal                  Defined     ..\SRC\GFX\PALETTE_GFX.C
-                                  Referenced  ..\SRC\MAIN.C
-_pfeil_data                       Defined     ..\SRC\GFX\PFEIL.C
-                                  Referenced  ..\SRC\MAIN.C
-_ro_data                          Defined     ..\SRC\GFX\RO.C
-                                  Referenced  ..\SRC\MAIN.C
-__state                           Defined     random.src
-                                  Referenced  srandom.src
-
-OUTPUT CHECKSUM
-===============
-bin/ROUL.hex         0D7278
-
-
-
-END OF LINK MAP:
-================
-0 Errors
-0 Warnings
+Section          Base   Top    High   Length
+---------------- ------ ------ ------ -------
+.icon            D1A882 D1A890             Eh
+.init.libs       D1A890 D1A8E8            58h
+.libs            D1A8E8 D1A96B            83h
+.init.clock      D1A96B D1A96B             0h
+.init.reruncheck D1A96B D1A96B             0h
+.init            D1A96B D1A997            2Ch
+.fini            D1A997 D1A9CB            34h
+.text            D1A9CB D1C78D          1DC2h
+.data            D1C78D D225C2          5E35h
+.rodata          D225C2 D226C0            FEh
+.init_array      000000 000000             0h
+.ctors           000000 000000             0h
+.dtors           000000 000000             0h
+.fini_array      000000 000000             0h
+.bss             D052C6 D088DB D13FD8   3615h
+.header          D1A87F D1A882             3h
+
+Label                                  Value
+------------------------------------   ------
+___low_bss                           = D052C6
+___len_bss                           = 003615
+___heaptop                           = D13FD8
+___heapbot                           = D088DB
+___libs                              = D1A8E8
+___init_array_count                  = 000000
+___ctors_count                       = 000000
+___dtors_count                       = 000000
+___fini_array_count                  = 000000
+__stack                              = D1A87E
+__bdivu                              = D1A9CB
+__bdvrmu                             = D1A9D5
+__frameset                           = D1A9E4
+__idvrms                             = D1A9F2
+__idvrmu                             = D1AA20
+__idvrmu.hijack_a_iters_ude_dividend = D1AA24
+__imulu                              = D1AA38
+__ineg                               = D1AA68
+__irems                              = D1AA71
+__sand                               = D1AA79
+__sdivu                              = D1AA82
+__sdvrmu                             = D1AA8A
+__smulu                              = D1AA9A
+__sremu                              = D1AAAD
+__sshl                               = 000174
+_os_DisableHomeTextBuffer            = D1AAB4
+_os_EnableHomeTextBuffer             = D1AAC6
+_random                              = D1AAD8
+__setstate                           = D1AB36
+__state                              = D1C78D
+__ishl                               = 000174
+_rand                                = D1AB46
+_srand                               = D1AB53
+.missingappvar                       = D225C2
+.libloadname                         = D225C7
+.libloadnamelen                      = 000007
+.webaddress                          = D225CF
+__start                              = D1A96B
+___exithl                            = D1A997
+skip._exit                           = D1A997
+skip.__Exit                          = D1A997
+skip._abort                          = D1A997
+_exit.sp                             = D1A998
+_exit.flash_wait_states              = D1A9A2
+_DrawTitle                           = D1AB5B
+_DrawMenu                            = D1AB8C
+_DrawCursor                          = D1AC93
+_PrintNumber                         = D1ADC0
+_DrawChip                            = D1AE26
+JTI4_0                               = D225E4
+_DrawButtons                         = D1AF05
+_correctchip                         = D1B0AF
+_placechip                           = D1B139
+_createTableau                       = D1B1F7
+_bet                                 = D1B575
+_PrintCredits                        = D1B609
+_main                                = D1B667
+JTI11_0                              = D22602
+_rotate_sprite_data                  = D052C6
+_rotate_sprite                       = D1C79D
+_bets                                = D08841
+_hnumbers                            = D088A5
+_hcolor                              = D088AA
+_.str                                = D22614
+_.str.1                              = D22622
+_menu                                = D088AF
+_.str.2                              = D2262E
+_.str.3                              = D22632
+_.str.4                              = D22636
+_.str.5                              = D2263A
+_.str.6                              = D2263F
+_h                                   = D088B1
+_i                                   = D088B3
+_l                                   = D088B5
+_posx                                = D088B7
+_posy                                = D088B9
+_c                                   = D088BB
+_e                                   = D088BD
+_color                               = D088BF
+_k                                   = D088C1
+_.str.7                              = D22644
+_.str.8                              = D22649
+_.str.9                              = D2264B
+_.str.10                             = D2264D
+_.str.11                             = D2264F
+_.str.12                             = D22652
+_.str.13                             = D22655
+_chipa                               = D088C3
+_chipb                               = D088C5
+_tableau_data                        = D1C7A0
+_p                                   = D088C7
+_o                                   = D088C9
+_.str.14                             = D22658
+_chip                                = D088CB
+_credits                             = D088CD
+_.str.15                             = D22661
+___const.main.colors                 = D2266B
+___const.main.numbers                = D22690
+_.str.16                             = D226B5
+_.str.17                             = D226BC
+_palette_gfx                         = D1EB59
+_s                                   = D088CF
+_ro_data                             = D1ED57
+_a                                   = D088D1
+_pfeil_data                          = D222D2
+_keyC                                = D088D2
+_prevkeyC                            = D088D3
+_keyA                                = D088D4
+_prevkeyA                            = D088D5
+_keycount                            = D088D6
+_toSpin                              = D088D8
+_n                                   = D088DA
+_.str.18                             = D226BE
+lib.LibLoad                          = D1A8E8
+_#ti_Open                            = D1A8FC
+_#ti_Close                           = D1A900
+_#ti_Write                           = D1A904
+_#ti_Read                            = D1A908
+_#gfx_Begin                          = D1A915
+_#gfx_End                            = D1A919
+_#gfx_SetColor                       = D1A91D
+_#gfx_SetPalette                     = D1A921
+_#gfx_FillScreen                     = D1A925
+_#gfx_SetDraw                        = D1A929
+_#gfx_SwapDraw                       = D1A92D
+_#gfx_PrintInt                       = D1A931
+_#gfx_PrintString                    = D1A935
+_#gfx_SetTextXY                      = D1A939
+_#gfx_SetTextFGColor                 = D1A93D
+_#gfx_FillCircle                     = D1A941
+_#gfx_Rectangle                      = D1A945
+_#gfx_FillRectangle                  = D1A949
+_#gfx_TransparentSprite_NoClip       = D1A94D
+_#gfx_SetTextScale                   = D1A951
+_#gfx_RLETSprite_NoClip              = D1A955
+_#gfx_RotateScaleSprite              = D1A959
+_#kb_Scan                            = D1A967

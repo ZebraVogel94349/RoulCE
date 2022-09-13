@@ -1,1 +1,1 @@
-obj/src/gfx/pfeil.c.bc: src/gfx/pfeil.c
+obj/src/gfx/pfeil.c.src: src/gfx/pfeil.c

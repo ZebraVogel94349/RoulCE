@@ -1,1 +1,1 @@
-obj/src/gfx/ro.c.bc: src/gfx/ro.c
+obj/src/gfx/ro.c.src: src/gfx/ro.c

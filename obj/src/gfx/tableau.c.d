@@ -1,1 +1,1 @@
-obj/src/gfx/tableau.c.bc: src/gfx/tableau.c
+obj/src/gfx/tableau.c.src: src/gfx/tableau.c

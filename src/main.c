@@ -18,9 +18,7 @@
 gfx_UninitedSprite(rotate_sprite, ro_width, ro_height);//sprite buffer
 
 /*Declaring Variables*/
-uint16_t toSpin, s, posx, posy, h, i, j, k, l, color, chip, chipa, chipb, p, o, v, s, t , u, e, c, credits, menu, keycount;
-uint8_t a, n;
-kb_key_t keyA, keyC, prevkeyA, prevkeyC;
+uint16_t posx, posy, chip, chipa, chipb, p, n, o, e, c, credits, keycount;
 uint16_t bets[50] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};//bets array
 uint8_t hnumbers[5] = {0,0,0,0,0};//Number history
 uint8_t hcolor[5] = {0,0,0,0,0};//Color history
@@ -34,7 +32,7 @@ void DrawTitle()
 	gfx_PrintString("RoulCE v1.0.0");//Print title
 }
 
-void DrawMenu()//This function draws the menu at the bottom
+void DrawMenu(int currentMenu)//This function draws the menu at the bottom
 {
 	gfx_SetColor(253);
 	gfx_FillRectangle(10,230,300,8);
@@ -42,7 +40,7 @@ void DrawMenu()//This function draws the menu at the bottom
 	gfx_SetTextScale(1,1);
 	gfx_SetTextXY(10,230);
 	gfx_PrintString("Add Credits");
-	if(menu == 1)
+	if(currentMenu == 1)
 	{
 		gfx_FillRectangle(10,230,300,8);
 		gfx_SetTextXY(18,230);
@@ -61,13 +59,13 @@ void DrawMenu()//This function draws the menu at the bottom
 void DrawCursor() //This function shows the cursor
 {
 	gfx_SetColor(250);//Light green
-	h = 0;
-	i = 0;
-	l = 0;
-	if(posx == 2){h = 23; l = 23;}//Larger cursor in the left column
-	if(posx == 1){h = 23; l = 61;}//Larger cursor for the buttons
-	if(posx == 2 && (posy == 5 || posy == 8)){i = 28;}//Larger cursor for the black and red symbols
-	gfx_FillRectangle(posx * 18 + 203 - l, posy * 14 + 1, 17 + h, 14 + i);//cursor
+	int width = 17;
+	int leftOffset = 0;
+	int height = 14;
+	if(posx == 2){width = 40; leftOffset = 23;}//Larger cursor in the left column
+	if(posx == 1){width = 40; leftOffset = 61;}//Larger cursor for the buttons
+	if(posx == 2 && (posy == 5 || posy == 8)){height = 42;}//Larger cursor for the black and red symbols
+	gfx_FillRectangle(posx * 18 + 203 - leftOffset, posy * 14 + 1, width, height);//cursor
 }
 
 void PrintNumber()//This function shows the number
@@ -83,13 +81,13 @@ void PrintNumber()//This function shows the number
 void DrawChip(int type, int cx, int cy)//This function draws a chip at a specific location
 {
 	gfx_SetTextFGColor(254);
-	if(type == 1){color = 252;}//Red
-	if(type == 2){color = 248;}//Light Blue
-	if(type == 5){color = 249;}//Yellow
-	if(type == 10){color = 247;}//Dark Blue
-	if(type == 20){color = 251;}//Grey
-	if(type == 50){color = 246;}//Purple
-	gfx_SetColor(color);
+	if(type == 1){gfx_SetColor(252);}//Red
+	if(type == 2){gfx_SetColor(248);}//Light Blue
+	if(type == 5){gfx_SetColor(249);}//Yellow
+	if(type == 10){gfx_SetColor(247);}//Dark Blue
+	if(type == 20){gfx_SetColor(251);}//Grey
+	if(type == 50){gfx_SetColor(246);}//Purple
+	
 	gfx_FillCircle(cx,cy,5);
 	gfx_SetColor(245);
 	gfx_FillCircle(cx,cy,3);
@@ -99,7 +97,7 @@ void DrawChip(int type, int cx, int cy)//This function draws a chip at a specifi
 void DrawButtons()//This function creates the Menu
 {
 	gfx_SetColor(254);
-	for(k = 0; k < 7; ++k)
+	for(int k = 0; k < 7; k++)
 	{
 		gfx_Rectangle(160,57 + (14 * k),41,15);
 	}
@@ -156,10 +154,10 @@ void placechip(int v, int x, int y)//This function draws placed chips
 	}
 }
 
-void createTableau()//this functions shows the tableau and the history
+void createTableau()//this function shows the tableau and the history
 {
 	gfx_RLETSprite_NoClip(tableau,215,15);
-	for(k=0; k < 39; ++k)
+	for(int k = 0; k < 39; ++k)
 	{
 		chipa = 0;
 		chipb = 0;
@@ -202,7 +200,7 @@ void createTableau()//this functions shows the tableau and the history
 	gfx_SetTextXY(110,26);
 	gfx_PrintString("History:");
 	gfx_SetTextXY(110,40);
-	for(k=0; k < 5; k++)
+	for(int k = 0; k < 5; k++)
 	{
 		gfx_SetTextFGColor(hcolor[k]);
 		if(hcolor[k] != 0)
@@ -253,6 +251,10 @@ int main(void)
 	Purple = 246
 	Light Grey = 245
 	*/
+	kb_key_t keyA, keyC, prevkeyA, prevkeyC;
+	int currentMenu = 0;
+	uint8_t currentRotation = 0;
+	int spinningSpeed = 0;
 	posx = 4;
 	posy = 1;
 	credits = 0;
@@ -266,15 +268,15 @@ int main(void)
 	ti_Close(sv);
 	credits = *creditsv;
 
+	srand(rtc_Time());//Set random seed
 
     gfx_Begin(); //Start the graphics
     gfx_SetPalette(palette_gfx, sizeof_palette_gfx, 0); //Load Palette
-	s = 0;
 	gfx_SetDrawBuffer();
-	gfx_RotateSprite(ro, rotate_sprite, a + s);//Rotate the sprite
+	gfx_RotateSprite(ro, rotate_sprite, currentRotation);//Rotate the sprite
 	gfx_FillScreen(253);//Green background
 	DrawTitle();
-	DrawMenu();
+	DrawMenu(currentMenu);
 	gfx_TransparentSprite_NoClip(rotate_sprite, 17, 69);//Show rotated sprite
 	gfx_RLETSprite_NoClip(pfeil, 59, 36);//Show arrow
 
@@ -285,7 +287,7 @@ int main(void)
 	gfx_FillScreen(253);
 	do //Loop everything
 	{
-		for(k=0; k < 50; ++k)//Payout prize and clear bets array
+		for(int k = 0; k < 50; k++)//Payout prize and clear bets array
 		{
 			if(k < 36 && k + 1 == e){credits = credits + bets[k] * 36;}
 			if(k == 39 && e == 0){credits = credits + bets[k] * 36;}
@@ -311,7 +313,7 @@ int main(void)
 			gfx_SetColor(253);
 			gfx_FillRectangle(160,10,155,220);//Green background
 			DrawTitle();
-			DrawMenu();
+			DrawMenu(currentMenu);
 			gfx_SetTextXY(163,167);
 			gfx_PrintInt(chip,2);//Print Text
 			DrawChip(chip,187,170);
@@ -375,22 +377,20 @@ int main(void)
 				bet(47,2,13);
 				bet(48,2,14);
 			}
-
-			if(kb_Data[1] == kb_Window && menu == 1 && keyA != prevkeyA){credits = credits + 20; menu = 0;}
-			if(kb_Data[1] == kb_Zoom && menu == 1 && keyA != prevkeyA){credits = credits + 50; menu = 0;}
-			if(kb_Data[1] == kb_Trace && menu == 1 && keyA != prevkeyA){credits = credits + 100; menu = 0;}
-			if(kb_Data[1] == kb_Graph && menu == 1 && keyA != prevkeyA){credits = credits + 200; menu = 0;}
-			if(kb_Data[1] == kb_Yequ && menu == 1 && keyA != prevkeyA){credits = credits + 10; menu = 0;}
-			else if(kb_Data[1] == kb_Yequ && menu == 0 && keyA != prevkeyA)
+			if(kb_Data[1] == kb_Window && currentMenu == 1 && keyA != prevkeyA){credits = credits + 20; currentMenu = 0;}
+			if(kb_Data[1] == kb_Zoom && currentMenu == 1 && keyA != prevkeyA){credits = credits + 50; currentMenu = 0;}
+			if(kb_Data[1] == kb_Trace && currentMenu == 1 && keyA != prevkeyA){credits = credits + 100; currentMenu = 0;}
+			if(kb_Data[1] == kb_Graph && currentMenu == 1 && keyA != prevkeyA){credits = credits + 200; currentMenu = 0;}
+			if(kb_Data[1] == kb_Yequ && currentMenu == 1 && keyA != prevkeyA){credits = credits + 10; currentMenu = 0;}
+			else if(kb_Data[1] == kb_Yequ && currentMenu == 0 && keyA != prevkeyA)
 			{
-				menu = 1;
+				currentMenu = 1;
 			}
 
 			if((posx == 1 && posy == 1) || (posx == 2 && posy == 1) || (posx == 3 && posy == 1) || (posx == 5 && posy == 1)){posx = 4;}
 			if((posx == 2 && posy == 6) || (posx == 2 && posy == 7)){posy = 5;}
 			if((posx == 2 && posy == 9) || (posx == 2 && posy == 10)){posy = 8;}
 			/*Tableau navigation*/
-
 			gfx_SwapDraw();
 			kb_Scan();
 			prevkeyA = keyA;
@@ -414,13 +414,12 @@ int main(void)
 			}
 		}
 		if (kb_Data[6] == kb_Clear) {break;}//Exit
-		srand(rtc_Time());//Set random seed
 
 		/*Draw everything*/
 		gfx_SetColor(253);
 		gfx_FillRectangle(160,10,155,220);//Green background
 		DrawTitle();
-		DrawMenu();
+		DrawMenu(currentMenu);
 		gfx_SetTextXY(163,167);
 		gfx_PrintInt(chip,2);//Print Text
 		DrawChip(chip,187,170);
@@ -435,7 +434,7 @@ int main(void)
 		gfx_SetColor(253);
 		gfx_FillRectangle(160,10,155,220);//Green background
 		DrawTitle();
-		DrawMenu();
+		DrawMenu(currentMenu);
 		gfx_SetTextXY(163,167);
 		gfx_PrintInt(chip,2);//Print Text
 		DrawChip(chip,187,170);
@@ -449,28 +448,26 @@ int main(void)
 		gfx_SwapDraw();
 		/*Draw everything*/
 
-		/*Generate random amount to rotate*/
-		toSpin = 50000;
-		s = rand() % 256;
-		/*Generate random amount to rotate*/
+		spinningSpeed = 50000;
+		currentRotation = rand() % 256;//Generate random amount to rotate
 
-		for (k = 0; ++k;)//Spin
+		while(true)//Spin
 		{
 			kb_Scan();
 			if (kb_Data[6] == kb_Clear) {break;}//Exit
 			int r = rand() % 1000;
-			toSpin = toSpin - r;
-			a = a + toSpin / 5000;
-			if (toSpin / 2000 < 1)
+			spinningSpeed = spinningSpeed - r;
+			currentRotation = currentRotation + spinningSpeed / 5000;
+			if (spinningSpeed / 2000 < 1)
 			{
 				break;
 			}
-			n = a + s;
+			n = currentRotation;
 
-			gfx_RotateSprite(ro, rotate_sprite, a + s);//Rotate the sprite
+			gfx_RotateSprite(ro, rotate_sprite, currentRotation);//Rotate the sprite
 			gfx_SetColor(253);
 			DrawTitle();
-			DrawMenu();
+			DrawMenu(currentMenu);
 
 			gfx_TransparentSprite_NoClip(rotate_sprite, 17, 69);//Show rotated sprite
 			gfx_RLETSprite_NoClip(pfeil, 59, 36);//Show arrow
@@ -497,7 +494,7 @@ int main(void)
 		hcolor[2] = hcolor[1];
 		hcolor[1] = hcolor[0];
 		hcolor[0] = c;
-	} while(1);
+	} while(true);
 	*creditsv = credits;
 	sv = ti_Open("ROULSV","w");
     ti_Write(creditsv,2,1,sv);

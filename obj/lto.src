@@ -30,6 +30,7 @@ _DrawTitle:
 	section	.text,"ax",@progbits
 	public	_DrawMenu
 _DrawMenu:
+	call	__frameset0
 	ld	hl, -3
 	push	hl
 	call	_gfx_SetColor
@@ -68,11 +69,10 @@ _DrawMenu:
 	push	hl
 	call	_gfx_PrintString
 	pop	hl
-	ld	hl, _menu
-	ld	hl, (hl)
-	ld.sis	de, 1
+	ld	de, 1
+	ld	hl, (ix + 6)
 	or	a, a
-	sbc.sis	hl, de
+	sbc	hl, de
 	jp	nz, BB1_2
 	ld	hl, 8
 	push	hl
@@ -143,120 +143,98 @@ _DrawMenu:
 	call	_gfx_PrintString
 	pop	hl
 BB1_2:
+	pop	ix
 	ret
 	section	.text,"ax",@progbits
 
 	section	.text,"ax",@progbits
 	public	_DrawCursor
 _DrawCursor:
-	ld	hl, -9
+	ld	hl, -12
 	call	__frameset
-	ld	hl, 40
+	or	a, a
+	sbc	hl, hl
 	ld	(ix - 3), hl
 	ld	hl, -6
 	push	hl
 	call	_gfx_SetColor
 	pop	hl
-	ld.sis	bc, 0
-	ld	hl, _h
-	ld	(hl), c
-	inc	hl
-	ld	(hl), b
-	ld	hl, _i
-	ld	(hl), c
-	inc	hl
-	ld	(hl), b
-	ld	hl, _l
-	push	hl
-	pop	de
-	ld	(hl), c
-	inc	hl
-	ld	(hl), b
 	ld	hl, _posx
 	ld	iy, (hl)
-	inc.sis	bc
+	ld.sis	de, 2
 	ex	de, hl
 	ld	e, iyl
 	ld	d, iyh
 	ex	de, hl
-	or	a, a
-	sbc.sis	hl, bc
-	jr	nz, BB2_2
-	ld	hl, -61
-	ld	(ix - 9), hl
-	ld	hl, _h
-	ld.sis	bc, 23
-	ld	(hl), c
-	inc	hl
-	ld	(hl), b
-	ex	de, hl
-	ld.sis	de, 61
-	ld	(hl), e
-	inc	hl
-	ld	(hl), d
-	ld	hl, 14
-	ld	(ix - 6), hl
-	jr	BB2_7
-BB2_2:
-	ld.sis	bc, 2
-	ex	de, hl
-	ld	e, iyl
-	ld	d, iyh
-	ex	de, hl
-	or	a, a
-	sbc.sis	hl, bc
-	jr	nz, BB2_6
-	ld	hl, _h
-	ld.sis	bc, 23
-	ld	(hl), c
-	inc	hl
-	ld	(hl), b
-	ld	hl, _l
-	ld	(hl), c
-	inc	hl
-	ld	(hl), b
-	ld	hl, _posy
-	ld	bc, (hl)
-	ld	l, c
-	ld	h, b
-	ld.sis	de, 5
 	or	a, a
 	sbc.sis	hl, de
-	jr	z, BB2_5
-	ld	l, c
-	ld	h, b
-	ld.sis	bc, 8
-	or	a, a
-	sbc.sis	hl, bc
-	jr	nz, BB2_8
-BB2_5:
-	ld.sis	bc, 28
-	ld	hl, 42
+	ld	b, -1
+	ld	c, b
+	jr	z, BB2_2
+	ld	c, 0
+BB2_2:
+	ld	hl, _posy
+	ld	hl, (hl)
+	ld.sis	de, 5
 	ld	(ix - 6), hl
-	ld	hl, _i
-	ld	(hl), c
-	inc	hl
-	ld	(hl), b
-	jr	BB2_9
+	or	a, a
+	sbc.sis	hl, de
+	ld	a, b
+	jr	z, BB2_4
+	ld	a, 0
+BB2_4:
+	ld.sis	de, 8
+	ld	hl, (ix - 6)
+	or	a, a
+	sbc.sis	hl, de
+	jr	z, BB2_6
+	ld	b, 0
 BB2_6:
-	ld	hl, 17
-	ld	(ix - 3), hl
-	ld	hl, 14
-	ld	(ix - 6), hl
-	or	a, a
-	sbc	hl, hl
-	ld	(ix - 9), hl
-BB2_7:
-	ld	bc, 18
-	jr	BB2_10
+	or	a, b
+	ld	l, a
+	bit	0, c
+	jr	z, BB2_8
+	ld	de, -23
+	ld	(ix - 3), de
 BB2_8:
-	ld	hl, 14
-	ld	(ix - 6), hl
-BB2_9:
-	ld	bc, 18
-	ld	hl, -23
-	ld	(ix - 9), hl
+	ld	de, 14
+	ld	a, c
+	and	a, l
+	bit	0, a
+	jr	nz, BB2_10
+	ld	(ix - 9), de
+	jr	BB2_11
 BB2_10:
+	ld	hl, 42
+	ld	(ix - 9), hl
+BB2_11:
+	ld.sis	de, 1
+	ex	de, hl
+	ld	e, iyl
+	ld	d, iyh
+	ex	de, hl
+	or	a, a
+	sbc.sis	hl, de
+	jr	nz, BB2_13
+	ld	hl, -61
+	ld	(ix - 3), hl
+BB2_13:
+	ld	bc, 18
+	ex	de, hl
+	ld	e, iyl
+	ld	d, iyh
+	ex	de, hl
+	dec.sis	hl
+	ld.sis	de, 2
+	or	a, a
+	sbc.sis	hl, de
+	jr	c, BB2_15
+	ld	hl, 17
+	jr	BB2_16
+BB2_15:
+	ld	hl, 40
+BB2_16:
+	ld	(ix - 12), hl
 	ld	de, 0
 	ld	e, iyl
 	ld	d, iyh
@@ -267,19 +245,18 @@ BB2_10:
 	pop	iy
 	ld	bc, 203
 	add	iy, bc
-	ld	bc, (ix - 9)
+	ld	bc, (ix - 3)
 	add	iy, bc
-	ld	hl, _posy
-	ld	hl, (hl)
+	ld	hl, (ix - 6)
 	ld	e, l
 	ld	d, h
 	ex	de, hl
 	ld	bc, 14
 	call	__imulu
 	inc	hl
-	ld	de, (ix - 6)
+	ld	de, (ix - 9)
 	push	de
-	ld	de, (ix - 3)
+	ld	de, (ix - 12)
 	push	de
 	push	hl
 	push	iy
@@ -370,10 +347,10 @@ _DrawChip:
 	or	a, a
 	sbc	hl, de
 	jr	nz, BB4_5
-	ld.sis	de, 251
 	ld	bc, -5
-	jr	BB4_11
+	jr	BB4_9
 BB4_3:
+	ld	bc, -4
 	ld	hl, JTI4_0
 	add	hl, de
 	add	hl, de
@@ -381,42 +358,26 @@ BB4_3:
 	ld	hl, (hl)
 	jp	(hl)
 BB4_4:
-	ld.sis	de, 252
-	ld	bc, -4
-	jr	BB4_11
+	ld	bc, -8
+	jr	BB4_9
 BB4_5:
 	ld	de, 50
 	lea	hl, iy
 	or	a, a
 	sbc	hl, de
-	jr	nz, BB4_7
-	ld.sis	de, 246
+	jr	nz, BB4_10
 	ld	bc, -10
-	jr	BB4_11
+	jr	BB4_9
 BB4_7:
-	ld	a, (_color)
-	ld	c, a
-	jr	BB4_12
-BB4_8:
-	ld.sis	de, 248
-	ld	bc, -8
-	jr	BB4_11
-BB4_9:
-	ld.sis	de, 249
-	ld	bc, -7
-	jr	BB4_11
-BB4_10:
-	ld.sis	de, 247
 	ld	bc, -9
-BB4_11:
-	ld	hl, _color
-	ld	(hl), e
-	inc	hl
-	ld	(hl), d
-BB4_12:
+	jr	BB4_9
+BB4_8:
+	ld	bc, -7
+BB4_9:
 	push	bc
 	call	_gfx_SetColor
 	pop	hl
+BB4_10:
 	ld	hl, 5
 	push	hl
 	ld	hl, (ix - 6)
@@ -444,60 +405,49 @@ BB4_12:
 	section	.rodata,"a",@progbits
 	private	JTI4_0
 JTI4_0:
-	dl	BB4_4
-	dl	BB4_8
-	dl	BB4_7
-	dl	BB4_7
 	dl	BB4_9
-	dl	BB4_7
-	dl	BB4_7
-	dl	BB4_7
-	dl	BB4_7
+	dl	BB4_4
 	dl	BB4_10
+	dl	BB4_10
+	dl	BB4_8
+	dl	BB4_10
+	dl	BB4_10
+	dl	BB4_10
+	dl	BB4_10
+	dl	BB4_7
 
 	section	.text,"ax",@progbits
 	public	_DrawButtons
 _DrawButtons:
+	ld	hl, -3
+	call	__frameset
 	ld	hl, -2
 	push	hl
 	call	_gfx_SetColor
-	ld.sis	bc, 0
+	ld	iy, 57
 	pop	hl
-	ld.sis	de, 7
 BB5_1:
-	ld	hl, _k
-	ld	(hl), c
-	inc	hl
-	ld	(hl), b
-	ld	l, c
-	ld	h, b
+	ld	de, 155
+	lea	hl, iy
 	or	a, a
-	sbc.sis	hl, de
-	jr	nc, BB5_3
-	or	a, a
-	sbc	hl, hl
-	ld	l, c
-	ld	h, b
-	ld	bc, 14
-	call	__imulu
-	ld	de, 57
-	add	hl, de
-	ld	de, 15
-	push	de
-	ld	de, 41
-	push	de
+	sbc	hl, de
+	jr	z, BB5_3
+	ld	hl, 15
 	push	hl
+	ld	hl, 41
+	push	hl
+	push	iy
 	ld	hl, 160
 	push	hl
+	ld	(ix - 3), iy
 	call	_gfx_Rectangle
-	ld.sis	de, 7
+	ld	iy, (ix - 3)
 	pop	hl
 	pop	hl
 	pop	hl
 	pop	hl
-	ld	hl, _k
-	ld	bc, (hl)
-	inc.sis	bc
+	ld	de, 14
+	add	iy, de
 	jr	BB5_1
 BB5_3:
 	ld	hl, -2
@@ -644,9 +594,8 @@ BB5_3:
 	ld	hl, 50
 	push	hl
 	call	_DrawChip
-	pop	hl
-	pop	hl
-	pop	hl
+	ld	sp, ix
+	pop	ix
 	ret
 	section	.text,"ax",@progbits
 
@@ -805,50 +754,48 @@ BB7_3:
 	section	.text,"ax",@progbits
 	public	_createTableau
 _createTableau:
-	ld	hl, -3
+	ld	hl, -21
 	call	__frameset
 	ld	hl, _tableau_data
 	ld	de, 215
+	ld	c, -3
+	ld	(ix - 12), bc
+	ld	c, 18
+	ld	(ix - 15), bc
+	ld	bc, _hnumbers
+	ld	(ix - 9), bc
+	ld	bc, _hcolor
+	ld	(ix - 6), bc
 	ld	bc, 15
 	push	bc
 	push	de
 	push	hl
 	call	_gfx_RLETSprite_NoClip
-	ld.sis	iy, 0
+	ld	de, 0
 	pop	hl
 	pop	hl
 	pop	hl
-	ld.sis	bc, 39
-	ld	e, iyl
-	ld	d, iyh
 BB8_1:
-	ld	hl, _k
-	ld	(hl), e
-	inc	hl
-	ld	(hl), d
-	ld	l, e
-	ld	h, d
-	or	a, a
-	sbc.sis	hl, bc
-	jp	nc, BB8_6
-	ld	hl, _chipb
+	ld	bc, 39
 	push	de
-	ld	e, iyl
-	ld	d, iyh
-	ld	(hl), e
-	inc	hl
-	ld	(hl), d
-	pop	de
+	pop	hl
 	or	a, a
-	sbc	hl, hl
-	ld	l, e
-	ld	h, d
+	sbc	hl, bc
+	jp	z, BB8_6
+	ld.sis	hl, 0
+	ld	iy, _chipb
+	ld	(iy), l
+	ld	(iy + 1), h
+	push	de
+	pop	hl
 	ld	c, 1
 	call	__ishl
+	ld	(ix - 3), de
 	push	hl
 	pop	de
 	ld	hl, _bets
 	add	hl, de
+	ld	(ix - 21), hl
 	ld	hl, (hl)
 	ld	de, _chipa
 	push	de
@@ -856,36 +803,40 @@ BB8_1:
 	ld	(iy), l
 	ld	(iy + 1), h
 	call	_correctchip
-	ld	hl, _k
-	ld	de, (hl)
+	ld	hl, (ix - 3)
+	ld	b, l
+	ld	c, 3
+	call	__bdivu
+	ld	de, (ix - 12)
+	ld	d, a
 	ld	l, e
 	ld	h, d
-	ld.sis	bc, 3
-	call	__sdivu
-	ld	(ix - 3), hl
-	ld.sis	bc, -3
-	call	__smulu
-	add.sis	hl, de
-	ld.sis	bc, 18
-	call	__smulu
-	ex	de, hl
-	ld	iyl, e
-	ld	iyh, d
-	ex	de, hl
-	ld	hl, _p
-	push	de
-	ld	e, iyl
-	ld	d, iyh
-	ld	(hl), e
-	inc	hl
-	ld	(hl), d
-	pop	de
+	mlt	hl
+	ld	a, l
 	ld	hl, (ix - 3)
+	add	a, l
+	ld	bc, (ix - 15)
+	ld	b, a
+	ld	h, 0
+	ld	(ix - 12), de
+	ld	l, d
+	ld	(ix - 15), bc
+	ld	e, c
+	ld	d, b
+	mlt	de
+	ld	b, h
+	ld	c, e
+	ld	iy, _p
+	ld	(iy), c
+	ld	(iy + 1), b
+	ld	iyl, c
+	ld	iyh, b
 	ld.sis	bc, 14
 	call	__smulu
 	ld	e, l
 	ld	d, h
 	ld	hl, _o
+	ld	(ix - 18), de
 	ld	(hl), e
 	inc	hl
 	ld	(hl), d
@@ -897,22 +848,23 @@ BB8_1:
 	jp	z, BB8_5
 	ld	hl, _chipb
 	ld	bc, (hl)
-	or	a, a
-	sbc	hl, hl
+	ld	de, 0
+	push	de
+	pop	hl
 	ld	l, c
 	ld	h, b
 	ld.sis	bc, 268
 	add.sis	iy, bc
+	ld	e, iyl
+	ld	d, iyh
+	ld.sis	bc, 36
+	ld	iy, (ix - 18)
+	add.sis	iy, bc
 	ld	bc, 0
 	ld	c, iyl
 	ld	b, iyh
-	ld	iy, 0
-	ld	iyl, e
-	ld	iyh, d
-	ld	de, 36
-	add	iy, de
-	push	iy
 	push	bc
+	push	de
 	push	hl
 	call	_DrawChip
 	pop	hl
@@ -958,20 +910,9 @@ BB8_1:
 	call	_gfx_SetTextXY
 	pop	hl
 	pop	hl
-	ld	hl, _k
+	ld	hl, (ix - 21)
 	ld	hl, (hl)
 	ld	de, 0
-	ld	e, l
-	ld	d, h
-	push	de
-	pop	hl
-	ld	c, 1
-	call	__ishl
-	push	hl
-	pop	bc
-	ld	hl, _bets
-	add	hl, bc
-	ld	hl, (hl)
 	ld	e, l
 	ld	d, h
 	ld	hl, 1
@@ -981,11 +922,8 @@ BB8_1:
 	pop	hl
 	pop	hl
 BB8_5:
-	ld	hl, _k
-	ld	de, (hl)
-	inc.sis	de
-	ld.sis	iy, 0
-	ld.sis	bc, 39
+	ld	de, (ix - 3)
+	inc	de
 	jp	BB8_1
 BB8_6:
 	ld	hl, 22
@@ -1135,78 +1073,52 @@ BB8_6:
 	ld	hl, _.str.14
 	push	hl
 	call	_gfx_PrintString
-	pop	hl
-	ld	hl, 40
-	push	hl
-	ld	hl, 110
-	push	hl
-	call	_gfx_SetTextXY
-	ld.sis	bc, 0
-	ld	iy, _k
-	pop	hl
+	ld	iy, 110
 	pop	hl
 BB8_7:
-	ld.sis	de, 5
-	ld	(iy), c
-	ld	(iy + 1), b
-	ld	l, c
-	ld	h, b
+	ld	hl, 40
+	ld	(ix - 3), iy
+	push	hl
+	push	iy
+	call	_gfx_SetTextXY
+	pop	hl
+	pop	hl
+	ld	hl, (ix - 3)
+	ld	de, 210
 	or	a, a
-	sbc.sis	hl, de
-	jr	nc, BB8_11
-	ld	de, 0
-	ld	e, c
-	ld	d, b
-	ld	hl, _hcolor
-	add	hl, de
+	sbc	hl, de
+	jr	z, BB8_11
+	ld	hl, (ix - 6)
 	ld	l, (hl)
 	push	hl
 	call	_gfx_SetTextFGColor
-	ld	bc, 0
-	ld	iy, _k
 	pop	hl
-	ld	hl, (iy)
-	push	bc
-	pop	de
-	ld	e, l
-	ld	d, h
-	ld	hl, _hcolor
-	add	hl, de
+	ld	hl, (ix - 6)
 	ld	a, (hl)
 	or	a, a
 	jr	z, BB8_10
-	ld	hl, _hnumbers
-	add	hl, de
-	ld	c, (hl)
+	ld	de, 0
+	ld	hl, (ix - 9)
+	ld	e, (hl)
 	ld	hl, 1
 	push	hl
-	push	bc
+	push	de
 	call	_gfx_PrintInt
 	pop	hl
 	pop	hl
-	ld	hl, _k
-	ld	hl, (hl)
-	ld	de, 0
-	ld	e, l
-	ld	d, h
 BB8_10:
-	ex	de, hl
-	ld	bc, 20
-	call	__imulu
-	ld	de, 130
-	add	hl, de
-	ld	de, 40
-	push	de
-	push	hl
-	call	_gfx_SetTextXY
-	pop	hl
-	pop	hl
-	ld	iy, _k
-	ld	bc, (iy)
-	inc.sis	bc
-	jp	BB8_7
+	ld	iy, (ix - 3)
+	ld	de, 20
+	add	iy, de
+	ld	hl, (ix - 6)
+	inc	hl
+	ld	(ix - 6), hl
+	ld	hl, (ix - 9)
+	inc	hl
+	ld	(ix - 9), hl
+	jr	BB8_7
 BB8_11:
-	pop	hl
+	ld	sp, ix
 	pop	ix
 	ret
 	section	.text,"ax",@progbits
@@ -1337,21 +1249,20 @@ _PrintCredits:
 	section	.text,"ax",@progbits
 	public	_main
 _main:
-	ld	hl, -39
+	ld	hl, -42
 	call	__frameset
 	ld.sis	bc, 1
-	ld	hl, _posy
-	ld	d, b
-	ld	(ix - 39), de
 	ld.sis	de, 4
 	ld	iy, _posx
 	ld	(iy), e
 	ld	(iy + 1), d
+	ld	hl, _posy
 	ld	(hl), c
 	inc	hl
 	ld	(hl), b
+	ld	iy, _credits
+	lea	hl, iy
 	ld.sis	de, 0
-	ld	hl, _credits
 	ld	(hl), e
 	inc	hl
 	ld	(hl), d
@@ -1384,6 +1295,11 @@ _main:
 	push	hl
 	call	_ti_Close
 	pop	hl
+	ld	hl, (-851900)
+	ld	a, (-851897)
+	push	hl
+	call	_srand
+	pop	hl
 	call	_gfx_Begin
 	or	a, a
 	sbc	hl, hl
@@ -1396,26 +1312,16 @@ _main:
 	pop	hl
 	pop	hl
 	pop	hl
-	ld.sis	hl, 0
-	ld	iy, _s
-	ld	(iy), l
-	ld	(iy + 1), h
 	ld	hl, 1
 	push	hl
 	call	_gfx_SetDraw
 	pop	hl
-	ld	bc, (_rotate_sprite)
-	ld	a, (_a)
-	ld	l, a
-	ld	a, (_s)
-	ld	e, a
-	ld	a, l
-	add	a, e
-	ld	l, a
+	ld	hl, (_rotate_sprite)
 	ld	de, 64
 	push	de
+	ld	de, 0
+	push	de
 	push	hl
-	push	bc
 	ld	hl, _ro_data
 	push	hl
 	call	_gfx_RotateScaleSprite
@@ -1428,7 +1334,11 @@ _main:
 	call	_gfx_FillScreen
 	pop	hl
 	call	_DrawTitle
+	or	a, a
+	sbc	hl, hl
+	push	hl
 	call	_DrawMenu
+	pop	hl
 	ld	hl, (_rotate_sprite)
 	ld	de, 69
 	push	de
@@ -1456,42 +1366,57 @@ _main:
 	push	hl
 	call	_gfx_FillScreen
 	pop	hl
+	ld	iy, _credits
 	ld	hl, _e
-	ld	hl, (hl)
-	ld	(ix - 9), hl
+	ld	de, (hl)
+	ld	(ix - 8), de
 	ld	hl, _c
-	ld	hl, (hl)
-	ld	(ix - 21), hl
-	ld	b, -1
+	ld	de, (hl)
+	ld	(ix - 30), de
+	ld	a, -1
+	ld	de, 0
+	ld	(ix - 3), de
 BB11_1:
-	ld	hl, (ix - 9)
+	ld	hl, (iy)
+	ld	(ix - 21), hl
+	ld	hl, (ix - 8)
 	add.sis	hl, bc
 	or	a, a
 	sbc.sis	hl, bc
-	ld	a, b
 	jr	z, BB11_3
 	ld	a, 0
 BB11_3:
-	ld	hl, _credits
-	ld	hl, (hl)
-	ld	(ix - 15), hl
-	or	a, a
-	sbc	hl, hl
-	ld	iy, (ix - 9)
+	ld	de, 0
+	ld	iy, (ix - 8)
+	ld	e, iyl
+	ld	d, iyh
 	ex	de, hl
 	ld	e, iyl
 	ld	d, iyh
 	ex	de, hl
-	ld	(ix - 12), hl
-	ld.sis	de, -13
-	add.sis	hl, de
+	ld.sis	bc, 1
+	call	__sand
 	ld	(ix - 33), hl
 	ex	de, hl
 	ld	e, iyl
 	ld	d, iyh
 	ex	de, hl
-	dec.sis	hl
+	ld.sis	bc, -19
+	add.sis	hl, bc
 	ld	(ix - 36), hl
+	ex	de, hl
+	ld	e, iyl
+	ld	d, iyh
+	ex	de, hl
+	ld.sis	bc, -13
+	add.sis	hl, bc
+	ld	(ix - 39), hl
+	ex	de, hl
+	ld	e, iyl
+	ld	d, iyh
+	ex	de, hl
+	dec.sis	hl
+	ld	(ix - 42), hl
 	ex	de, hl
 	ld	e, iyl
 	ld	d, iyh
@@ -1499,27 +1424,10 @@ BB11_3:
 	ld.sis	bc, 3
 	call	__sremu
 	ld	(ix - 27), hl
-	ex	de, hl
-	ld	e, iyl
-	ld	d, iyh
-	ex	de, hl
-	ld.sis	bc, 1
-	call	__sand
-	ld	(ix - 30), hl
-	ex	de, hl
-	ld	e, iyl
-	ld	d, iyh
-	ex	de, hl
-	ld.sis	de, -19
-	add.sis	hl, de
-	ld	(ix - 24), hl
-	ld	hl, (ix - 12)
-	dec	hl
-	ld	(ix - 12), hl
-	ld.sis	hl, 0
-	ld	(ix - 6), hl
+	dec	de
+	ld	(ix - 24), de
 	ld	hl, _bets
-	ld	(ix - 18), hl
+	ld	(ix - 11), hl
 	ld	de, 0
 BB11_4:
 	push	de
@@ -1527,36 +1435,39 @@ BB11_4:
 	ld	bc, 50
 	or	a, a
 	sbc	hl, bc
-	jp	z, BB11_50
+	jp	z, BB11_139
 	push	de
 	pop	hl
 	ld	bc, 36
 	or	a, a
 	sbc	hl, bc
-	ld	(ix - 3), de
+	ld	(ix - 17), de
 	jp	nc, BB11_8
-	ld	hl, (ix - 12)
+	ld	hl, (ix - 24)
+	push	de
+	pop	bc
 	or	a, a
-	sbc	hl, de
-	jp	nz, BB11_8
-	ld	hl, (ix - 18)
+	sbc	hl, bc
+	jp	nz, BB11_12
+	ld	hl, (ix - 11)
 	ld	hl, (hl)
 	ld.sis	bc, 36
 	call	__smulu
-	ld	de, (ix - 15)
+	ld	de, (ix - 21)
 	add.sis	hl, de
+	ld	de, (ix - 17)
 	ld	iy, _credits
 	ld	(iy), l
 	ld	(iy + 1), h
-	ld	(ix - 15), hl
-	jp	BB11_11
+	ld	(ix - 21), hl
+	jp	BB11_12
 BB11_8:
 	ex	de, hl
 	ld	de, 39
 	or	a, a
 	sbc	hl, de
 	jp	nz, BB11_11
-	ld	hl, (ix - 9)
+	ld	hl, (ix - 8)
 	add.sis	hl, bc
 	or	a, a
 	sbc.sis	hl, bc
@@ -1564,499 +1475,156 @@ BB11_8:
 	ld	hl, _bets+78
 	ld	hl, (hl)
 	ld.sis	bc, 36
-	jp	BB11_15
+	jp	BB11_28
 BB11_11:
-	ld	hl, (ix - 6)
-	ld.sis	bc, -36
-	add.sis	hl, bc
-	ld	bc, 0
-	ld	c, l
-	ld	b, h
-	push	bc
-	pop	hl
-	ld	de, 6
-	or	a, a
-	sbc	hl, de
-	jp	c, BB11_16
+	ld	de, (ix - 17)
 BB11_12:
-	ld	hl, (ix - 3)
-	ld	de, 42
+	ex	de, hl
+	ld	bc, -36
+	add	hl, bc
+	push	hl
+	pop	bc
+	ld	de, 13
 	or	a, a
 	sbc	hl, de
-	jp	nz, BB11_24
-	ld	hl, (ix - 9)
-	ld.sis	de, 25
-	or	a, a
-	sbc.sis	hl, de
-	jp	c, BB11_24
-	ld	hl, _bets+84
-	ld	hl, (hl)
-	ld.sis	bc, 3
-BB11_15:
-	call	__smulu
-	jp	BB11_42
-BB11_16:
+	jp	nc, BB11_44
 	ld	hl, JTI11_0
 	add	hl, bc
 	add	hl, bc
 	add	hl, bc
 	ld	hl, (hl)
 	jp	(hl)
-BB11_17:
+BB11_14:
 	ld	hl, (ix - 27)
 	ld.sis	bc, 1
 	or	a, a
 	sbc.sis	hl, bc
+	jp	nz, BB11_44
 	ld	hl, _bets+72
-	jr	z, BB11_23
-	jp	BB11_24
-BB11_18:
+	jp	BB11_27
+BB11_16:
 	ld	hl, (ix - 27)
 	ld.sis	bc, 2
 	or	a, a
 	sbc.sis	hl, bc
+	jp	nz, BB11_44
 	ld	hl, _bets+74
-	jr	z, BB11_23
-	jp	BB11_24
-BB11_19:
+	jp	BB11_27
+BB11_18:
 	bit	0, a
-	jp	nz, BB11_24
+	jp	nz, BB11_44
 	ld	hl, (ix - 27)
 	add.sis	hl, bc
 	or	a, a
 	sbc.sis	hl, bc
+	jp	nz, BB11_44
 	ld	hl, _bets+76
-	jr	z, BB11_23
-	jp	BB11_24
+	jp	BB11_27
 BB11_21:
-	ld	hl, (ix - 36)
+	ld	hl, (ix - 42)
 	ld.sis	de, 12
 	or	a, a
 	sbc.sis	hl, de
+	jp	nc, BB11_44
 	ld	hl, _bets+80
-	jr	c, BB11_23
-	jp	BB11_24
-BB11_22:
-	ld	hl, (ix - 33)
+	jp	BB11_27
+BB11_23:
+	ld	hl, (ix - 39)
 	ld.sis	de, 12
 	or	a, a
 	sbc.sis	hl, de
+	jp	nc, BB11_44
 	ld	hl, _bets+82
-	jp	nc, BB11_24
-BB11_23:
+	jp	BB11_27
+BB11_25:
+	ld	hl, (ix - 8)
+	ld.sis	de, 25
+	or	a, a
+	sbc.sis	hl, de
+	jp	c, BB11_44
+	ld	hl, _bets+84
+BB11_27:
 	ld	hl, (hl)
 	ld.sis	bc, 3
+BB11_28:
 	call	__smulu
-	ld	de, (ix - 15)
-	add.sis	hl, de
-	ld	iy, _credits
-	ld	(iy), l
-	ld	(iy + 1), h
-	ld	(ix - 15), hl
-BB11_24:
-	ld	hl, (ix - 3)
-	ld	de, 43
-	or	a, a
-	sbc	hl, de
-	jp	nz, BB11_27
-	ld	hl, (ix - 21)
+	jp	BB11_43
+BB11_29:
+	ld	hl, (ix - 30)
 	ld.sis	de, 252
 	or	a, a
 	sbc.sis	hl, de
-	jr	nz, BB11_27
+	jp	nz, BB11_44
 	ld	hl, _bets+86
-	jp	BB11_41
-BB11_27:
-	ld	hl, (ix - 3)
-	ld	de, 44
-	or	a, a
-	sbc	hl, de
-	jp	nz, BB11_30
-	ld	hl, (ix - 21)
+	jp	BB11_42
+BB11_31:
+	ld	hl, (ix - 30)
 	ld.sis	de, 254
 	or	a, a
 	sbc.sis	hl, de
-	jr	nz, BB11_30
+	jp	nz, BB11_44
 	ld	hl, _bets+88
-	jp	BB11_41
-BB11_30:
-	ld	bc, (ix - 3)
-	push	bc
-	pop	hl
-	ld	de, 45
-	or	a, a
-	sbc	hl, de
-	jr	nz, BB11_33
-	ld	hl, (ix - 24)
+	jp	BB11_42
+BB11_33:
+	ld	hl, (ix - 36)
 	ld.sis	de, -18
 	or	a, a
 	sbc.sis	hl, de
-	jp	nc, BB11_40
-	ld	bc, (ix - 6)
-	jp	BB11_44
-BB11_33:
-	push	bc
-	pop	hl
-	ld	de, 46
-	or	a, a
-	sbc	hl, de
-	ld	bc, (ix - 6)
-	jp	nz, BB11_36
-	ld	hl, (ix - 9)
+	jp	c, BB11_44
+	ld	hl, _bets+90
+	jp	BB11_42
+BB11_35:
+	ld	hl, (ix - 8)
 	ld.sis	de, 19
 	or	a, a
 	sbc.sis	hl, de
-	jr	c, BB11_36
+	jp	c, BB11_44
 	ld	hl, _bets+92
-	jr	BB11_39
-BB11_36:
-	ld	l, c
-	ld	h, b
-	ld.sis	de, 47
-	or	a, a
-	sbc.sis	hl, de
-	jp	nz, BB11_46
-	ld	hl, (ix - 30)
+	jr	BB11_42
+BB11_37:
+	ld	hl, (ix - 33)
 	bit	0, l
 	jp	z, BB11_44
 	ld	hl, _bets+94
+	jr	BB11_42
 BB11_39:
-	ld	hl, (hl)
-	ld	c, 1
-	call	__sshl
-	ld	bc, (ix - 6)
-	ld	de, (ix - 15)
-	add.sis	hl, de
-	ld	e, l
-	ld	d, h
-	jp	BB11_43
-BB11_40:
-	ld	hl, _bets+90
-BB11_41:
-	ld	hl, (hl)
-	ld	c, 1
-	call	__sshl
+	bit	0, a
+	jp	nz, BB11_44
+	ld	hl, (ix - 33)
+	bit	0, l
+	jp	nz, BB11_44
+	ld	hl, _bets+96
 BB11_42:
-	ld	de, (ix - 15)
+	ld	hl, (hl)
+	ld	c, 1
+	call	__sshl
+BB11_43:
+	ld	de, (ix - 21)
 	add.sis	hl, de
 	ld	e, l
 	ld	d, h
-	ld	bc, (ix - 6)
-BB11_43:
 	ld	hl, _credits
-	ld	(ix - 15), de
+	ld	(ix - 21), de
 	ld	(hl), e
 	inc	hl
 	ld	(hl), d
 BB11_44:
-	ld	de, (ix - 3)
-BB11_45:
 	ld.sis	hl, 0
-	ld	iy, (ix - 18)
+	ld	iy, (ix - 11)
 	ld	(iy), l
 	ld	(iy + 1), h
-	lea	iy, iy + 2
-	ld	(ix - 18), iy
-	inc.sis	bc
-	ld	(ix - 6), bc
+	ld	de, (ix - 17)
 	inc	de
+	lea	iy, iy + 2
+	ld	(ix - 11), iy
 	jp	BB11_4
-BB11_46:
-	ld	l, c
-	ld	h, b
-	ld.sis	de, 48
-	or	a, a
-	sbc.sis	hl, de
-	jr	nz, BB11_44
-	bit	0, a
-	ld	de, (ix - 3)
-	jr	nz, BB11_45
-	ld	hl, (ix - 30)
-	bit	0, l
-	jr	nz, BB11_45
-	ld	hl, _bets+96
-	jp	BB11_39
-BB11_50:
-	ld.sis	hl, 50
-	ld	iy, _k
-BB11_51:
-	ld	(iy), l
-	ld	(iy + 1), h
-	ld	iy, -720868
-BB11_52:
-	ld	l, (iy)
-	ld	h, (iy + 1)
-	ld	a, l
-	cp	a, 64
-	jp	z, BB11_180
-	call	_kb_Scan
-	ld	hl, -3
-	push	hl
-	call	_gfx_SetColor
-	pop	hl
-	ld	hl, 220
-	push	hl
-	ld	hl, 155
-	push	hl
-	ld	hl, 10
-	push	hl
-	ld	hl, 160
-	push	hl
-	call	_gfx_FillRectangle
-	pop	hl
-	pop	hl
-	pop	hl
-	pop	hl
-	call	_DrawTitle
-	call	_DrawMenu
-	ld	hl, 167
-	push	hl
-	ld	hl, 163
-	push	hl
-	call	_gfx_SetTextXY
-	pop	hl
-	pop	hl
-	ld	hl, _chip
-	ld	hl, (hl)
-	ld	de, 0
-	ld	e, l
-	ld	d, h
-	ld	hl, 2
-	push	hl
-	push	de
-	call	_gfx_PrintInt
-	pop	hl
-	pop	hl
-	ld	hl, _chip
-	ld	hl, (hl)
-	ld	de, 0
-	ld	e, l
-	ld	d, h
-	ld	hl, 170
-	push	hl
-	ld	hl, 187
-	push	hl
-	push	de
-	call	_DrawChip
-	pop	hl
-	pop	hl
-	pop	hl
-	call	_PrintCredits
-	call	_PrintNumber
-	call	_DrawCursor
-	call	_createTableau
-	call	_DrawButtons
-	ld	hl, (_rotate_sprite)
-	ld	de, 69
-	push	de
-	ld	de, 17
-	push	de
-	push	hl
-	call	_gfx_TransparentSprite_NoClip
-	pop	hl
-	pop	hl
-	pop	hl
-	ld	hl, 36
-	push	hl
-	ld	hl, 59
-	push	hl
-	ld	hl, _pfeil_data
-	push	hl
-	call	_gfx_RLETSprite_NoClip
-	pop	hl
-	pop	hl
-	pop	hl
-	ld	hl, -720866
-	push	de
-	ld	e, (hl)
-	inc	hl
-	ld	d, (hl)
+BB11_45:
 	ld	l, e
 	ld	h, d
-	pop	de
-	ld	a, l
-	cp	a, 8
-	jp	nz, BB11_59
-	ld	a, (_keyC)
-	ld	l, a
-	ld	a, (_prevkeyC)
-	ld	e, a
-	ld	a, l
-	cp	a, e
-	jp	z, BB11_59
-	ld	hl, _posy
-	ld	de, (hl)
-	ld	l, e
-	ld	h, d
-	ld.sis	bc, 2
-	or	a, a
-	sbc.sis	hl, bc
-	jp	c, BB11_59
-	ld	hl, _posx
-	ld	hl, (hl)
 	ld.sis	bc, 1
 	or	a, a
 	sbc.sis	hl, bc
-	jr	nz, BB11_58
-	ld	l, e
-	ld	h, d
-	ld.sis	bc, 4
-	or	a, a
-	sbc.sis	hl, bc
-	jr	z, BB11_59
-BB11_58:
-	dec.sis	de
-	ld	hl, _posy
-	ld	(hl), e
-	inc	hl
-	ld	(hl), d
-BB11_59:
-	ld	hl, -720866
-	push	de
-	ld	e, (hl)
-	inc	hl
-	ld	d, (hl)
-	ld	l, e
-	ld	h, d
-	pop	de
-	ld	a, l
-	cp	a, 1
-	jp	nz, BB11_72
-	ld	a, (_keyC)
-	ld	l, a
-	ld	a, (_prevkeyC)
-	ld	e, a
-	ld	a, l
-	cp	a, e
-	jp	z, BB11_72
-	ld	hl, _posx
-	ld	bc, (hl)
-	ld	hl, _posy
-	ld	iy, (hl)
-	ld	l, c
-	ld	h, b
-	ld.sis	de, 2
-	or	a, a
-	sbc.sis	hl, de
-	jr	nz, BB11_63
-	ex	de, hl
-	ld	e, iyl
-	ld	d, iyh
-	ex	de, hl
-	ld.sis	de, 4
-	or	a, a
-	sbc.sis	hl, de
-	inc.sis	de
-	jr	z, BB11_71
-BB11_63:
-	ld	l, c
-	ld	h, b
-	ld.sis	de, 2
-	or	a, a
-	sbc.sis	hl, de
-	jr	nz, BB11_65
-	ex	de, hl
-	ld	e, iyl
-	ld	d, iyh
-	ex	de, hl
-	ld.sis	de, 5
-	or	a, a
-	sbc.sis	hl, de
-	ld.sis	de, 8
-	jr	z, BB11_71
-BB11_65:
-	ld	l, c
-	ld	h, b
-	ld.sis	de, 2
-	or	a, a
-	sbc.sis	hl, de
-	jr	nz, BB11_67
-	ex	de, hl
-	ld	e, iyl
-	ld	d, iyh
-	ex	de, hl
-	ld.sis	de, 8
-	or	a, a
-	sbc.sis	hl, de
-	ld.sis	de, 11
-	jr	z, BB11_71
-BB11_67:
-	ex	de, hl
-	ld	e, iyl
-	ld	d, iyh
-	ex	de, hl
-	ld.sis	de, 14
-	or	a, a
-	sbc.sis	hl, de
-	jr	nc, BB11_72
-	ld	l, c
-	ld	h, b
-	ld.sis	de, 1
-	or	a, a
-	sbc.sis	hl, de
-	jr	nz, BB11_70
-	ex	de, hl
-	ld	e, iyl
-	ld	d, iyh
-	ex	de, hl
-	ld.sis	de, 10
-	or	a, a
-	sbc.sis	hl, de
-	jr	z, BB11_72
-BB11_70:
-	inc.sis	iy
-	ld	e, iyl
-	ld	d, iyh
-BB11_71:
-	ld	hl, _posy
-	ld	(hl), e
-	inc	hl
-	ld	(hl), d
-BB11_72:
-	ld	hl, -720866
-	push	de
-	ld	e, (hl)
-	inc	hl
-	ld	d, (hl)
-	ld	l, e
-	ld	h, d
-	pop	de
-	ld	a, l
-	cp	a, 2
-	jp	nz, BB11_83
-	ld	a, (_keyC)
-	ld	l, a
-	ld	a, (_prevkeyC)
-	ld	e, a
-	ld	a, l
-	cp	a, e
-	jp	z, BB11_83
-	ld	hl, _posx
-	ld	de, (hl)
-	ld	hl, _posy
-	ld	iy, (hl)
-	ld	l, e
-	ld	h, d
-	ld.sis	bc, 2
-	or	a, a
-	sbc.sis	hl, bc
-	jr	nz, BB11_76
-	ex	de, hl
-	ld	e, iyl
-	ld	d, iyh
-	ex	de, hl
-	ld.sis	bc, 4
-	or	a, a
-	sbc.sis	hl, bc
-	ld.sis	bc, 1
-	jr	z, BB11_82
-BB11_76:
-	ld	l, e
-	ld	h, d
-	ld.sis	bc, 2
-	or	a, a
-	sbc.sis	hl, bc
-	jr	nz, BB11_78
+	jr	nz, BB11_49
 	ex	de, hl
 	ld	e, iyl
 	ld	d, iyh
@@ -2064,138 +1632,20 @@ BB11_76:
 	ld.sis	bc, 5
 	or	a, a
 	sbc.sis	hl, bc
-	ld.sis	bc, 1
-	jr	z, BB11_82
-BB11_78:
-	ld	l, e
-	ld	h, d
-	ld.sis	bc, 2
-	or	a, a
-	sbc.sis	hl, bc
-	jr	nz, BB11_80
-	ex	de, hl
-	ld	e, iyl
-	ld	d, iyh
-	ex	de, hl
-	ld.sis	bc, 8
-	or	a, a
-	sbc.sis	hl, bc
-	ld.sis	bc, 1
-	jr	z, BB11_82
-BB11_80:
-	ld	l, e
-	ld	h, d
-	ld.sis	bc, 3
-	or	a, a
-	sbc.sis	hl, bc
-	jr	c, BB11_83
-	dec.sis	de
-	ld	c, e
-	ld	b, d
-BB11_82:
-	ld	hl, _posx
-	ld	(hl), c
-	inc	hl
-	ld	(hl), b
-BB11_83:
-	ld	hl, -720866
-	push	de
-	ld	e, (hl)
-	inc	hl
-	ld	d, (hl)
-	ld	l, e
-	ld	h, d
-	pop	de
-	ld	a, l
-	cp	a, 4
-	jr	nz, BB11_87
-	ld	a, (_keyC)
-	ld	l, a
-	ld	a, (_prevkeyC)
-	ld	e, a
-	ld	a, l
-	cp	a, e
-	jr	z, BB11_87
-	ld	hl, _posx
-	ld	de, (hl)
-	ld	l, e
-	ld	h, d
-	ld.sis	bc, 5
-	or	a, a
-	sbc.sis	hl, bc
-	jr	nc, BB11_87
-	inc.sis	de
-	ld	hl, _posx
-	ld	(hl), e
-	inc	hl
-	ld	(hl), d
-BB11_87:
-	ld	hl, -720878
-	push	de
-	ld	e, (hl)
-	inc	hl
-	ld	d, (hl)
-	ld	l, e
-	ld	h, d
-	pop	de
-	ld	a, l
-	cp	a, 32
-	ld	iy, -720868
-	jp	nz, BB11_112
-	ld	a, (_keyA)
-	ld	l, a
-	ld	a, (_prevkeyA)
-	ld	e, a
-	ld	a, l
-	cp	a, e
-	jp	z, BB11_112
-	ld	hl, _posx
-	ld	bc, (hl)
-	ld	hl, _posy
-	ld	de, (hl)
-	ld	(ix - 3), bc
-	ld	l, c
-	ld	h, b
-	ld.sis	bc, 1
-	or	a, a
-	sbc.sis	hl, bc
-	jr	nz, BB11_91
-	ld	l, e
-	ld	h, d
-	ld.sis	bc, 4
-	or	a, a
-	sbc.sis	hl, bc
-	jp	z, BB11_180
-BB11_91:
-	ld	hl, (ix - 3)
-	ld.sis	bc, 1
-	or	a, a
-	sbc.sis	hl, bc
-	push	de
-	pop	iy
-	jr	nz, BB11_95
-	ex	de, hl
-	ld	e, iyl
-	ld	d, iyh
-	ex	de, hl
-	ld.sis	bc, 5
-	or	a, a
-	sbc.sis	hl, bc
-	jr	nz, BB11_95
+	jr	nz, BB11_49
 	ld.sis	hl, 1
 	ld	iy, _chip
-BB11_94:
+BB11_48:
 	ld	(iy), l
 	ld	(iy + 1), h
-	jp	BB11_111
-BB11_95:
-	ld	de, (ix - 3)
+	jp	BB11_65
+BB11_49:
 	ld	l, e
 	ld	h, d
 	ld.sis	bc, 1
 	or	a, a
 	sbc.sis	hl, bc
-	jr	nz, BB11_98
+	jr	nz, BB11_52
 	ex	de, hl
 	ld	e, iyl
 	ld	d, iyh
@@ -2203,17 +1653,17 @@ BB11_95:
 	ld.sis	bc, 6
 	or	a, a
 	sbc.sis	hl, bc
-	jr	nz, BB11_98
+	jr	nz, BB11_52
 	ld	hl, _chip
 	ld.sis	de, 2
-	jp	BB11_110
-BB11_98:
+	jp	BB11_64
+BB11_52:
 	ld	l, e
 	ld	h, d
 	ld.sis	bc, 1
 	or	a, a
 	sbc.sis	hl, bc
-	jr	nz, BB11_101
+	jr	nz, BB11_55
 	ex	de, hl
 	ld	e, iyl
 	ld	d, iyh
@@ -2221,17 +1671,17 @@ BB11_98:
 	ld.sis	bc, 7
 	or	a, a
 	sbc.sis	hl, bc
-	jr	nz, BB11_101
+	jr	nz, BB11_55
 	ld	hl, _chip
 	ld.sis	de, 5
-	jr	BB11_110
-BB11_101:
+	jr	BB11_64
+BB11_55:
 	ld	l, e
 	ld	h, d
 	ld.sis	bc, 1
 	or	a, a
 	sbc.sis	hl, bc
-	jr	nz, BB11_104
+	jr	nz, BB11_58
 	ex	de, hl
 	ld	e, iyl
 	ld	d, iyh
@@ -2239,17 +1689,17 @@ BB11_101:
 	ld.sis	bc, 8
 	or	a, a
 	sbc.sis	hl, bc
-	jr	nz, BB11_104
+	jr	nz, BB11_58
 	ld	hl, _chip
 	ld.sis	de, 10
-	jr	BB11_110
-BB11_104:
+	jr	BB11_64
+BB11_58:
 	ld	l, e
 	ld	h, d
 	ld.sis	bc, 1
 	or	a, a
 	sbc.sis	hl, bc
-	jr	nz, BB11_107
+	jr	nz, BB11_61
 	ex	de, hl
 	ld	e, iyl
 	ld	d, iyh
@@ -2257,17 +1707,17 @@ BB11_104:
 	ld.sis	bc, 9
 	or	a, a
 	sbc.sis	hl, bc
-	jr	nz, BB11_107
+	jr	nz, BB11_61
 	ld	hl, _chip
 	ld.sis	de, 20
-	jr	BB11_110
-BB11_107:
+	jr	BB11_64
+BB11_61:
 	ld	l, e
 	ld	h, d
 	ld.sis	bc, 1
 	or	a, a
 	sbc.sis	hl, bc
-	jp	nz, BB11_169
+	jp	nz, BB11_129
 	ex	de, hl
 	ld	e, iyl
 	ld	d, iyh
@@ -2275,14 +1725,14 @@ BB11_107:
 	ld.sis	bc, 10
 	or	a, a
 	sbc.sis	hl, bc
-	jp	nz, BB11_169
+	jp	nz, BB11_129
 	ld	hl, _chip
 	ld.sis	de, 50
-BB11_110:
+BB11_64:
 	ld	(hl), e
 	inc	hl
 	ld	(hl), d
-BB11_111:
+BB11_65:
 	ld	hl, 1
 	push	hl
 	ld	hl, 4
@@ -2382,73 +1832,50 @@ BB11_111:
 	pop	hl
 	pop	hl
 	pop	hl
-BB11_112:
-	ld	iy, -720878
-	ld	l, (iy)
-	ld	h, (iy + 1)
-	ld	iy, _menu
-	ld	de, (iy)
+	push	af
+	ld	a, (ix - 18)
+	ld	iyl, a
+	pop	af
+BB11_66:
+	ld	hl, -720878
+	push	de
+	ld	e, (hl)
+	inc	hl
+	ld	d, (hl)
+	ld	l, e
+	ld	h, d
+	pop	de
 	ld	a, l
 	cp	a, 8
-	jp	nz, BB11_116
+	jr	nz, BB11_68
+	ld	hl, (ix - 3)
+	ld	de, 1
+	or	a, a
+	sbc	hl, de
+	jp	z, BB11_126
+BB11_68:
+	ld	de, (ix - 3)
+BB11_69:
+	ld	hl, -720878
+	push	de
+	ld	e, (hl)
+	inc	hl
+	ld	d, (hl)
 	ld	l, e
 	ld	h, d
-	ld.sis	bc, 1
-	or	a, a
-	sbc.sis	hl, bc
-	ld	iy, -720878
-	jp	nz, BB11_117
-	ld	a, (_keyA)
-	ld	l, a
-	ld	a, (_prevkeyA)
-	ld	e, a
-	ld	a, l
-	cp	a, e
-	ld.sis	hl, 1
-	ld	e, l
-	ld	d, h
-	jp	z, BB11_117
-	ld	hl, _credits
-	push	hl
-	pop	iy
-	ld	hl, (iy)
-	ld.sis	de, 20
-	add.sis	hl, de
-	ld	(iy), l
-	ld	(iy + 1), h
-	ld	iy, -720878
-	ld.sis	hl, 0
-	ld	e, l
-	ld	d, h
-	ld	hl, _menu
-	ld	(hl), e
-	inc	hl
-	ld	(hl), d
-	jr	BB11_117
-BB11_116:
-	ld	iy, -720878
-BB11_117:
-	ld	l, (iy)
-	ld	h, (iy + 1)
+	pop	de
 	ld	a, l
 	cp	a, 4
-	jp	nz, BB11_121
-	ld	l, e
-	ld	h, d
-	ld.sis	bc, 1
+	jr	nz, BB11_73
+	push	de
+	pop	hl
+	ld	bc, 1
 	or	a, a
-	sbc.sis	hl, bc
-	jp	nz, BB11_121
-	ld	a, (_keyA)
-	ld	l, a
-	ld	a, (_prevkeyA)
-	ld	e, a
-	ld	a, l
-	cp	a, e
-	ld.sis	hl, 1
-	ld	e, l
-	ld	d, h
-	jp	z, BB11_121
+	sbc	hl, bc
+	jr	nz, BB11_73
+	ld	a, (ix - 5)
+	cp	a, iyl
+	jr	z, BB11_73
 	ld	hl, _credits
 	push	hl
 	pop	iy
@@ -2457,36 +1884,32 @@ BB11_117:
 	add.sis	hl, de
 	ld	(iy), l
 	ld	(iy + 1), h
-	ld	iy, -720878
-	ld.sis	hl, 0
-	ld	e, l
-	ld	d, h
-	ld	hl, _menu
-	ld	(hl), e
+	push	af
+	ld	a, (ix - 18)
+	ld	iyl, a
+	pop	af
+	ld	de, 0
+BB11_73:
+	ld	hl, -720878
+	push	de
+	ld	e, (hl)
 	inc	hl
-	ld	(hl), d
-BB11_121:
-	ld	l, (iy)
-	ld	h, (iy + 1)
-	ld	a, l
-	cp	a, 2
-	jp	nz, BB11_125
+	ld	d, (hl)
 	ld	l, e
 	ld	h, d
-	ld.sis	bc, 1
-	or	a, a
-	sbc.sis	hl, bc
-	jp	nz, BB11_125
-	ld	a, (_keyA)
-	ld	l, a
-	ld	a, (_prevkeyA)
-	ld	e, a
+	pop	de
 	ld	a, l
-	cp	a, e
-	ld.sis	hl, 1
-	ld	e, l
-	ld	d, h
-	jp	z, BB11_125
+	cp	a, 2
+	jr	nz, BB11_77
+	push	de
+	pop	hl
+	ld	bc, 1
+	or	a, a
+	sbc	hl, bc
+	jr	nz, BB11_77
+	ld	a, (ix - 5)
+	cp	a, iyl
+	jr	z, BB11_77
 	ld	hl, _credits
 	push	hl
 	pop	iy
@@ -2495,169 +1918,157 @@ BB11_121:
 	add.sis	hl, de
 	ld	(iy), l
 	ld	(iy + 1), h
-	ld	iy, -720878
-	ld.sis	hl, 0
-	ld	e, l
-	ld	d, h
-	ld	hl, _menu
-	ld	(hl), e
+	push	af
+	ld	a, (ix - 18)
+	ld	iyl, a
+	pop	af
+	ld	de, 0
+BB11_77:
+	ld	hl, -720878
+	push	de
+	ld	e, (hl)
 	inc	hl
-	ld	(hl), d
-BB11_125:
-	ld	l, (iy)
-	ld	h, (iy + 1)
-	ld	a, l
-	cp	a, 1
-	jp	nz, BB11_129
+	ld	d, (hl)
 	ld	l, e
 	ld	h, d
-	ld.sis	bc, 1
-	or	a, a
-	sbc.sis	hl, bc
-	jp	nz, BB11_129
-	ld	a, (_keyA)
-	ld	l, a
-	ld	a, (_prevkeyA)
-	ld	e, a
+	pop	de
 	ld	a, l
-	cp	a, e
-	ld.sis	hl, 1
-	ld	e, l
-	ld	d, h
-	jp	z, BB11_129
-	ld	hl, _credits
-	push	hl
-	pop	iy
+	cp	a, 1
+	jr	nz, BB11_81
+	push	de
+	pop	hl
+	ld	bc, 1
+	or	a, a
+	sbc	hl, bc
+	jr	nz, BB11_81
+	ld	a, (ix - 5)
+	cp	a, iyl
+	jr	z, BB11_81
+	ld	iy, _credits
 	ld	hl, (iy)
 	ld.sis	de, 200
 	add.sis	hl, de
 	ld	(iy), l
 	ld	(iy + 1), h
-	ld	iy, -720878
-	ld.sis	hl, 0
-	ld	e, l
-	ld	d, h
-	ld	hl, _menu
-	ld	(hl), e
+	push	af
+	ld	a, (ix - 18)
+	ld	iyl, a
+	pop	af
+	ld	de, 0
+BB11_81:
+	ld	hl, -720878
+	push	de
+	ld	e, (hl)
 	inc	hl
-	ld	(hl), d
-BB11_129:
-	ld	l, (iy)
-	ld	h, (iy + 1)
-	ld	a, l
-	cp	a, 16
-	jr	nz, BB11_132
+	ld	d, (hl)
 	ld	l, e
 	ld	h, d
-	ld.sis	bc, 1
-	or	a, a
-	sbc.sis	hl, bc
-	jr	nz, BB11_132
-	ld	a, (_keyA)
-	ld	l, a
-	ld	a, (_prevkeyA)
-	ld	c, a
-	ld	a, l
-	cp	a, c
-	jr	nz, BB11_135
-BB11_132:
-	ld	l, (iy)
-	ld	h, (iy + 1)
+	pop	de
 	ld	a, l
 	cp	a, 16
-	jr	nz, BB11_137
+	jr	nz, BB11_84
+	push	de
+	pop	hl
+	ld	bc, 1
+	or	a, a
+	sbc	hl, bc
+	jr	nz, BB11_84
+	ld	a, (ix - 5)
+	cp	a, iyl
+	jp	nz, BB11_128
+BB11_84:
+	ld	hl, -720878
+	push	de
+	ld	e, (hl)
+	inc	hl
+	ld	d, (hl)
 	ld	l, e
 	ld	h, d
-	add.sis	hl, bc
-	or	a, a
-	sbc.sis	hl, bc
-	jr	nz, BB11_137
-	ld	a, (_keyA)
-	ld	l, a
-	ld	a, (_prevkeyA)
-	ld	e, a
+	pop	de
 	ld	a, l
-	cp	a, e
-	ld.sis	hl, 1
-	ld	e, l
-	ld	d, h
-	jr	nz, BB11_136
-	jr	BB11_137
-BB11_135:
-	ld	hl, _credits
-	push	hl
-	pop	iy
-	ld	hl, (iy)
-	ld.sis	de, 10
-	add.sis	hl, de
-	ld	(iy), l
-	ld	(iy + 1), h
-	ld.sis	hl, 0
-	ld	e, l
-	ld	d, h
-BB11_136:
-	ld	hl, _menu
-	ld	(hl), e
-	inc	hl
-	ld	(hl), d
-BB11_137:
+	cp	a, 16
+	ld	iyh, -1
+	ld	a, iyh
+	jr	z, BB11_86
+	ld	a, 0
+BB11_86:
+	push	de
+	pop	hl
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	ex	de, hl
+	ld	e, iyh
+	ex	de, hl
+	jr	z, BB11_88
+	ld	l, 0
+BB11_88:
+	and	a, l
+	ld	l, a
+	ld	a, (ix - 5)
+	cp	a, iyl
+	ld	bc, 1
+	jr	nz, BB11_90
+	ld	bc, 0
+BB11_90:
+	bit	0, l
+	jr	nz, BB11_92
+	push	de
+	pop	bc
+BB11_92:
+	ld	(ix - 11), bc
+BB11_93:
 	ld	hl, _posx
 	ld	bc, (hl)
 	ld	hl, _posy
-	ld	iy, (hl)
-	ex	de, hl
-	ld	e, iyl
-	ld	d, iyh
-	ex	de, hl
+	ld	hl, (hl)
+	ld	(ix - 3), hl
 	ld.sis	de, 1
 	or	a, a
 	sbc.sis	hl, de
-	ld	a, -1
-	jr	z, BB11_139
+	ld	a, iyh
+	jr	z, BB11_95
 	ld	a, 0
-BB11_139:
+BB11_95:
 	ld	l, c
 	ld	h, b
 	ld.sis	de, 1
 	or	a, a
 	sbc.sis	hl, de
-	jr	nz, BB11_141
+	jr	nz, BB11_97
 	bit	0, a
-	jr	nz, BB11_147
-BB11_141:
+	jp	nz, BB11_103
+BB11_97:
 	ld	l, c
 	ld	h, b
 	ld.sis	de, 2
 	or	a, a
 	sbc.sis	hl, de
-	jr	nz, BB11_143
+	jr	nz, BB11_99
 	bit	0, a
-	jr	nz, BB11_147
-BB11_143:
+	jp	nz, BB11_103
+BB11_99:
 	ld	l, c
 	ld	h, b
 	ld.sis	de, 3
 	or	a, a
 	sbc.sis	hl, de
-	jr	nz, BB11_145
+	jr	nz, BB11_101
 	bit	0, a
-	jr	nz, BB11_147
-BB11_145:
+	jp	nz, BB11_103
+BB11_101:
 	ld	l, c
 	ld	h, b
 	ld.sis	de, 5
 	or	a, a
 	sbc.sis	hl, de
-	jr	nz, BB11_148
-	ex	de, hl
-	ld	e, iyl
-	ld	d, iyh
-	ex	de, hl
+	jp	nz, BB11_104
+	ld	hl, (ix - 3)
 	ld.sis	de, 1
 	or	a, a
 	sbc.sis	hl, de
-	jr	nz, BB11_148
-BB11_147:
+	jr	nz, BB11_104
+BB11_103:
 	ld.sis	hl, 4
 	ld	e, l
 	ld	d, h
@@ -2667,55 +2078,56 @@ BB11_147:
 	ld	(hl), d
 	ld	c, e
 	ld	b, d
-BB11_148:
+	ld	d, -1
+	ld	iyh, d
+BB11_104:
 	ld	l, c
 	ld	h, b
 	ld.sis	de, 2
 	or	a, a
 	sbc.sis	hl, de
-	ld	b, -1
-	ld	c, b
-	jr	z, BB11_150
+	ld	c, iyh
+	jr	z, BB11_106
 	ld	c, 0
-BB11_150:
-	ld	(ix - 3), iy
-	ex	de, hl
-	ld	e, iyl
-	ld	d, iyh
-	ex	de, hl
+BB11_106:
+	ld	hl, (ix - 3)
 	ld.sis	de, 6
 	or	a, a
 	sbc.sis	hl, de
-	ld	l, b
-	jr	z, BB11_152
+	ex	de, hl
+	ld	e, iyh
+	ex	de, hl
+	jr	z, BB11_108
 	ld	l, 0
-BB11_152:
+BB11_108:
 	ld	a, c
 	and	a, l
-	ld	iyl, a
+	ld	b, a
 	ld	hl, (ix - 3)
 	ld.sis	de, 7
 	or	a, a
 	sbc.sis	hl, de
-	ld	l, b
-	jr	z, BB11_154
+	ex	de, hl
+	ld	e, iyh
+	ex	de, hl
+	jr	z, BB11_110
 	ld	l, 0
-BB11_154:
+BB11_110:
 	ld	a, c
 	and	a, l
 	ld	l, a
-	ld	a, iyl
+	ld	a, b
 	or	a, l
-	ld	(ix - 6), a
+	ld	(ix - 8), a
 	bit	0, a
 	ld.sis	iy, 5
-	jr	nz, BB11_156
+	jr	nz, BB11_112
 	ld	hl, (ix - 3)
 	ex	de, hl
 	ld	iyl, e
 	ld	iyh, d
 	ex	de, hl
-BB11_156:
+BB11_112:
 	ex	de, hl
 	ld	e, iyl
 	ld	d, iyh
@@ -2723,10 +2135,10 @@ BB11_156:
 	ld.sis	de, 9
 	or	a, a
 	sbc.sis	hl, de
-	ld	l, b
-	jr	z, BB11_158
+	ld	l, -1
+	jr	z, BB11_114
 	ld	l, 0
-BB11_158:
+BB11_114:
 	ld	a, c
 	and	a, l
 	ld	b, a
@@ -2738,52 +2150,46 @@ BB11_158:
 	or	a, a
 	sbc.sis	hl, de
 	ld	l, -1
-	jr	z, BB11_160
+	jr	z, BB11_116
 	ld	l, 0
-BB11_160:
+BB11_116:
 	ld	a, c
 	and	a, l
 	ld	l, a
 	ld	a, b
 	or	a, l
-	bit	0, (ix - 6)
-	jr	nz, BB11_162
+	bit	0, (ix - 8)
+	jr	nz, BB11_118
 	bit	0, a
-	jr	z, BB11_165
-BB11_162:
+	jr	z, BB11_121
+BB11_118:
 	bit	0, a
 	ld.sis	bc, 8
-	jr	nz, BB11_164
+	jr	nz, BB11_120
 	ld	c, iyl
 	ld	b, iyh
-BB11_164:
+BB11_120:
 	ld	hl, _posy
 	ld	(hl), c
 	inc	hl
 	ld	(hl), b
-BB11_165:
+BB11_121:
 	call	_gfx_SwapDraw
 	call	_kb_Scan
-	ld	a, (_keyA)
-	ld	(_prevkeyA), a
-	ld	a, (_keyC)
-	ld	c, a
-	ld	(_prevkeyC), a
 	ld	hl, -720878
 	ld	e, (hl)
 	inc	hl
 	ld	d, (hl)
-	ld	a, e
-	ld	(_keyA), a
 	ld	hl, -720866
-	ld	e, (hl)
+	ld	c, (hl)
 	inc	hl
-	ld	d, (hl)
-	ld	a, e
-	ld	(_keyC), a
-	ld	a, c
-	cp	a, e
-	jp	nz, BB11_179
+	ld	b, (hl)
+	ld	a, (ix - 4)
+	cp	a, c
+	jp	nz, BB11_125
+	ld	iyl, c
+	ld	iyh, b
+	ld	(ix - 8), de
 	ld	hl, _keycount
 	ld	de, (hl)
 	inc.sis	de
@@ -2794,28 +2200,88 @@ BB11_165:
 	ld	h, d
 	ld.sis	bc, 1
 	call	__sand
-	ld	c, l
-	ld	b, h
+	ld	a, l
+	xor	a, c
+	ld	c, a
 	ld	l, e
 	ld	h, d
 	ld.sis	de, 4
 	or	a, a
 	sbc.sis	hl, de
-	ld	iy, -720868
-	jp	c, BB11_52
-	bit	0, c
-	jp	z, BB11_52
-	ld	hl, (ix - 39)
-	ld	a, h
-	ld	(_prevkeyC), a
-	jp	BB11_52
-BB11_169:
+	sbc	a, a
+	or	a, c
+	bit	0, a
+	ld	a, (ix - 4)
+	jr	nz, BB11_124
+	xor	a, a
+BB11_124:
+	ld	l, (ix - 5)
+	ld	(ix - 18), l
+	ld	(ix - 14), a
+	ld	hl, (ix - 11)
+	ld	(ix - 3), hl
+	push	af
+	ld	a, iyl
+	ld	(ix - 4), a
+	pop	af
+	ld	hl, (ix - 8)
+	ld	(ix - 5), l
+	jp	BB11_139
+BB11_125:
+	ld.sis	hl, 0
+	ld	iy, _keycount
+	ld	(iy), l
+	ld	(iy + 1), h
+	ld	a, (ix - 5)
+	ld	(ix - 18), a
+	ld	a, (ix - 4)
+	ld	(ix - 14), a
+	ld	hl, (ix - 11)
+	ld	(ix - 3), hl
+	ld	(ix - 4), c
+	ld	(ix - 5), e
+	jp	BB11_139
+BB11_126:
+	ld	a, (ix - 5)
+	cp	a, iyl
+	ld	de, (ix - 3)
+	jp	z, BB11_69
+	ld	hl, _credits
+	push	hl
+	pop	iy
+	ld	hl, (iy)
+	ld.sis	de, 20
+	add.sis	hl, de
+	ld	(iy), l
+	ld	(iy + 1), h
+	push	af
+	ld	a, (ix - 18)
+	ld	iyl, a
+	pop	af
+	ld	de, 0
+	jp	BB11_69
+BB11_128:
+	ld	hl, _credits
+	push	hl
+	pop	iy
+	ld	hl, (iy)
+	ld.sis	de, 10
+	add.sis	hl, de
+	dec	d
+	ld	(iy), l
+	ld	(iy + 1), h
+	ld	iyh, d
+	or	a, a
+	sbc	hl, hl
+	ld	(ix - 11), hl
+	jp	BB11_93
+BB11_129:
 	ld	l, e
 	ld	h, d
 	ld.sis	bc, 3
 	or	a, a
 	sbc.sis	hl, bc
-	jr	nz, BB11_171
+	jr	nz, BB11_131
 	ex	de, hl
 	ld	e, iyl
 	ld	d, iyh
@@ -2823,14 +2289,14 @@ BB11_169:
 	ld.sis	bc, 15
 	or	a, a
 	sbc.sis	hl, bc
-	jr	c, BB11_176
-BB11_171:
+	jr	c, BB11_136
+BB11_131:
 	ld	l, e
 	ld	h, d
 	ld.sis	bc, 4
 	or	a, a
 	sbc.sis	hl, bc
-	jr	nz, BB11_173
+	jr	nz, BB11_133
 	ex	de, hl
 	ld	e, iyl
 	ld	d, iyh
@@ -2838,42 +2304,42 @@ BB11_171:
 	ld.sis	bc, -2
 	add.sis	hl, bc
 	ld.sis	bc, 13
-	jr	BB11_175
-BB11_173:
+	jr	BB11_135
+BB11_133:
 	ld	l, e
 	ld	h, d
 	ld.sis	bc, 5
 	or	a, a
 	sbc.sis	hl, bc
-	jp	nz, BB11_111
+	jp	nz, BB11_65
 	ex	de, hl
 	ld	e, iyl
 	ld	d, iyh
 	ex	de, hl
 	ld.sis	bc, 15
-BB11_175:
+BB11_135:
 	or	a, a
 	sbc.sis	hl, bc
-	jp	nc, BB11_111
-BB11_176:
+	jp	nc, BB11_65
+BB11_136:
 	ld	hl, _credits
 	ld	hl, (hl)
-	ld	(ix - 6), hl
+	ld	(ix - 8), hl
 	ld	hl, _chip
 	ld	bc, (hl)
-	ld	hl, (ix - 6)
-	ld	(ix - 9), bc
+	ld	hl, (ix - 8)
+	ld	(ix - 11), bc
 	or	a, a
 	sbc.sis	hl, bc
-	jp	c, BB11_111
+	jp	c, BB11_65
 	or	a, a
 	sbc	hl, hl
 	push	hl
 	pop	bc
-	ld	hl, (ix - 9)
+	ld	hl, (ix - 11)
 	ld	c, l
 	ld	b, h
-	ld	(ix - 12), bc
+	ld	(ix - 14), bc
 	sbc	hl, hl
 	ex	de, hl
 	ld	e, iyl
@@ -2901,222 +2367,23 @@ BB11_176:
 	ld	e, l
 	ld	d, h
 	ex	de, hl
-	ld	de, (ix - 12)
+	ld	de, (ix - 14)
 	add	hl, de
 	push	hl
 	pop	bc
 	ld	de, 51
 	or	a, a
 	sbc	hl, de
-	jp	nc, BB11_111
+	jp	nc, BB11_65
 	ld	(iy), c
 	ld	(iy + 1), b
-	ld	hl, (ix - 6)
-	ld	de, (ix - 9)
+	ld	hl, (ix - 8)
+	ld	de, (ix - 11)
 	or	a, a
 	sbc.sis	hl, de
 	ld	iy, _credits
-	jp	BB11_94
-BB11_179:
-	ld.sis	hl, 0
-	ld	iy, _keycount
-	jp	BB11_51
-BB11_180:
-	ld	l, (iy)
-	ld	h, (iy + 1)
-	ld	a, l
-	cp	a, 64
-	jp	z, BB11_187
-	ld	hl, (-851900)
-	ld	a, (-851897)
-	push	hl
-	call	_srand
-	pop	hl
-	ld	hl, -3
-	push	hl
-	call	_gfx_SetColor
-	pop	hl
-	ld	hl, 220
-	push	hl
-	ld	hl, 155
-	push	hl
-	ld	hl, 10
-	push	hl
-	ld	hl, 160
-	push	hl
-	call	_gfx_FillRectangle
-	pop	hl
-	pop	hl
-	pop	hl
-	pop	hl
-	call	_DrawTitle
-	call	_DrawMenu
-	ld	hl, 167
-	push	hl
-	ld	hl, 163
-	push	hl
-	call	_gfx_SetTextXY
-	pop	hl
-	pop	hl
-	ld	hl, _chip
-	ld	hl, (hl)
-	ld	de, 0
-	ld	e, l
-	ld	d, h
-	ld	hl, 2
-	push	hl
-	push	de
-	call	_gfx_PrintInt
-	pop	hl
-	pop	hl
-	ld	hl, _chip
-	ld	hl, (hl)
-	ld	de, 0
-	ld	e, l
-	ld	d, h
-	ld	(ix - 3), de
-	ld	hl, 170
-	push	hl
-	ld	hl, 187
-	push	hl
-	push	de
-	call	_DrawChip
-	pop	hl
-	pop	hl
-	pop	hl
-	call	_PrintCredits
-	call	_PrintNumber
-	call	_DrawCursor
-	call	_createTableau
-	call	_DrawButtons
-	ld	hl, (_rotate_sprite)
-	ld	de, 69
-	push	de
-	ld	de, 17
-	push	de
-	push	hl
-	call	_gfx_TransparentSprite_NoClip
-	pop	hl
-	pop	hl
-	pop	hl
-	ld	hl, 36
-	push	hl
-	ld	hl, 59
-	push	hl
-	ld	hl, _pfeil_data
-	push	hl
-	call	_gfx_RLETSprite_NoClip
-	pop	hl
-	pop	hl
-	pop	hl
-	call	_gfx_SwapDraw
-	ld	hl, -3
-	push	hl
-	call	_gfx_SetColor
-	pop	hl
-	ld	hl, 220
-	push	hl
-	ld	hl, 155
-	push	hl
-	ld	hl, 10
-	push	hl
-	ld	hl, 160
-	push	hl
-	call	_gfx_FillRectangle
-	pop	hl
-	pop	hl
-	pop	hl
-	pop	hl
-	call	_DrawTitle
-	call	_DrawMenu
-	ld	hl, 167
-	push	hl
-	ld	hl, 163
-	push	hl
-	call	_gfx_SetTextXY
-	pop	hl
-	pop	hl
-	ld	hl, _chip
-	ld	hl, (hl)
-	ld	de, (ix - 3)
-	ld	e, l
-	ld	d, h
-	ld	hl, 2
-	push	hl
-	push	de
-	call	_gfx_PrintInt
-	pop	hl
-	pop	hl
-	ld	hl, _chip
-	ld	hl, (hl)
-	ld	de, 0
-	ld	e, l
-	ld	d, h
-	ld	hl, 170
-	push	hl
-	ld	hl, 187
-	push	hl
-	push	de
-	call	_DrawChip
-	pop	hl
-	pop	hl
-	pop	hl
-	call	_PrintCredits
-	call	_PrintNumber
-	call	_DrawCursor
-	call	_createTableau
-	call	_DrawButtons
-	ld	hl, (_rotate_sprite)
-	ld	de, 69
-	push	de
-	ld	de, 17
-	push	de
-	push	hl
-	call	_gfx_TransparentSprite_NoClip
-	pop	hl
-	pop	hl
-	pop	hl
-	ld	hl, 36
-	push	hl
-	ld	hl, 59
-	push	hl
-	ld	hl, _pfeil_data
-	push	hl
-	call	_gfx_RLETSprite_NoClip
-	pop	hl
-	pop	hl
-	pop	hl
-	call	_gfx_SwapDraw
-	ld.sis	hl, -15536
-	ld	iy, _toSpin
-	ld	(iy), l
-	ld	(iy + 1), h
-	call	_rand
-	ld	bc, 256
-	call	__irems
-	ld	iy, _s
-	ld	(iy), l
-	ld	(iy + 1), h
-	ld.sis	hl, 0
-	ex	de, hl
-	ld	iyl, e
-	ld	iyh, d
-	ex	de, hl
-	ld	b, -1
-BB11_182:
-	ld.sis	de, 1
-	add.sis	iy, de
-	ld	hl, _k
-	push	de
-	ld	e, iyl
-	ld	d, iyh
-	ld	(hl), e
-	inc	hl
-	ld	(hl), d
-	pop	de
-	jp	c, BB11_186
-	call	_kb_Scan
-	ld	b, -1
+	jp	BB11_48
+BB11_139:
 	ld	hl, -720868
 	push	de
 	ld	e, (hl)
@@ -3127,46 +2394,606 @@ BB11_182:
 	pop	de
 	ld	a, l
 	cp	a, 64
-	jp	z, BB11_186
+	jp	z, BB11_178
+	call	_kb_Scan
+	ld	hl, -3
+	push	hl
+	call	_gfx_SetColor
+	pop	hl
+	ld	hl, 220
+	push	hl
+	ld	hl, 155
+	push	hl
+	ld	hl, 10
+	push	hl
+	ld	hl, 160
+	push	hl
+	call	_gfx_FillRectangle
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	call	_DrawTitle
+	ld	hl, (ix - 3)
+	push	hl
+	call	_DrawMenu
+	pop	hl
+	ld	hl, 167
+	push	hl
+	ld	hl, 163
+	push	hl
+	call	_gfx_SetTextXY
+	pop	hl
+	pop	hl
+	ld	hl, _chip
+	ld	hl, (hl)
+	ld	de, 0
+	ld	e, l
+	ld	d, h
+	ld	hl, 2
+	push	hl
+	push	de
+	call	_gfx_PrintInt
+	pop	hl
+	pop	hl
+	ld	hl, _chip
+	ld	hl, (hl)
+	ld	de, 0
+	ld	e, l
+	ld	d, h
+	ld	hl, 170
+	push	hl
+	ld	hl, 187
+	push	hl
+	push	de
+	call	_DrawChip
+	pop	hl
+	pop	hl
+	pop	hl
+	call	_PrintCredits
+	call	_PrintNumber
+	call	_DrawCursor
+	call	_createTableau
+	call	_DrawButtons
+	ld	hl, (_rotate_sprite)
+	ld	de, 69
+	push	de
+	ld	de, 17
+	push	de
+	push	hl
+	call	_gfx_TransparentSprite_NoClip
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, 36
+	push	hl
+	ld	hl, 59
+	push	hl
+	ld	hl, _pfeil_data
+	push	hl
+	call	_gfx_RLETSprite_NoClip
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, -720866
+	push	de
+	ld	e, (hl)
+	inc	hl
+	ld	d, (hl)
+	ld	l, e
+	ld	h, d
+	pop	de
+	ld	a, l
+	cp	a, 8
+	jp	nz, BB11_146
+	ld	a, (ix - 4)
+	ld	l, (ix - 14)
+	cp	a, l
+	jp	z, BB11_146
+	ld	hl, _posy
+	ld	de, (hl)
+	ld	l, e
+	ld	h, d
+	ld.sis	bc, 2
+	or	a, a
+	sbc.sis	hl, bc
+	jp	c, BB11_146
+	ld	hl, _posx
+	ld	hl, (hl)
+	ld.sis	bc, 1
+	or	a, a
+	sbc.sis	hl, bc
+	jr	nz, BB11_145
+	ld	l, e
+	ld	h, d
+	ld.sis	bc, 4
+	or	a, a
+	sbc.sis	hl, bc
+	jr	z, BB11_146
+BB11_145:
+	dec.sis	de
+	ld	hl, _posy
+	ld	(hl), e
+	inc	hl
+	ld	(hl), d
+BB11_146:
+	ld	hl, -720866
+	push	de
+	ld	e, (hl)
+	inc	hl
+	ld	d, (hl)
+	ld	l, e
+	ld	h, d
+	pop	de
+	ld	a, l
+	cp	a, 1
+	jp	nz, BB11_159
+	ld	a, (ix - 4)
+	ld	l, (ix - 14)
+	cp	a, l
+	jp	z, BB11_159
+	ld	hl, _posx
+	ld	bc, (hl)
+	ld	hl, _posy
+	ld	iy, (hl)
+	ld	l, c
+	ld	h, b
+	ld.sis	de, 2
+	or	a, a
+	sbc.sis	hl, de
+	jr	nz, BB11_150
+	ex	de, hl
+	ld	e, iyl
+	ld	d, iyh
+	ex	de, hl
+	ld.sis	de, 4
+	or	a, a
+	sbc.sis	hl, de
+	inc.sis	de
+	jr	z, BB11_158
+BB11_150:
+	ld	l, c
+	ld	h, b
+	ld.sis	de, 2
+	or	a, a
+	sbc.sis	hl, de
+	jr	nz, BB11_152
+	ex	de, hl
+	ld	e, iyl
+	ld	d, iyh
+	ex	de, hl
+	ld.sis	de, 5
+	or	a, a
+	sbc.sis	hl, de
+	ld.sis	de, 8
+	jr	z, BB11_158
+BB11_152:
+	ld	l, c
+	ld	h, b
+	ld.sis	de, 2
+	or	a, a
+	sbc.sis	hl, de
+	jr	nz, BB11_154
+	ex	de, hl
+	ld	e, iyl
+	ld	d, iyh
+	ex	de, hl
+	ld.sis	de, 8
+	or	a, a
+	sbc.sis	hl, de
+	ld.sis	de, 11
+	jr	z, BB11_158
+BB11_154:
+	ex	de, hl
+	ld	e, iyl
+	ld	d, iyh
+	ex	de, hl
+	ld.sis	de, 14
+	or	a, a
+	sbc.sis	hl, de
+	jr	nc, BB11_159
+	ld	l, c
+	ld	h, b
+	ld.sis	de, 1
+	or	a, a
+	sbc.sis	hl, de
+	jr	nz, BB11_157
+	ex	de, hl
+	ld	e, iyl
+	ld	d, iyh
+	ex	de, hl
+	ld.sis	de, 10
+	or	a, a
+	sbc.sis	hl, de
+	jr	z, BB11_159
+BB11_157:
+	inc.sis	iy
+	ld	e, iyl
+	ld	d, iyh
+BB11_158:
+	ld	hl, _posy
+	ld	(hl), e
+	inc	hl
+	ld	(hl), d
+BB11_159:
+	ld	hl, -720866
+	push	de
+	ld	e, (hl)
+	inc	hl
+	ld	d, (hl)
+	ld	l, e
+	ld	h, d
+	pop	de
+	ld	a, l
+	cp	a, 2
+	jp	nz, BB11_170
+	ld	a, (ix - 4)
+	ld	l, (ix - 14)
+	cp	a, l
+	jp	z, BB11_170
+	ld	hl, _posx
+	ld	de, (hl)
+	ld	hl, _posy
+	ld	iy, (hl)
+	ld	l, e
+	ld	h, d
+	ld.sis	bc, 2
+	or	a, a
+	sbc.sis	hl, bc
+	jr	nz, BB11_163
+	ex	de, hl
+	ld	e, iyl
+	ld	d, iyh
+	ex	de, hl
+	ld.sis	bc, 4
+	or	a, a
+	sbc.sis	hl, bc
+	ld.sis	bc, 1
+	jr	z, BB11_169
+BB11_163:
+	ld	l, e
+	ld	h, d
+	ld.sis	bc, 2
+	or	a, a
+	sbc.sis	hl, bc
+	jr	nz, BB11_165
+	ex	de, hl
+	ld	e, iyl
+	ld	d, iyh
+	ex	de, hl
+	ld.sis	bc, 5
+	or	a, a
+	sbc.sis	hl, bc
+	ld.sis	bc, 1
+	jr	z, BB11_169
+BB11_165:
+	ld	l, e
+	ld	h, d
+	ld.sis	bc, 2
+	or	a, a
+	sbc.sis	hl, bc
+	jr	nz, BB11_167
+	ex	de, hl
+	ld	e, iyl
+	ld	d, iyh
+	ex	de, hl
+	ld.sis	bc, 8
+	or	a, a
+	sbc.sis	hl, bc
+	ld.sis	bc, 1
+	jr	z, BB11_169
+BB11_167:
+	ld	l, e
+	ld	h, d
+	ld.sis	bc, 3
+	or	a, a
+	sbc.sis	hl, bc
+	jr	c, BB11_170
+	dec.sis	de
+	ld	c, e
+	ld	b, d
+BB11_169:
+	ld	hl, _posx
+	ld	(hl), c
+	inc	hl
+	ld	(hl), b
+BB11_170:
+	ld	hl, -720866
+	push	de
+	ld	e, (hl)
+	inc	hl
+	ld	d, (hl)
+	ld	l, e
+	ld	h, d
+	pop	de
+	ld	a, l
+	cp	a, 4
+	jr	nz, BB11_174
+	ld	a, (ix - 4)
+	ld	l, (ix - 14)
+	cp	a, l
+	jr	z, BB11_174
+	ld	hl, _posx
+	ld	de, (hl)
+	ld	l, e
+	ld	h, d
+	ld.sis	bc, 5
+	or	a, a
+	sbc.sis	hl, bc
+	jr	nc, BB11_174
+	inc.sis	de
+	ld	hl, _posx
+	ld	(hl), e
+	inc	hl
+	ld	(hl), d
+BB11_174:
+	ld	hl, -720878
+	push	de
+	ld	e, (hl)
+	inc	hl
+	ld	d, (hl)
+	ld	l, e
+	ld	h, d
+	pop	de
+	ld	a, l
+	cp	a, 32
+	push	af
+	ld	a, (ix - 18)
+	ld	iyl, a
+	pop	af
+	jp	nz, BB11_66
+	ld	a, (ix - 5)
+	cp	a, iyl
+	jp	z, BB11_66
+	ld	hl, _posx
+	ld	de, (hl)
+	ld	hl, _posy
+	ld	iy, (hl)
+	ld	l, e
+	ld	h, d
+	ld.sis	bc, 1
+	or	a, a
+	sbc.sis	hl, bc
+	jp	nz, BB11_45
+	ex	de, hl
+	ld	e, iyl
+	ld	d, iyh
+	ex	de, hl
+	ld.sis	bc, 4
+	or	a, a
+	sbc.sis	hl, bc
+	jp	nz, BB11_45
+BB11_178:
+	ld	hl, -720868
+	push	de
+	ld	e, (hl)
+	inc	hl
+	ld	d, (hl)
+	ld	l, e
+	ld	h, d
+	pop	de
+	ld	a, l
+	cp	a, 64
+	jp	z, BB11_184
+	ld	hl, -3
+	push	hl
+	call	_gfx_SetColor
+	pop	hl
+	ld	hl, 220
+	push	hl
+	ld	hl, 155
+	push	hl
+	ld	hl, 10
+	push	hl
+	ld	hl, 160
+	push	hl
+	call	_gfx_FillRectangle
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	call	_DrawTitle
+	ld	hl, (ix - 3)
+	push	hl
+	call	_DrawMenu
+	pop	hl
+	ld	hl, 167
+	push	hl
+	ld	hl, 163
+	push	hl
+	call	_gfx_SetTextXY
+	pop	hl
+	pop	hl
+	ld	hl, _chip
+	ld	hl, (hl)
+	ld	de, 0
+	ld	e, l
+	ld	d, h
+	ld	hl, 2
+	push	hl
+	push	de
+	call	_gfx_PrintInt
+	pop	hl
+	pop	hl
+	ld	hl, _chip
+	ld	hl, (hl)
+	ld	de, 0
+	ld	e, l
+	ld	d, h
+	ld	(ix - 8), de
+	ld	hl, 170
+	push	hl
+	ld	hl, 187
+	push	hl
+	push	de
+	call	_DrawChip
+	pop	hl
+	pop	hl
+	pop	hl
+	call	_PrintCredits
+	call	_PrintNumber
+	call	_DrawCursor
+	call	_createTableau
+	call	_DrawButtons
+	ld	hl, (_rotate_sprite)
+	ld	de, 69
+	push	de
+	ld	de, 17
+	push	de
+	push	hl
+	call	_gfx_TransparentSprite_NoClip
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, 36
+	push	hl
+	ld	hl, 59
+	push	hl
+	ld	hl, _pfeil_data
+	push	hl
+	call	_gfx_RLETSprite_NoClip
+	pop	hl
+	pop	hl
+	pop	hl
+	call	_gfx_SwapDraw
+	ld	hl, -3
+	push	hl
+	call	_gfx_SetColor
+	pop	hl
+	ld	hl, 220
+	push	hl
+	ld	hl, 155
+	push	hl
+	ld	hl, 10
+	push	hl
+	ld	hl, 160
+	push	hl
+	call	_gfx_FillRectangle
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	call	_DrawTitle
+	ld	hl, (ix - 3)
+	push	hl
+	call	_DrawMenu
+	pop	hl
+	ld	hl, 167
+	push	hl
+	ld	hl, 163
+	push	hl
+	call	_gfx_SetTextXY
+	pop	hl
+	pop	hl
+	ld	hl, _chip
+	ld	hl, (hl)
+	ld	de, (ix - 8)
+	ld	e, l
+	ld	d, h
+	ld	hl, 2
+	push	hl
+	push	de
+	call	_gfx_PrintInt
+	pop	hl
+	pop	hl
+	ld	hl, _chip
+	ld	hl, (hl)
+	ld	de, 0
+	ld	e, l
+	ld	d, h
+	ld	hl, 170
+	push	hl
+	ld	hl, 187
+	push	hl
+	push	de
+	call	_DrawChip
+	pop	hl
+	pop	hl
+	pop	hl
+	call	_PrintCredits
+	call	_PrintNumber
+	call	_DrawCursor
+	call	_createTableau
+	call	_DrawButtons
+	ld	hl, (_rotate_sprite)
+	ld	de, 69
+	push	de
+	ld	de, 17
+	push	de
+	push	hl
+	call	_gfx_TransparentSprite_NoClip
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, 36
+	push	hl
+	ld	hl, 59
+	push	hl
+	ld	hl, _pfeil_data
+	push	hl
+	call	_gfx_RLETSprite_NoClip
+	pop	hl
+	pop	hl
+	pop	hl
+	call	_gfx_SwapDraw
+	call	_rand
+	ld	(ix - 11), hl
+	ld	hl, 50000
+	ld	(ix - 8), hl
+BB11_180:
+	call	_kb_Scan
+	ld	hl, -720868
+	push	de
+	ld	e, (hl)
+	inc	hl
+	ld	d, (hl)
+	ld	l, e
+	ld	h, d
+	pop	de
+	ld	a, l
+	cp	a, 64
+	jp	z, BB11_183
 	call	_rand
 	ld	bc, 1000
 	call	__irems
 	push	hl
 	pop	de
-	ld	hl, _toSpin
+	ld	hl, (ix - 8)
+	or	a, a
+	sbc	hl, de
+	ld	(ix - 8), hl
+	ld	de, 2000
+	or	a, a
+	sbc	hl, de
+	jp	c, BB11_183
+	ld	hl, (ix - 8)
+	ld	bc, 5000
+	call	__idivu
 	push	hl
 	pop	iy
-	ld	hl, (iy)
-	or	a, a
-	sbc.sis	hl, de
-	ld	e, l
-	ld	d, h
-	ld	(iy), e
-	ld	(iy + 1), d
-	ld	a, (_a)
-	ld.sis	bc, 5000
-	call	__sdivu
-	ld	b, -1
-	add	a, l
-	ld	c, a
-	ld	(_a), a
-	ld	l, e
-	ld	h, d
-	ld.sis	de, 2000
-	or	a, a
-	sbc.sis	hl, de
-	jp	c, BB11_186
-	ld	a, (_s)
-	ld	l, a
-	ld	a, c
-	add	a, l
-	ld	l, a
-	ld	(_n), a
-	ld	de, (_rotate_sprite)
-	ld	bc, 64
-	push	bc
+	ld	hl, (ix - 11)
+	ld	bc, 255
+	call	__iand
 	push	hl
+	pop	de
+	add	iy, de
+	ld	(ix - 11), iy
+	ex	de, hl
+	ld	e, iyl
+	ld	d, iyh
+	ex	de, hl
+	call	__sand
+	ld	de, _n
 	push	de
+	pop	iy
+	ld	(iy), l
+	ld	(iy + 1), h
+	ld	hl, (_rotate_sprite)
+	ld	de, 64
+	push	de
+	ld	de, (ix - 11)
+	push	de
+	push	hl
 	ld	hl, _ro_data
 	push	hl
 	call	_gfx_RotateScaleSprite
@@ -3179,7 +3006,10 @@ BB11_182:
 	call	_gfx_SetColor
 	pop	hl
 	call	_DrawTitle
+	ld	hl, (ix - 3)
+	push	hl
 	call	_DrawMenu
+	pop	hl
 	ld	hl, (_rotate_sprite)
 	ld	de, 69
 	push	de
@@ -3201,43 +3031,67 @@ BB11_182:
 	pop	hl
 	pop	hl
 	call	_gfx_SwapDraw
-	ld	a, (_n)
-	ld	l, a
-	add	a, -39
-	cp	a, -43
+	ld	hl, _n
+	ld	iy, (hl)
+	ex	de, hl
+	ld	e, iyl
+	ld	d, iyh
+	ex	de, hl
+	ld.sis	de, -39
+	add.sis	hl, de
+	ld.sis	de, 213
+	or	a, a
+	sbc.sis	hl, de
 	ccf
-	sbc	a, a
-	ld	e, a
-	inc	e
-	ld	a, l
-	add	a, e
-	ld	l, a
-	add	a, 127
-	cp	a, 123
+	sbc.sis	hl, hl
+	ld	e, l
+	ld	d, h
+	inc.sis	de
+	add.sis	iy, de
+	ex	de, hl
+	ld	e, iyl
+	ld	d, iyh
+	ex	de, hl
+	ld.sis	de, -129
+	add.sis	hl, de
+	ld.sis	de, 123
+	or	a, a
+	sbc.sis	hl, de
 	ccf
-	sbc	a, a
-	ld	e, a
-	inc	e
-	ld	a, l
-	add	a, e
-	ld	l, a
-	add	a, 44
-	cp	a, 40
+	sbc.sis	hl, hl
+	ld	e, l
+	ld	d, h
+	inc.sis	de
+	add.sis	iy, de
+	ex	de, hl
+	ld	e, iyl
+	ld	d, iyh
+	ex	de, hl
+	ld.sis	de, -212
+	add.sis	hl, de
+	ld.sis	de, 40
+	or	a, a
+	sbc.sis	hl, de
 	ccf
-	sbc	a, a
-	ld	e, a
-	inc	e
-	ld	a, l
-	add	a, e
-	ld	b, a
-	ld	c, 7
-	call	__bdivu
-	ld	(_n), a
+	sbc.sis	hl, hl
+	ld	e, l
+	ld	d, h
+	inc.sis	de
+	add.sis	iy, de
+	ex	de, hl
+	ld	e, iyl
+	ld	d, iyh
+	ex	de, hl
+	ld.sis	bc, 7
+	call	__sdivu
+	ld	iy, _n
+	ld	(iy), l
+	ld	(iy + 1), h
 	ld	de, 0
-	ld	e, a
+	ld	e, l
+	ld	d, h
 	ld	hl, ___const.main.colors
 	add	hl, de
-	ld	bc, (ix - 39)
 	ld	c, (hl)
 	ld	hl, _c
 	ld	(hl), c
@@ -3245,19 +3099,14 @@ BB11_182:
 	ld	(hl), b
 	ld	hl, ___const.main.numbers
 	add	hl, de
-	ld	(ix - 39), bc
-	ld	d, b
-	ld	e, (hl)
+	ld	c, (hl)
 	ld	hl, _e
-	ld	(hl), e
+	ld	(hl), c
 	inc	hl
-	ld	(hl), d
+	ld	(hl), b
 	call	_PrintNumber
-	ld	b, -1
-	ld	hl, _k
-	ld	iy, (hl)
-	jp	BB11_182
-BB11_186:
+	jp	BB11_180
+BB11_183:
 	ld	a, (_hnumbers+3)
 	ld	(_hnumbers+4), a
 	ld	a, (_hnumbers+2)
@@ -3268,7 +3117,7 @@ BB11_186:
 	ld	(_hnumbers+1), a
 	ld	hl, _e
 	ld	hl, (hl)
-	ld	(ix - 9), hl
+	ld	(ix - 8), hl
 	ld	a, l
 	ld	(_hnumbers), a
 	ld	a, (_hcolor+3)
@@ -3281,11 +3130,15 @@ BB11_186:
 	ld	(_hcolor+1), a
 	ld	hl, _c
 	ld	hl, (hl)
-	ld	(ix - 21), hl
+	ld	(ix - 30), hl
 	ld	a, l
 	ld	(_hcolor), a
+	ld	hl, _credits
+	push	hl
+	pop	iy
+	ld	a, -1
 	jp	BB11_1
-BB11_187:
+BB11_184:
 	ld	hl, _.str.18
 	push	hl
 	ld	hl, _.str.16
@@ -3321,12 +3174,19 @@ BB11_187:
 	section	.rodata,"a",@progbits
 	private	JTI11_0
 JTI11_0:
-	dl	BB11_17
+	dl	BB11_14
+	dl	BB11_16
 	dl	BB11_18
-	dl	BB11_19
-	dl	BB11_12
+	dl	BB11_44
 	dl	BB11_21
-	dl	BB11_22
+	dl	BB11_23
+	dl	BB11_25
+	dl	BB11_29
+	dl	BB11_31
+	dl	BB11_33
+	dl	BB11_35
+	dl	BB11_37
+	dl	BB11_39
 
 	section	.bss,"aw",@nobits
 	public	_rotate_sprite_data
@@ -3363,11 +3223,6 @@ _.str:
 _.str.1:
 	db	"Add Credits", 0
 
-	section	.bss,"aw",@nobits
-	public	_menu
-_menu:
-	rb	2
-
 	section	.rodata,"a",@progbits
 	private	_.str.2
 _.str.2:
@@ -3394,21 +3249,6 @@ _.str.6:
 	db	"+200", 0
 
 	section	.bss,"aw",@nobits
-	public	_h
-_h:
-	rb	2
-
-	section	.bss,"aw",@nobits
-	public	_i
-_i:
-	rb	2
-
-	section	.bss,"aw",@nobits
-	public	_l
-_l:
-	rb	2
-
-	section	.bss,"aw",@nobits
 	public	_posx
 _posx:
 	rb	2
@@ -3426,16 +3266,6 @@ _c:
 	section	.bss,"aw",@nobits
 	public	_e
 _e:
-	rb	2
-
-	section	.bss,"aw",@nobits
-	public	_color
-_color:
-	rb	2
-
-	section	.bss,"aw",@nobits
-	public	_k
-_k:
 	rb	2
 
 	section	.rodata,"a",@progbits
@@ -3543,20 +3373,10 @@ _.str.17:
 _palette_gfx:
 	db	"ÿÿCŒ", 0, "p", 0, "ˆàØK­Å!„Î¹À¨Ğœ´¤CèçÈ…”¸", 0, "Œ	¥çÂŒåŞ{ÖÚRÊ”A€CüKå¼{”Ò¥d", 0, "œó)eÇäÆ…)}ãşÎııÎåç|¥|Zë!…!!æZûç	RæÖæk1b„A", 0, "Kı”ú%	éCØgFû”ê÷bRúbÉ­9ïÁB`Öş¥`Ç‰E‰E…!µfk9ç cÆàçH§)µf", 13, "A„¥Xè", 13, "{s1Ê¥˜$ç@)©	¹…ĞƒŒá÷ŞcT	å‡C¬¨¥H+e	bH†", 13, "§", 13, "JÁ‡‘£„´ZÇ", 13, "fB	)Å_c ke„Æ…BçTç<ïYM¦ÆcÉ•8sê™É9ç…¨ÎáBpQJâ„¤J)Ã4¦…‚@ÆğÆØÆ˜1R¥DAXŒÉsâ……Éˆ•sZÓFBÀ­qÕVïÉ¥c8¥ğ‚„ª%ÈF", 13, "Æ´1^e•¨2APõR£<ŒQsRÓJE™ˆ	’Å)ÑïQ±:¥´Í±n.„8kMRò1r£¬iEo²­İ²B­ÅöÖB´Ùf™B@µî,¢È‘*JÕ%)qè", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "ã_YØ", 0, "§ôÿ+¢Œµ", 0, "|æ", 0, 0
 
-	section	.bss,"aw",@nobits
-	public	_s
-_s:
-	rb	2
-
 	section	.data,"aw",@progbits
 	public	_ro_data
 _ro_data:
 	db	"uuıııııııııııııııııııııııııııııııııııııııııııııııııı9BB¨DDEEEDDDDÂBB9ıııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııÜ}^4Kşşşşşşşşş	şş=S}yaıııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııı§oe4şşşşşşşşşşşş=z²z==_şş	KeS¹Bıııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııt=şş		şşşşşşşşşJ))Œ›¦¦Tej6		Ayıııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııı9Bo4+", 13, "áşşşşşşşşşJ)ıııı)))ß", 13, "%	JSB9ıııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııı\jşşşşüüüüşşşşşşşşş+)ııııııŒšáá", 13, "		şÄ9ııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııı\4şşşşşüüüüüüşşşşşş+ıııÃıııŒ½áááááá3şş	Eııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııı‘4>şşşşşşşüüüü üü	#", 10, "#ş+)ıÇª‹ııwœááááá	şş	şşKvıııııııııııııııııııııııııııııııııııııııııııııııııııııııııı9Sşşşşşşşşş	üü*-.üd", 10, "ş+)¤Às‹9ı†u$!", 26, "(náş	şş	şSB9ııııııııııııııııııııııııııııııııııııııııııııııııııııııw=şşşşşşşşüü**- üşû", 10, 10, "ş+)Ós‹ıı¸¢n:", 26, 26, "!á5			şş			j|ıııııııııııııııııııııııııııııııııııııııııııııııııııae	", 13, "şşşşş	üüü ,0ü", 10, "û", 10, "ş+ıİªÊ‹ııÁC", 26, "/$", 26, "!	„şşşvıııııııııııııııııııııııııııııııııııııııııııııııııvşüü	ş", 10, 10, "üü*.*ü", 10, "dşş+ı9s‹aı)ßZƒ", 26, "/!!şûşş3tıııııııııııııııııııııııııııııııııııııııııııııı9E>	", 13, "üüüüáşüü0.1üşşşşşş+)ııııı)šOn!n/(á", 13, "", 10, "û", 10, "şáá4RıııııııııııııııııııııııııııııııııııııııııııR=ş	üüüüüü", 13, "#", 10, "üüüüüüüşşşşşşş+)ııııı›½á($á", 10, "	şáááá", 13, "UşKRııııııııııııııııııııııııııııııııııııııııı9=ş	üüüüü  üşşcşüüüüüüşşşşşşş+)ııııı†uáááááá	ááááááşK^ıııııııııııııııııııııııııııııııııııııııı+şş	üüü*-- ü%Mşş", 13, "üüüüüü«…³ÛúsÃ¤9Ø¢áááááá3û	O!nááá6SıııııııııııııııııııııııııııııııııııııR+şşşü .-*.1üü	şşşş	üü1*.,Gõ22&&õÕ¼Àkn$áá				", 13, "á$7", 26, "!(ááşTııııııııııııııııııııııııııııııııııı^şşşşşşü?-ü?* üáşşşşşşş“¬IF8""b‡", 10, "ûûÉÑÑÑª¼õõ;;:/(", 13, "Uşşşşşá!!", 26, "!", 26, "á5		ş	TıııııııııııııııııııııııııııııııııRşşşşşşşşş ,?.@.üü	şşş", 10, "8P-±“şşşş+ıı99¤BĞ/G2; şş	á$/$", 26, ":(á", 13, "şşşşşKTıııııııııııııııııııııııııııııııı+şşşşşşşá1I.*üüüş2&õ,* üüüşşşşşş+Œıııı†uá$!7;õYşşá(/", 26, "!ş	şş	şSııııııııııııııııııııııııııııı9+>şşşşş	ü0 üüüüüu2&õüüüüü	şşşşş+)ıııı†»áááááiMõ#ûáááán!ş	şşşşTıııııııııııııııııııııııııııR=ş	şşşû", 10, "##üüüüüü?@b&#_şşüüüüü", 13, "şşşşş+)ııı)Ááááá3", 10, "õ#¾áááááá	ş3û	şşKtııııııııııııııııııııııııı9²şş", 10, 10, "ûû", 10, "şüüüü.88NşşşşşUáüüüü%şşşşş+)ııııßááááşdõ;/$ááááşş	5+ıııııııııııııııııııııııııEşü	û", 10, "şş%ü0@""F,1	şşşşş	üüüüşşşşş+))ıı)Ïáááá	şş	şÅ:;", 26, "ááş", 10, "	şş%_Tıııııııııııııııııııııııv	üüüü3şşşş‚/8@0üüşşşşşşüüüüşşşşşz)ııı›œááááá3şşşş	", 26, ";:Qşûş	ş_A9ııııııııııııııııııııa	üüüüüüáş", 10, "şşşş"""". üüüü	şşşşşáüüüüşşşşş+))ııt»ááááşşş6", 13, "ááá(:V]şşş~ş", 13, "ááá	AııııııııııııııııııııAşüüüüüüüşşşşş""küüüüüüşşşşşüüüü	şşşşz)ıı)¸áááá5şşşááááá:şşşşş", 13, "ááááá	=|ııııııııııııııııııw", 13, "üüü1-*üüüşşş25", 13, "üüüüüüşşşş	üüüüşşşş+))ı)ßáááá	şşááááá¡c#		şş3", 13, "áá$$áááş4ııııııııııııııııı9=şüüü11..üüüüş&#şşüüüüüşşşşşáüüüşşşşz)ııŒšáááşşşááááş	%áá$n", 26, "áá", 13, "RııııııııııııııııSşş%áüüüüü-?üüüüp&şşşşüüüüü%şşşşüüüüşşşşz)ıı¦œáááşşáááá%ş	şû3án/!", 26, 26, "!á	=Bıııııııııııııı‘şşşüüüü *üüüü I#şşşşşşüüüüü	şşşşüüüü³s9†uáááş	ş	ááááUşşşû’<áá(7($", 26, "7á5şşsııııııııııııı4şşşşşşáüüüüüüüü,¶	şşşşşş	üüüüüáşşşş‚*-P8&""2õõõõ­—!(m6şşşáááá", 13, "şşş", 10, "VZáááán(!!$ş	şDıııııııııııı\>şşşşş	", 13, "üüüüüü-*	şşşşşş	üüüüü	ş", 10, "8""c2#N”7:;’;VÆX		ş", 13, "áááá		ş	şşşpk7áááá(nOş	şşşş4ıııııııııııı4şşşşşMáüüü08"".üüşşşşşş	üüüüá˜ûõ&&&­C$$!7GYááááşşş		", 13, "á7", 26, "ááááá		ş	şKRıııııııııı\şşşşşûNşüü@.üüüüüşşşşşşüüü.ûşşşşşşááááá(72õ®`áááá", 13, "%şşşş	á$G;(áá	şşş	ş	şAııııııııı9jşşşşş‡ûşş	", 26, """@ üüüüüü	şşşşşá*@""&õûşşşşşşşşşşááááááááá(/GG", 26, "", 13, "şşş	ş5áááá", 26, "GQ", 13, "şş_	şşş=9ııııııııBşşşşşş", 10, 10, "~şşşbZüüüüüüüüáşşşş·F#şşşşşşşşşşşşááááááááááá$/;:[şşşááááá7õŠ			<", 10, "		ş	şş¨ııııııııoşşşNşşş#", 10, "üüüüüüüşşc""&şşşşşşşşşşşşşáááááááááááánG¿şş	6ááááááLşş„şş	Aıııııııı4	", 13, "	şşşşşş22…ş	üüüüüüü	ş", 10, "2", 10, "şşşşşşşşşşşşşşşáiCááááááááá$GX	şş%áááááá5", 10, "õ", 10, "şşş	UBııııııı+%áüüüá%şşş&", 10, "şşş%", 13, "üüüüüü«N""2ûşşşşşşşşşşşşşşşşşá[háááááááááá$V	", 13, "áááá", 13, "	ş#õş	ş~", 13, "	Aıııııı^>üüüüüüá", 13, "şş2#şşşşş", 13, "áüüüü I8Ì3şşşşşşşşşşşşşşşşş[hOáááááááááá¡õ#‰ááááá5şş	şõşşş", 13, "ááá9ııııüüüüüüüüüá", 13, "%&şşşşşşşşüüü,"""".á	şşşşşşşşşşşşşşşşár`ááááááááá5", 10, "õ—ááá	şş#õ5", 13, "ááááşDıııı§şüü -,01üüüüO&õşşşşşşşşşş*8""-üüáşşşşşşşşşşşşşşşşhOááááááááá%	şY!áá	şşşşş", 10, "õNáá(/náá	4ııııoşüü0,,@I*üüüü-,m	şşşşşşşş	p:,üüüüáşşşşşşşşşşşşşşşC]<áááááááá%	ş	şn", 13, "ş		ş	şş3“HQáá$7/!", 26, "nááá+ııııeüüü0,,,,*üüü 8""*ü%şşşşşş	", 10, """@1üüüüüá	şşşşşşşşşşşşş[<]ááááááá	şşş3", 10, "õV˜	ş	şş	ş	/!ááán(!7náá", 13, "%\ııı4üüü.PPI?üüüü.Füüüüüşşşş„""?üüüüüüüáşşşşşşşşşşşşş‰hááááááá6ş	şşş#2ûşşşş5áán7ááán!!", 26, 26, "$ááşvıı|%ü ü1-- üüüI,üüüüüüüü%	şûF üüüüüüüüşşşşşşşşşşşşm]fáááááá", 13, "ş	şş		ş", 10, "õYşş3áááá$;G$ááánn(", 26, "!á^ıı}şş	%", 13, "üüü1F*üüüüüüüüüüáË?üüüüüüüüüü	şşşşşşşşşşr<ráááááUşşşşşşş#õû5ááááááá7;(ááá$ƒkQ", 13, "şJıı^şşşşşşş	n8"" üüüüüüüüüüüü-""P üüüüüüüüüüüáşşşşşşşşş‰iáááá%şşş	şşşşõ{ráááááááááá!k", 13, "5		şşş+ıı4şşşşşşşş		6Ô""Hüüüüüüüüüü P.üüüüüüüüüüüüüáşşşşşşşşş<Cááááşşş		ş		şşşş¿H(ááááááááááááQHÆp65	şş			şş=´9=şşşşşM", 10, "<şşşM%", 13, "áüüüüü1880üüüüüüüüüüüüüüşşşşşşşCááá6ş		ş	şşşşş", 10, "", 26, "ááááááá#c				dşşşşDBşşşşşş", 10, "ûşş#&şşşşş", 13, "á?""Füüüüüüüüüüüüüüüüşşşşşş<Cá%şşşşşş	şşşõ7áá", 13, "		ş#ş	şû", 10, "ş	ş	EBşşşşşşşş2şşşşşşşşş	ŠPüüüüüüüüüüüüüüüüü	şhC	şşşşşşş	ş		şşVişşş	şş", 10, "H	ş	…ş	şE¨şşşşş#ûûû", 10, "şşşõşşşşşşşşşşşş0üüüüˆˆüüüüüüüüüüágûûf«%ş	şşşşş			şlg	ş	şşşşşşõşş<ûûşşşµDşşşşş#ûşşş2cşşşşşşşşşşşşş2c0üüüüQûMLˆ`QQüüüüü`<ûû", 10, 10, "ûXşş	şşşş	şşşş", 10, "õûş	şşşşşşõş	şşşADşşşşşşşşş2şşşşşşşşşşşş&81üüüüL€€WMûWûMWx€LLWû", 10, "#2", 10, "şşşşş	şş	ş		şş<õ", 10, "ş	şş	şş	õûşşşş	şş	ş4Eş]bN6					X&@ üüüüüü •`LWûûûûûûûûû#&&õõ#ûşş	şşşşş	şşşõş				3N555%6U	4}şüüüááà""¬á", 13, 13, 13, 13, "ŞIüüüüüüüüüüüü•QL<ûûûûû", 10, "2&&õlşşşşşş		şş	X©Ö[H—", 13, 13, 13, 13, 13, 13, 13, 13, "C", 13, "4Dşüüüüüüüüüüüü?8.üüüüüüüüüüüü.ÎOi<ûûûû2&&2lH3şş		şş	şşşVOáááááá(;—ááá/", 26, "/7ááá4Eşüüüü 111üüüü*8.üüüüüüüüüüüü?c~şşşşşşşşşşşşşşşş<‡2&&õllc‰fuCZõ:ááááááááááá$/áá", 26, "nn(/áá54Dşüüü0,-,-0üüü*""-üüüüüüüüüüüü*""#şşşşşşşşşşşşşşşşşşûû&&õ­", 10, "]][iCáááááán;:ááááááááááá$;7áááá$/", 26, "n(ááá4Dşüüü0I,.-0üüü*8-üüüüüüüüüüüü1""şşşşşşşşşşşşşşşşşşûõ&’]]<<<h[[frááááá!/ááááááááááá(", 26, "ááá$:7/(ááá", 13, "4Dşüüüü10ü üüüü08,üüüüüüüüá°&cşşşşşşşşşşşşşşşşşşXûû", 10, "#", 10, "Wm¢Cmir[fh<]Oáááá", 26, "Òáááááááááán!ááá", 26, "G:G:áá", 13, "	Aoşüüüüüüüüüü±F@O", 13, "	şşõşşşşşşşşşşşşşşşşşşş€ûûûû“ááááááOCf]fáááá/õ%", 13, 13, "ƒnááááá(ááá	Aşáüüüápõ	şşşşşşşşşşûşşşşşşşşşşşşşşşşşşLûû3ááááááááááCáááá:şşşş		6£õ[áááááááááÙ	EBş%		şşş{&şşşşşşşşşşşşûcşşşşşşşşşşşşşşşş", 13, "üüLûûşş		áááááááááááááááá$şşş	ş		şşşş{5	EBşşşşşşş	şşcşşşşşşşşşşşş&2şşşşşşşşşşşşşşşüüüLûûş	ş		ááááááááááááááá!", 10, "ş	şş	Yşşş		66şE9=şşşşş<", 10, "", 10, "şşş", 10, "&şşşşşşş	%`F&şşşşşşşşşşşşşş", 13, "üüüü€ûû<şş	ş		áááááááááááááá7õW	şşşşş	{~	ş„Yş		ş	qıSşşşşş", 10, "û", 10, "‡şşş&õşşşş", 13, "áüü,#şşşşşşşşşşşşüüüüüWûû[şşşşş	şáááááááááááá$GQ", 13, "5	şşşlû3şşû", 10, "ûşşşşşJıı^şşşşş", 10, "", 10, "şş2&şüüüüü*""bXşşşşşşşşşşşüüüüüWûxşş	ş		ş	ááááááááááá7/áá%	ş3", 10, "õş", 10, "‡ûş	+ııyşşşşş", 10, "=<şşş£áüüüüüüüüüüü@şşşşşşşşş	", 13, "üüüüüüûûşş	şşşş	ááááááááánnáááááá3#şş™	şşJııaşşşşşşş	·Iüüüüüüüüüüüün""õ…şşşşşşşşüüüüüüüWWQşşşş	ş	ş	áááááá7©máááááááááf#Y3	şşşşşşş^ııı4şşşşşş	%", 13, "ü0""81üüüüüüüüşşşşşş", 13, "üüüüüüüüQûxş	ş	şş			áááááá!;õ", 13, "ááááááááá", 26, "k5şşşşş	\ıııSşşşşáüüüüüü@-üüüüüüü	şşõ2şşşşşüüüüüüüüü`ûüşşşş	şşş	şáááá$:õ", 10, "şşááááááG;n", 13, "6	ş	şş+ıııı¹şüüüüüüüüü0""@ üüüüşşşşşşû&õşşş%üüüüüüüüüüˆWüşşşş	şşşş3ááá/õşş	áááá!:áááZn6	ş+ııııB%üüüüü .,*üüü P""*üüá	şşşşşşşYVõşüüüüüüüüüüüLx•üşşşş	ş	ş	şşşşánV‰5şşşş	á:!áááá7", 26, "$nZşAıııııA	üüü .,PI üüüü?"",	şşşşşşşşFlÈüüüüüüüüüüü`xLüü		şşşşşşş		ş	pƒ;;n	şşşş	ZHGááá", 26, "n", 26, "/", 26, "áá", 13, "6qıııııy>üüüü,@P.11üüü Fb¶şşşşşşşşşş", 13, "ü08Í üüüüüüüüüüüLûx•üş	şşş	şş	şş<H2”áá		şşşşş5®", 26, "áááá!7(", 26, "$ááá	+ııııııı+	üüüü1*,@0üüüŠ""şşşşşşşş", 13, "üüüü*8"", üüüüüüüüüü`xˆüü	şşş	şş	şş¥áááá3şş		H¡ááán", 26, "$náá_yıııııııSşüüü --0üüá	õ&şşşşşşáüüüüüüP?üüüüüüüüüüüüü	ş		şş	ş	şşş", 10, "", 10, "páááááşş	şõ", 13, "áá(", 26, "!áá5JııııııııBş	üüü1üüáşşşû&şşş	", 13, "üüüüü6#&8,*üüüüüüüüüüüüşşşşş	ş	#õ#™	áááááá", 13, "	şMõşş	áááá	Dıııııııışüüüüáşşşş""", 10, "ş	áüüüüüüşş", 10, "b""8, üüüüüüüüüü	şşşşşHõ 	ş	áááááá6şõ		5áááá6K9ııııııııaÄşüü	ş#ûşşşş…2	üüüüüüüşşşşLFP?üüüüüüüüüş	şş	ş…õ", 26, "`	ş	ááááááá‚cõMşşY", 10, "<36áá	4ııııııııııa	", 13, "ş", 10, 10, "ûşşşş", 10, """müüüüüüüüşşşşş0-8FI*1üüüüüş	şõ¥(ááş	ş	ááááááánõ„ş3", 10, "ûd>wıııııııııııSş	şşşû", 10, "şşşdVP üüüüüşşşşşüüü ŠH&8@,.?*nû", 10, "#õõ", 10, "gCááá	şşş3ááááá(VVf6	şş", 10, "Xş			Jıııııııııııışşşşşj", 10, "M", 10, "şş0FI üüüşşşşşüüüüû#b""""""""õõõ;¥Nşáááá", 13, "6	şşáánG;!		", 10, "", 10, "ş	şEıııııııııııııv>şşşşş3ûşüü*"""".üüüşşşşşşüüüü	şşş3i?-IÚ#c ", 26, "!(CUşşş6áááşşşáá(G7áá3şM	şşşK§ııııııııııııııeşşşşşûşáüüüü0F8?üşşşşşşüüüüüşşşşüüüuY°ááş			ááá	ş	şşş6Z::$ááááU		~	ş	şwıııııııııııııııBşşşşşş	üüüüüü*8""”Yşşşşşş	üüüüü	şşşşüüü	şşşáá	şşş	áááá			ş		X©;/áááá($", 13, "	şşşşşRıııııııııııııııı9jşşşşşşáüüüüüüüüü.b&şşşşşüüüüşşşşşüüüüşşááá", 13, "ş		%", 13, "áááááş	ş{õŠáááá$/(áá		şJ)ııııııııııııııııı\şşşş	üüüüü1üüüüN&ûşşş%áüüüüüşşşşşüüüşşşşáááş	áááşş#2‚áááá$7$á	ş	şAıııııııııııııııııııvşş%üüüü1-?üüüû""	%", 13, "üüüüüşşşşşáüüüşş	şáááş	şşşááááá6#ş", 26, 26, "7G!/áşjaııııııııııııııııııııt>şüüüüü0-0üüşşş…&Nrüüüüüüşşşşşüüüüáşşşáááá	ş	ááááO€#şşQ/", 26, "7", 26, 26, "nááá	=ııııııııııııııııııııı)Jşüüüü.*üüá	şşşşş", 10, "2&I0üüüüáşşşşşşüüüü%şşş	áááá", 13, "6	ş	şşááákHõcş	ş	ş6Zn!/$ááá5_‘ıııııııııııııııııııııııRşüüü üüü	şşşşşş"", üü", 13, "şşşşşáüüüüşşşşU", 13, "ááááşşşá$:kdşş	á", 26, "!áááá6_tıııııııııııııııııııııııııRüüüüüüşMûşşşş1I8F. şşşşşşüüüüü", 13, "şş	", 13, "ááááşşş‚Z/:(O		û		ááááá", 13, "şeııııııııııııııııııııııııııı^>üüüû&", 10, "şşüü0,""""cşşşş", 13, "üüüüü	şşşş5", 13, "áááá3	şH’V!áá	û", 10, "™ş", 13, "áááş_|ııııııııııııııııııııııııııııS>üş", 10, "û", 10, 10, 10, "%üüüü 0@""2gáüüüüü	şş	şááááá5û#õõ{", 26, "$ááááá%û", 10, "á	KoııııııııııııııııııııııııııııııT>şşd	üüüüüüüCg2&õ#£ üüüüşşş3áááá$×N#õõg˜ááááááşû", 10, "ûşşş", 13, "	Kqııııııııııııııııııııııııııııııı)T>	şşşş", 10, "gş 1 üüüü	şd", 10, "#2&""8F@,.?hL!", 26, "7:;H#Mşşááá$!Zş	", 10, "şşş6	=qııııııııııııııııııııııııııııııııııT>şşşşşşşáü.--0üüáşşşşg”,@F""""""&&bõHH;:7", 26, "Åşşş5á(!", 26, 26, "$áU	ş	şşşqııııııııııııııııııııııııııııııııııııT>şşşşşşş%üüI-,. üşşşşşşş%ü 10*¬®N", 10, "¾n($á", 13, "		şşO", 26, "//7!$	şşş	ş	ş=qııııııııııııııııııııııııııııııııııııııT>şşşşşş	ü *?@-*ü%ş	şşşşşüüüüü6áááááşşşşş5C!n:", 26, 26, 26, "á", 13, "şş		şKoııııııııııııııııııııııııııııııııııııııııT+>şşşşáü ---,1ü	ûşşüüüüüşşşşşáááááşş3nn!", 26, "7", 26, "á3şşşe|ıııııııııııııııııııııııııııııııııııııııııııT>şşüüü10*- #ş", 13, "üüüüüüşşşş	şáááá3şg", 10, "Yş	C!!nááá	ş=tııııııııııııııııııııııııııııııııııııııııııııı)4şş%üüüüüü üş", 10, "#", 10, "ûáü1.?üüşşşU$!(", 26, "/$6ş", 10, "ş5$ááááşş=‘ıııııııııııııııııııııııııııııııııııııııııııııııaAşüüüüü%ş#", 10, "ûşü-.-1şX…ş5C", 26, 26, "!n!á", 10, "û	ááááj)ııııııııııııııııııııııııııııııııııııııııııııııııı|4üüü	şûşüü,*0üáşû", 10, "X/n((áá", 13, "		Nşáá%JAa)ıııııııııııııııııııııııııııııııııııııııııııııııııııı\ş", 13, "áşşşşşşüü0.,üşûc", 10, "	!", 26, "(", 26, 26, "ná%	şş", 13, "	RıııııııııııııııııııııııııııııııııııııııııııııııııııııııııB=şş	şşşşşşşş%ü ,P.üşû", 10, "	", 13, "ƒ/7!:(áşş	ş	U		\)ıııııııııııııııııııııııııııııııııııııııııııııııııııııııııısD+>şşşşşşşşşşşüüü1*0ü", 13, "	şX#û", 13, "", 26, "nááá	şşşş	ş	ş_+})ııııııııııııııııııııııııııııııııııııııııııııııııııııııııııı)ııRAşşşşşşşşüüüüüüüşşş	şáááááááşş	şşK4wıııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııı9Âeşşşşşüüüüüüşşşşşşş	áááááá3şşş4D9ıııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııA>şşş	", 13, "áüüüşşşşşş	şááá", 13, "	şşJyıııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııı9EJ+>şşş%şşşşşşş%şK+JAqııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııı)ıı\^^++>şşşşşşşşşş	şşşşJ+J}wııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııııı´DEEµ4444J444AAEED\ııııııııııııııııııııııııııııııııııııııııııııııııı"
-
-	section	.bss,"aw",@nobits
-	public	_a
-_a:
-	rb	1
 
 	section	.data,"aw",@progbits
 	public	_pfeil_data
@@ -3564,64 +3384,19 @@ _pfeil_data:
 	db	"   ", 26, "		", 10, "", 10, "", 10, "", 13, "", 13, " "
 
 	section	.bss,"aw",@nobits
-	public	_keyC
-_keyC:
-	rb	1
-
-	section	.bss,"aw",@nobits
-	public	_prevkeyC
-_prevkeyC:
-	rb	1
-
-	section	.bss,"aw",@nobits
-	public	_keyA
-_keyA:
-	rb	1
-
-	section	.bss,"aw",@nobits
-	public	_prevkeyA
-_prevkeyA:
-	rb	1
-
-	section	.bss,"aw",@nobits
 	public	_keycount
 _keycount:
 	rb	2
 
 	section	.bss,"aw",@nobits
-	public	_toSpin
-_toSpin:
-	rb	2
-
-	section	.bss,"aw",@nobits
 	public	_n
 _n:
-	rb	1
+	rb	2
 
 	section	.rodata,"a",@progbits
 	private	_.str.18
 _.str.18:
 	db	"w", 0
-
-	section	.bss,"aw",@nobits
-	public	_j
-_j:
-	rb	2
-
-	section	.bss,"aw",@nobits
-	public	_v
-_v:
-	rb	2
-
-	section	.bss,"aw",@nobits
-	public	_t
-_t:
-	rb	2
-
-	section	.bss,"aw",@nobits
-	public	_u
-_u:
-	rb	2
 
 	ident	"clang version 15.0.0 (https://github.com/jacobly0/llvm-project 6d9aa7a16db70f3d02ae304b08d4a03011281fef)"
 	ident	"clang version 15.0.0 (https://github.com/jacobly0/llvm-project 6d9aa7a16db70f3d02ae304b08d4a03011281fef)"
@@ -3641,21 +3416,23 @@ _u:
 	extern	__ishl
 	extern	_ti_Read
 	extern	_gfx_PrintInt
+	extern	__idivu
+	extern	__iand
 	extern	_gfx_FillRectangle
-	extern	__smulu
-	extern	_ti_Open
 	extern	__sremu
+	extern	_ti_Open
+	extern	__smulu
 	extern	_gfx_FillCircle
 	extern	__bdivu
 	extern	__frameset
-	extern	_gfx_RotateScaleSprite
 	extern	_kb_Scan
+	extern	_gfx_RotateScaleSprite
 	extern	_ti_Write
 	extern	_gfx_RLETSprite_NoClip
 	extern	_gfx_SwapDraw
 	extern	_gfx_SetDraw
-	extern	_gfx_FillScreen
 	extern	__sdivu
+	extern	_gfx_FillScreen
 	extern	__irems
 	extern	__Unwind_SjLj_Unregister
 	extern	__imulu
@@ -3664,4 +3441,5 @@ _u:
 	extern	_gfx_TransparentSprite_NoClip
 	extern	_gfx_End
 	extern	_gfx_SetTextXY
+	extern	__frameset0
 	extern	_gfx_SetTextScale

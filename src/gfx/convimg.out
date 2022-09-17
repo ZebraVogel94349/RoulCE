@@ -1,0 +1,9 @@
+palette_gfx.h
+palette_gfx.c
+ro.h
+ro.c
+pfeil.h
+pfeil.c
+tableau.h
+tableau.c
+gfx.h

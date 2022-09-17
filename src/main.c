@@ -15,32 +15,30 @@
 #include "gfx/palette_gfx.h"
 #include "gfx/gfx.h"
 #include "const.h"
+#include "colors.h"
 
 gfx_UninitedSprite(rotate_sprite, ro_width, ro_height);//sprite buffer
 
 /*Declaring Variables*/
-uint16_t posx, posy, chip, chipa, chipb, credits;
-char bets[50] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};//bets array
+int posx, posy, chip, chipa, chipb, credits;
+int bets[50] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};//bets array
 /*Declaring Variables*/
 
-void DrawTitle()
-{
-	gfx_SetTextFGColor(254);//Black text color
+void DrawTitle(){
+	gfx_SetTextFGColor(BLACK);
 	gfx_SetTextScale(1,1);//Text size for Title
 	gfx_SetTextXY(118,10);//Title position
 	gfx_PrintString("RoulCE v1.0.0");//Print title
 }
 
-void DrawMenu(int currentMenu)//This function draws the menu at the bottom
-{
-	gfx_SetColor(253);
+void DrawMenu(int currentMenu){//This function draws the menu at the bottom
+	gfx_SetColor(GREEN);
 	gfx_FillRectangle(10,230,300,8);
 	gfx_SetTextFGColor(254);
 	gfx_SetTextScale(1,1);
 	gfx_SetTextXY(10,230);
 	gfx_PrintString("Add Credits");
-	if(currentMenu == 1)
-	{
+	if(currentMenu == 1){
 		gfx_FillRectangle(10,230,300,8);
 		gfx_SetTextXY(18,230);
 		gfx_PrintString("+10");
@@ -55,9 +53,8 @@ void DrawMenu(int currentMenu)//This function draws the menu at the bottom
 	}
 }
 
-void DrawCursor() //This function shows the cursor
-{
-	gfx_SetColor(250);//Light green
+void DrawCursor(){
+	gfx_SetColor(LIGHT_GREEN);
 	int width = 17;
 	int leftOffset = 0;
 	int height = 14;
@@ -67,9 +64,8 @@ void DrawCursor() //This function shows the cursor
 	gfx_FillRectangle(posx * 18 + 203 - leftOffset, posy * 14 + 1, width, height);//cursor
 }
 
-void PrintNumber(int number, int color)//This function shows the number
-{
-	gfx_SetColor(253);
+void PrintNumber(int number, int color){
+	gfx_SetColor(GREEN);
 	gfx_FillRectangle(56, 200, 50, 30);//Clear old number
 	gfx_SetTextScale(3, 3);//Text size for number
 	gfx_SetTextXY(56, 200);//number position
@@ -77,61 +73,59 @@ void PrintNumber(int number, int color)//This function shows the number
 	gfx_PrintInt(number, 2);//Print number
 }
 
-void DrawChip(int type, int cx, int cy)//This function draws a chip at a specific location
-{
-	gfx_SetTextFGColor(254);
-	if(type == 1){gfx_SetColor(252);}//Red
-	if(type == 2){gfx_SetColor(248);}//Light Blue
-	if(type == 5){gfx_SetColor(249);}//Yellow
-	if(type == 10){gfx_SetColor(247);}//Dark Blue
-	if(type == 20){gfx_SetColor(251);}//Grey
-	if(type == 50){gfx_SetColor(246);}//Purple
+void DrawChip(int type, int x, int y){//This function draws a chip at a specific location
+	gfx_SetTextFGColor(BLACK);
+	if(type == 1){gfx_SetColor(RED);}
+	if(type == 2){gfx_SetColor(LIGHT_BLUE);}
+	if(type == 5){gfx_SetColor(YELLOW);}
+	if(type == 10){gfx_SetColor(DARK_BLUE);}
+	if(type == 20){gfx_SetColor(GREY);}
+	if(type == 50){gfx_SetColor(PURPLE);}
 	
-	gfx_FillCircle(cx,cy,5);
-	gfx_SetColor(245);
-	gfx_FillCircle(cx,cy,3);
+	gfx_FillCircle(x, y, 5);
+	gfx_SetColor(LIGHT_GREY);
+	gfx_FillCircle(x, y, 3);
 
 }
 
-void DrawButtons()//This function creates the Menu
-{
-	gfx_SetColor(254);
-	for(int i = 0; i < 7; i++)
-	{
+void DrawButtons(){
+	gfx_SetColor(BLACK);
+	for(int i = 0; i < 7; i++){
 		gfx_Rectangle(160,57 + (14 * i),41,15);
 	}
-	gfx_SetTextFGColor(254);//Black text color
+	gfx_SetTextFGColor(BLACK);
 	gfx_SetTextScale(1,1);
 	gfx_SetTextXY(165,61);
-	gfx_PrintString("Spin");//Print Text
+	gfx_PrintString("Spin");
 	gfx_SetTextXY(167,75);
-	gfx_PrintString("1");//Print Text
+	gfx_PrintString("1");
 	DrawChip(1,187,78);
 	gfx_SetTextXY(167,89);
-	gfx_PrintString("2");//Print Text
+	gfx_PrintString("2");
 	DrawChip(2,187,92);
 	gfx_SetTextXY(167,103);
-	gfx_PrintString("5");//Print Text
+	gfx_PrintString("5");
 	DrawChip(5,187,106);
 	gfx_SetTextXY(163,117);
-	gfx_PrintString("10");//Print Text
+	gfx_PrintString("10");
 	DrawChip(10,187,120);
 	gfx_SetTextXY(163,131);
-	gfx_PrintString("20");//Print Text
+	gfx_PrintString("20");
 	DrawChip(20,187,134);
 	gfx_SetTextXY(163,145);
-	gfx_PrintString("50");//Print Text
+	gfx_PrintString("50");
 	DrawChip(50,187,148);
 }
 
-void correctchip()//This function selects the chip to be shown when stacking chips
-{
-	if(chipa > 0){chipb = 1;}
-	if(chipa > 1){chipb = 2;}
-	if(chipa > 4){chipb = 5;}
-	if(chipa > 9){chipb = 10;}
-	if(chipa > 19){chipb = 20;}
-	if(chipa > 49){chipb = 50;}
+int SelectChip(int amount){//This function selects the chip to be shown when stacking chips
+	int chipToDraw = 0;
+	if(amount > 49){chipToDraw = 50;}
+	else if(amount > 19){chipToDraw = 20;}
+	else if(amount > 9){chipToDraw = 10;}
+	else if(amount > 4){chipToDraw = 5;}
+	else if(amount > 1){chipToDraw = 2;}
+	else if(amount > 0){chipToDraw = 1;}
+	return chipToDraw;
 }
 
 void placechip(int v, int x, int y)//This function draws placed chips
@@ -139,21 +133,21 @@ void placechip(int v, int x, int y)//This function draws placed chips
 	chipa = 0;
 	chipb = 0;
 	chipa = bets[v];
-	correctchip();
+	chipb = SelectChip(chipa);
 	if(chipa > 0)
 	{
 		DrawChip(chipb, x, y);
 		if(chipa != chipb)
 		{
 			gfx_SetTextScale(1,1);
-			gfx_SetTextFGColor(0);
+			gfx_SetTextFGColor(WHITE);
 			gfx_SetTextXY(x - 4, y);
 			gfx_PrintInt(bets[v], 1);
 		}
 	}
 }
 
-void createTableau(char *numberHistory, char *colorHistory)//this function shows the tableau and the history
+void createTableau(int *numberHistory, int *colorHistory)//this function shows the tableau and the history
 {
 	int columnWidth, rowHeight;
 	gfx_RLETSprite_NoClip(tableau,215,15);
@@ -162,7 +156,7 @@ void createTableau(char *numberHistory, char *colorHistory)//this function shows
 		chipa = 0;
 		chipb = 0;
 		chipa = bets[i];
-		correctchip();
+		chipb = SelectChip(chipa);
 		columnWidth = i % 3;
 		rowHeight = i / 3;//row
 		columnWidth = columnWidth * 18;
@@ -173,7 +167,7 @@ void createTableau(char *numberHistory, char *colorHistory)//this function shows
 			if(chipa != chipb)
 			{
 				gfx_SetTextScale(1,1);
-				gfx_SetTextFGColor(0);
+				gfx_SetTextFGColor(WHITE);
 				gfx_SetTextXY(columnWidth + 264, rowHeight + 36);
 				gfx_PrintInt(bets[i], 1);
 			}
@@ -193,10 +187,10 @@ void createTableau(char *numberHistory, char *colorHistory)//this function shows
 	placechip(49, 250, 218);
 
 
-	gfx_SetColor(253);
+	gfx_SetColor(GREEN);
 	gfx_FillRectangle(110,40,60,10);
 	gfx_SetTextScale(1,1);
-	gfx_SetTextFGColor(254);
+	gfx_SetTextFGColor(BLACK);
 	gfx_SetTextXY(110,26);
 	gfx_PrintString("History:");
 	gfx_SetTextXY(110,40);
@@ -227,9 +221,9 @@ void bet(int s, int t, int u)//This functions makes chips stack
 
 void PrintCredits()//This function prints the amount of chips the player has
 {
-	gfx_SetColor(253);
+	gfx_SetColor(GREEN);
 	gfx_FillRectangle(10,15,100,10);
-	gfx_SetTextFGColor(0);
+	gfx_SetTextFGColor(WHITE);
 	gfx_SetTextXY(10,15);
 	gfx_PrintString("Credits: ");
 	gfx_PrintInt(credits, 1);
@@ -237,39 +231,19 @@ void PrintCredits()//This function prints the amount of chips the player has
 
 int main(void)
 {
-	/*
-	List of important colors:
-	White = 0
-	Black =	254
-	Green = 253
-	Red = 252
-	Grey = 251
-	Light Green = 250
-	Yellow = 249
-	Light Blue = 248
-	Dark Blue = 247
-	Purple = 246
-	Light Grey = 245
-	*/
 	kb_key_t keyA, keyC, prevkeyA, prevkeyC;
-	char keycount = 0;
-	int currentMenu = 0;
-	int currentRotation = 0;
-	int rotationOffset = 0;
-	int spinningSpeed = 0;
-	int number = 0;
-	int color = 251;
+	int keycount = 0, currentMenu = 0, color = 0, number = 0, rotationOffset = 0;
 	posx = 4;
 	posy = 1;
 	credits = 0;
 	chip = 1;
-	char numberHistory[5] = {0,0,0,0,0};//Number history
-	char colorHistory[5] = {0,0,0,0,0};//Color history
+	int numberHistory[5] = {0,0,0,0,0};//Number history
+	int colorHistory[5] = {0,0,0,0,0};//Color history
 
 
 	ti_var_t sv = ti_Open("ROULSV","r");
-	uint16_t* creditsv = &credits;
-	ti_Read(creditsv,2,1,sv);
+	int* creditsv = &credits;
+	ti_Read(creditsv,3,1,sv);
 	ti_Close(sv);
 	credits = *creditsv;
 
@@ -283,9 +257,9 @@ int main(void)
 	gfx_RotateSprite(ro, rotate_sprite, 0);//Rotate the sprite for the first time
 
 
-	gfx_FillScreen(253);
+	gfx_FillScreen(GREEN);
 	gfx_SwapDraw();
-	gfx_FillScreen(253);
+	gfx_FillScreen(GREEN);
 
 
 	while(true)
@@ -300,8 +274,8 @@ int main(void)
 			if(i == 40 && number > 0 && number < 13){credits = credits + bets[i] * 3;}
 			if(i == 41 && number < 25 && number > 12){credits = credits + bets[i] * 3;}
 			if(i == 42 && number > 24){credits = credits + bets[i] * 3;}
-			if(i == 43 && color == 252){credits = credits + bets[i] * 2;}
-			if(i == 44 && color == 254){credits = credits + bets[i] * 2;}
+			if(i == 43 && color == RED){credits = credits + bets[i] * 2;}
+			if(i == 44 && color == BLACK){credits = credits + bets[i] * 2;}
 			if(i == 45 && number < 19 && number > 0){credits = credits + bets[i] * 2;}
 			if(i == 46 && number > 18){credits = credits + bets[i] * 2;}
 			if(i == 47 && number % 2 == 1){credits = credits + bets[i] * 2;}
@@ -313,7 +287,7 @@ int main(void)
 		while (kb_Data[6] != kb_Clear)//Controls
 		{
 			kb_Scan();
-			gfx_SetColor(253);
+			gfx_SetColor(GREEN);
 			gfx_FillRectangle(160,10,155,220);//Green background
 			DrawTitle();
 			DrawMenu(currentMenu);
@@ -419,8 +393,8 @@ int main(void)
 		if (kb_Data[6] == kb_Clear) {break;}//Exit
 
 
-		spinningSpeed = 50000;
-		currentRotation = rand() % 222;//Generate random amount to rotate
+		int spinningSpeed = 50000;
+		int currentRotation = rand() % 222;//Generate random amount to rotate
 		while(true)//Spin
 		{
 			kb_Scan();
@@ -439,7 +413,7 @@ int main(void)
 			if(currentRotation > 211){rotationOffset++;}
 			
 			gfx_RotateSprite(ro, rotate_sprite, currentRotation + currentRotation / 7 + rotationOffset);//Rotate the sprite
-			gfx_SetColor(253);
+			gfx_SetColor(GREEN);
 			DrawTitle();
 			DrawMenu(currentMenu);
 

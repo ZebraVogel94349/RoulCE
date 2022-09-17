@@ -1,0 +1,11 @@
+const int WHITE = 0;
+const int BLACK = 254;
+const int GREEN = 253;
+const int RED = 252;
+const int GREY = 251;
+const int LIGHT_GREEN = 250;
+const int YELLOW = 249;
+const int LIGHT_BLUE = 248;
+const int DARK_BLUE = 247;
+const int PURPLE = 246;
+const int LIGHT_GREY = 245;

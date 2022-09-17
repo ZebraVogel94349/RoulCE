@@ -14,14 +14,13 @@
 
 #include "gfx/palette_gfx.h"
 #include "gfx/gfx.h"
+#include "const.h"
 
 gfx_UninitedSprite(rotate_sprite, ro_width, ro_height);//sprite buffer
 
 /*Declaring Variables*/
-uint16_t posx, posy, chip, chipa, chipb, p, n, o, e, c, credits, keycount;
-uint16_t bets[50] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};//bets array
-uint8_t hnumbers[5] = {0,0,0,0,0};//Number history
-uint8_t hcolor[5] = {0,0,0,0,0};//Color history
+uint16_t posx, posy, chip, chipa, chipb, credits;
+char bets[50] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};//bets array
 /*Declaring Variables*/
 
 void DrawTitle()
@@ -68,14 +67,14 @@ void DrawCursor() //This function shows the cursor
 	gfx_FillRectangle(posx * 18 + 203 - leftOffset, posy * 14 + 1, width, height);//cursor
 }
 
-void PrintNumber()//This function shows the number
+void PrintNumber(int number, int color)//This function shows the number
 {
 	gfx_SetColor(253);
-	gfx_FillRectangle(56,200,50,30);//Clear old number
-	gfx_SetTextScale(3,3);//Text size for number
-	gfx_SetTextXY(56,200);//number position
-	gfx_SetTextFGColor(c);//Text color of number
-	gfx_PrintInt(e,2);//Print number
+	gfx_FillRectangle(56, 200, 50, 30);//Clear old number
+	gfx_SetTextScale(3, 3);//Text size for number
+	gfx_SetTextXY(56, 200);//number position
+	gfx_SetTextFGColor(color);//Text color of number
+	gfx_PrintInt(number, 2);//Print number
 }
 
 void DrawChip(int type, int cx, int cy)//This function draws a chip at a specific location
@@ -97,9 +96,9 @@ void DrawChip(int type, int cx, int cy)//This function draws a chip at a specifi
 void DrawButtons()//This function creates the Menu
 {
 	gfx_SetColor(254);
-	for(int k = 0; k < 7; k++)
+	for(int i = 0; i < 7; i++)
 	{
-		gfx_Rectangle(160,57 + (14 * k),41,15);
+		gfx_Rectangle(160,57 + (14 * i),41,15);
 	}
 	gfx_SetTextFGColor(254);//Black text color
 	gfx_SetTextScale(1,1);
@@ -154,28 +153,29 @@ void placechip(int v, int x, int y)//This function draws placed chips
 	}
 }
 
-void createTableau()//this function shows the tableau and the history
+void createTableau(char *numberHistory, char *colorHistory)//this function shows the tableau and the history
 {
+	int columnWidth, rowHeight;
 	gfx_RLETSprite_NoClip(tableau,215,15);
-	for(int k = 0; k < 39; ++k)
+	for(int i = 0; i < 39; i++)
 	{
 		chipa = 0;
 		chipb = 0;
-		chipa = bets[k];
+		chipa = bets[i];
 		correctchip();
-		p = k % 3;//column
-		o = k / 3;//row
-		p = p * 18;
-		o = o * 14;
+		columnWidth = i % 3;
+		rowHeight = i / 3;//row
+		columnWidth = columnWidth * 18;
+		rowHeight = rowHeight * 14;
 		if(chipa > 0)
 		{
-			DrawChip(chipb, p + 268, o + 36);
+			DrawChip(chipb, columnWidth + 268, rowHeight + 36);
 			if(chipa != chipb)
 			{
 				gfx_SetTextScale(1,1);
 				gfx_SetTextFGColor(0);
-				gfx_SetTextXY(p + 264, o + 36);
-				gfx_PrintInt(bets[k], 1);
+				gfx_SetTextXY(columnWidth + 264, rowHeight + 36);
+				gfx_PrintInt(bets[i], 1);
 			}
 		}
 	}
@@ -200,14 +200,14 @@ void createTableau()//this function shows the tableau and the history
 	gfx_SetTextXY(110,26);
 	gfx_PrintString("History:");
 	gfx_SetTextXY(110,40);
-	for(int k = 0; k < 5; k++)
+	for(int i = 0; i < 5; i++)
 	{
-		gfx_SetTextFGColor(hcolor[k]);
-		if(hcolor[k] != 0)
+		gfx_SetTextFGColor(colorHistory[i]);
+		if(colorHistory[i] != 0)
 		{
-			gfx_PrintInt(hnumbers[k], 1);
+			gfx_PrintInt(numberHistory[i], 1);
 		}
-		gfx_SetTextXY(110 + (k + 1) * 20,40);
+		gfx_SetTextXY(110 + (i + 1) * 20,40);
 	}
 
 
@@ -252,15 +252,19 @@ int main(void)
 	Light Grey = 245
 	*/
 	kb_key_t keyA, keyC, prevkeyA, prevkeyC;
+	char keycount = 0;
 	int currentMenu = 0;
-	uint8_t currentRotation = 0;
+	int currentRotation = 0;
+	int rotationOffset = 0;
 	int spinningSpeed = 0;
+	int number = 0;
+	int color = 251;
 	posx = 4;
 	posy = 1;
 	credits = 0;
-	uint8_t colors[37] = {254,252,254,252,254,252,254,252,254,252,254,252,254,252,254,252,254,252,254,252,254,252,254,252,254,252,254,252,254,252,254,252,254,252,254,252,251};//color array
-	uint8_t numbers[37] = {26,3,35,12,28,7,29,18,22,9,31,14,20,1,33,16,24,5,10,23,8,30,11,36,13,27,6,34,17,25,2,21,4,19,15,32,0};//number array
 	chip = 1;
+	char numberHistory[5] = {0,0,0,0,0};//Number history
+	char colorHistory[5] = {0,0,0,0,0};//Color history
 
 	ti_var_t sv = ti_Open("ROULSV","r");
 	uint16_t* creditsv = &credits;
@@ -280,30 +284,30 @@ int main(void)
 	gfx_TransparentSprite_NoClip(rotate_sprite, 17, 69);//Show rotated sprite
 	gfx_RLETSprite_NoClip(pfeil, 59, 36);//Show arrow
 
-	createTableau();
+	createTableau(numberHistory, colorHistory);
 	DrawButtons();
 
 	gfx_SwapDraw();
 	gfx_FillScreen(253);
 	do //Loop everything
 	{
-		for(int k = 0; k < 50; k++)//Payout prize and clear bets array
+		for(int i = 0; i < 50; i++)//Payout prize and clear bets array
 		{
-			if(k < 36 && k + 1 == e){credits = credits + bets[k] * 36;}
-			if(k == 39 && e == 0){credits = credits + bets[k] * 36;}
-			if(k == 36 && e % 3 == 1){credits = credits + bets[k] * 3;}
-			if(k == 37 && e % 3 == 2){credits = credits + bets[k] * 3;}
-			if(k == 38 && e % 3 == 0 && e != 0){credits = credits + bets[k] * 3;}
-			if(k == 40 && e > 0 && e < 13){credits = credits + bets[k] * 3;}
-			if(k == 41 && e < 25 && e > 12){credits = credits + bets[k] * 3;}
-			if(k == 42 && e > 24){credits = credits + bets[k] * 3;}
-			if(k == 43 && c == 252){credits = credits + bets[k] * 2;}
-			if(k == 44 && c == 254){credits = credits + bets[k] * 2;}
-			if(k == 45 && e < 19 && e > 0){credits = credits + bets[k] * 2;}
-			if(k == 46 && e > 18){credits = credits + bets[k] * 2;}
-			if(k == 47 && e % 2 == 1){credits = credits + bets[k] * 2;}
-			if(k == 48 && e % 2 == 0 && e != 0){credits = credits + bets[k] * 2;}
-			bets[k] = 0;
+			if(i < 36 && i + 1 == number){credits = credits + bets[i] * 36;}
+			if(i == 39 && number == 0){credits = credits + bets[i] * 36;}
+			if(i == 36 && number % 3 == 1){credits = credits + bets[i] * 3;}
+			if(i == 37 && number % 3 == 2){credits = credits + bets[i] * 3;}
+			if(i == 38 && number % 3 == 0 && number != 0){credits = credits + bets[i] * 3;}
+			if(i == 40 && number > 0 && number < 13){credits = credits + bets[i] * 3;}
+			if(i == 41 && number < 25 && number > 12){credits = credits + bets[i] * 3;}
+			if(i == 42 && number > 24){credits = credits + bets[i] * 3;}
+			if(i == 43 && color == 252){credits = credits + bets[i] * 2;}
+			if(i == 44 && color == 254){credits = credits + bets[i] * 2;}
+			if(i == 45 && number < 19 && number > 0){credits = credits + bets[i] * 2;}
+			if(i == 46 && number > 18){credits = credits + bets[i] * 2;}
+			if(i == 47 && number % 2 == 1){credits = credits + bets[i] * 2;}
+			if(i == 48 && number % 2 == 0 && number != 0){credits = credits + bets[i] * 2;}
+			bets[i] = 0;
 		}
 
 
@@ -318,9 +322,9 @@ int main(void)
 			gfx_PrintInt(chip,2);//Print Text
 			DrawChip(chip,187,170);
 			PrintCredits();
-			PrintNumber();
+			PrintNumber(number, color);
 			DrawCursor();
-			createTableau();
+			createTableau(numberHistory, colorHistory);
 			DrawButtons();
 			gfx_TransparentSprite_NoClip(rotate_sprite, 17, 69);//Show rotated sprite
 			gfx_RLETSprite_NoClip(pfeil, 59, 36);//Show arrow
@@ -424,9 +428,9 @@ int main(void)
 		gfx_PrintInt(chip,2);//Print Text
 		DrawChip(chip,187,170);
 		PrintCredits();
-		PrintNumber();
+		PrintNumber(number, color);
 		DrawCursor();
-		createTableau();
+		createTableau(numberHistory, colorHistory);
 		DrawButtons();
 		gfx_TransparentSprite_NoClip(rotate_sprite, 17, 69);//Show rotated sprite
 		gfx_RLETSprite_NoClip(pfeil, 59, 36);//Show arrow
@@ -439,9 +443,9 @@ int main(void)
 		gfx_PrintInt(chip,2);//Print Text
 		DrawChip(chip,187,170);
 		PrintCredits();
-		PrintNumber();
+		PrintNumber(number, color);
 		DrawCursor();
-		createTableau();
+		createTableau(numberHistory, colorHistory);
 		DrawButtons();
 		gfx_TransparentSprite_NoClip(rotate_sprite, 17, 69);//Show rotated sprite
 		gfx_RLETSprite_NoClip(pfeil, 59, 36);//Show arrow
@@ -449,22 +453,25 @@ int main(void)
 		/*Draw everything*/
 
 		spinningSpeed = 50000;
-		currentRotation = rand() % 256;//Generate random amount to rotate
-
+		currentRotation = rand() % 222;//Generate random amount to rotate
 		while(true)//Spin
 		{
 			kb_Scan();
 			if (kb_Data[6] == kb_Clear) {break;}//Exit
-			int r = rand() % 1000;
-			spinningSpeed = spinningSpeed - r;
+			int speedLoss = rand() % 1000;
+			spinningSpeed = spinningSpeed - speedLoss;
 			currentRotation = currentRotation + spinningSpeed / 5000;
+			if(currentRotation >= 222){currentRotation = currentRotation - 222; rotationOffset = 0;}
 			if (spinningSpeed / 2000 < 1)
 			{
 				break;
 			}
-			n = currentRotation;
 
-			gfx_RotateSprite(ro, rotate_sprite, currentRotation);//Rotate the sprite
+			if(currentRotation > 38){rotationOffset = 1;}
+			if(currentRotation > 128){rotationOffset++;}
+			if(currentRotation > 211){rotationOffset++;}
+			
+			gfx_RotateSprite(ro, rotate_sprite, currentRotation + currentRotation / 7 + rotationOffset);//Rotate the sprite
 			gfx_SetColor(253);
 			DrawTitle();
 			DrawMenu(currentMenu);
@@ -473,27 +480,22 @@ int main(void)
 			gfx_RLETSprite_NoClip(pfeil, 59, 36);//Show arrow
 			gfx_SwapDraw();
 
-			/*Determine number*/
-			if(n > 38 && n < 252){n = n + 1;}
-			if(n > 128 && n < 252){n = n + 1;}
-			if(n > 211 && n < 252){n = n + 1;}
-			n = n / 7;
-			c = colors[n];
-			e = numbers[n];
-			/*Determine number*/
-			PrintNumber();
+
+			color = colors[currentRotation / 6];
+			number = numbers[currentRotation / 6];
+			PrintNumber(number, color);
 		}
 		//store number and color in history
-		hnumbers[4] = hnumbers[3];
-		hnumbers[3] = hnumbers[2];
-		hnumbers[2] = hnumbers[1];
-		hnumbers[1] = hnumbers[0];
-		hnumbers[0] = e;
-		hcolor[4] = hcolor[3];
-		hcolor[3] = hcolor[2];
-		hcolor[2] = hcolor[1];
-		hcolor[1] = hcolor[0];
-		hcolor[0] = c;
+		numberHistory[4] = numberHistory[3];
+		numberHistory[3] = numberHistory[2];
+		numberHistory[2] = numberHistory[1];
+		numberHistory[1] = numberHistory[0];
+		numberHistory[0] = number;
+		colorHistory[4] = colorHistory[3];
+		colorHistory[3] = colorHistory[2];
+		colorHistory[2] = colorHistory[1];
+		colorHistory[1] = colorHistory[0];
+		colorHistory[0] = color;
 	} while(true);
 	*creditsv = credits;
 	sv = ti_Open("ROULSV","w");

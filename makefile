@@ -9,7 +9,7 @@
 
 NAME        ?= ROUL
 DEBUGMODE   ?= NDEBUG
-COMPRESSED  ?= YES
+COMPRESSED  ?= NO
 COMPRESSED_MODE = zx7
 ICON        ?= iconc.png
 DESCRIPTION ?= "Roulette"

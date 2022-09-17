@@ -266,30 +266,29 @@ int main(void)
 	char numberHistory[5] = {0,0,0,0,0};//Number history
 	char colorHistory[5] = {0,0,0,0,0};//Color history
 
+
 	ti_var_t sv = ti_Open("ROULSV","r");
 	uint16_t* creditsv = &credits;
 	ti_Read(creditsv,2,1,sv);
 	ti_Close(sv);
 	credits = *creditsv;
 
+
 	srand(rtc_Time());//Set random seed
+
 
     gfx_Begin(); //Start the graphics
     gfx_SetPalette(palette_gfx, sizeof_palette_gfx, 0); //Load Palette
 	gfx_SetDrawBuffer();
-	gfx_RotateSprite(ro, rotate_sprite, currentRotation);//Rotate the sprite
-	gfx_FillScreen(253);//Green background
-	DrawTitle();
-	DrawMenu(currentMenu);
-	gfx_TransparentSprite_NoClip(rotate_sprite, 17, 69);//Show rotated sprite
-	gfx_RLETSprite_NoClip(pfeil, 59, 36);//Show arrow
+	gfx_RotateSprite(ro, rotate_sprite, 0);//Rotate the sprite for the first time
 
-	createTableau(numberHistory, colorHistory);
-	DrawButtons();
 
+	gfx_FillScreen(253);
 	gfx_SwapDraw();
 	gfx_FillScreen(253);
-	do //Loop everything
+
+
+	while(true)
 	{
 		for(int i = 0; i < 50; i++)//Payout prize and clear bets array
 		{
@@ -319,7 +318,7 @@ int main(void)
 			DrawTitle();
 			DrawMenu(currentMenu);
 			gfx_SetTextXY(163,167);
-			gfx_PrintInt(chip,2);//Print Text
+			gfx_PrintInt(chip,2);
 			DrawChip(chip,187,170);
 			PrintCredits();
 			PrintNumber(number, color);
@@ -327,9 +326,10 @@ int main(void)
 			createTableau(numberHistory, colorHistory);
 			DrawButtons();
 			gfx_TransparentSprite_NoClip(rotate_sprite, 17, 69);//Show rotated sprite
-			gfx_RLETSprite_NoClip(pfeil, 59, 36);//Show arrow
+			gfx_RLETSprite_NoClip(pfeil, 59, 36);
+			gfx_SwapDraw();
 
-			/*Tableau navigation*/
+
 			if(kb_Data[7] == kb_Up && keyC != prevkeyC)//Up
 			{
 				if(posy > 1){if(!(posx == 1 && posy == 4)){posy = posy - 1;}}
@@ -394,9 +394,8 @@ int main(void)
 			if((posx == 1 && posy == 1) || (posx == 2 && posy == 1) || (posx == 3 && posy == 1) || (posx == 5 && posy == 1)){posx = 4;}
 			if((posx == 2 && posy == 6) || (posx == 2 && posy == 7)){posy = 5;}
 			if((posx == 2 && posy == 9) || (posx == 2 && posy == 10)){posy = 8;}
-			/*Tableau navigation*/
-			gfx_SwapDraw();
-			kb_Scan();
+			
+
 			prevkeyA = keyA;
 			prevkeyC = keyC;
 			keyA = kb_Data[1];
@@ -419,38 +418,6 @@ int main(void)
 		}
 		if (kb_Data[6] == kb_Clear) {break;}//Exit
 
-		/*Draw everything*/
-		gfx_SetColor(253);
-		gfx_FillRectangle(160,10,155,220);//Green background
-		DrawTitle();
-		DrawMenu(currentMenu);
-		gfx_SetTextXY(163,167);
-		gfx_PrintInt(chip,2);//Print Text
-		DrawChip(chip,187,170);
-		PrintCredits();
-		PrintNumber(number, color);
-		DrawCursor();
-		createTableau(numberHistory, colorHistory);
-		DrawButtons();
-		gfx_TransparentSprite_NoClip(rotate_sprite, 17, 69);//Show rotated sprite
-		gfx_RLETSprite_NoClip(pfeil, 59, 36);//Show arrow
-		gfx_SwapDraw();
-		gfx_SetColor(253);
-		gfx_FillRectangle(160,10,155,220);//Green background
-		DrawTitle();
-		DrawMenu(currentMenu);
-		gfx_SetTextXY(163,167);
-		gfx_PrintInt(chip,2);//Print Text
-		DrawChip(chip,187,170);
-		PrintCredits();
-		PrintNumber(number, color);
-		DrawCursor();
-		createTableau(numberHistory, colorHistory);
-		DrawButtons();
-		gfx_TransparentSprite_NoClip(rotate_sprite, 17, 69);//Show rotated sprite
-		gfx_RLETSprite_NoClip(pfeil, 59, 36);//Show arrow
-		gfx_SwapDraw();
-		/*Draw everything*/
 
 		spinningSpeed = 50000;
 		currentRotation = rand() % 222;//Generate random amount to rotate
@@ -485,7 +452,7 @@ int main(void)
 			number = numbers[currentRotation / 6];
 			PrintNumber(number, color);
 		}
-		//store number and color in history
+
 		numberHistory[4] = numberHistory[3];
 		numberHistory[3] = numberHistory[2];
 		numberHistory[2] = numberHistory[1];
@@ -496,11 +463,15 @@ int main(void)
 		colorHistory[2] = colorHistory[1];
 		colorHistory[1] = colorHistory[0];
 		colorHistory[0] = color;
-	} while(true);
+
+	}
+
 	*creditsv = credits;
 	sv = ti_Open("ROULSV","w");
     ti_Write(creditsv,2,1,sv);
     ti_Close(sv);
+
+
     pgrm_CleanUp();
-    gfx_End();// Close the graphics
+    gfx_End();
 }

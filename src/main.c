@@ -28,7 +28,7 @@ void DrawTitle(){
 	gfx_SetTextFGColor(BLACK);
 	gfx_SetTextScale(1,1);//Text size for Title
 	gfx_SetTextXY(118,10);//Title position
-	gfx_PrintString("RoulCE v1.0.0");//Print title
+	gfx_PrintString("RoulCE v1.1.0");//Print title
 }
 
 void DrawMenu(int currentMenu){//This function draws the menu at the bottom
